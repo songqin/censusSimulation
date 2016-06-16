@@ -1,5 +1,7 @@
 //decentralized census problem
 import java.util.*;
+import java.io.*;
+
 public class Dcp{
 	int numNei;//number of neighborhoods in DCP
 	int neiSize;//number of residents per neighborhood
@@ -14,9 +16,20 @@ public class Dcp{
 	int nfa=0;//number of false agents
 	int nma=0;//number of malicious agents
 	// note: n - nha-nfa-nma is inactive aligible agents
+	final public static int RW = 1;
+	final public static int CS = 2;
+	final public static int T = 1;
+	final public static int F = 0;
+	double prior[];
+	 // = new double[] { 0, 0.75, 0.95 }; //0 (just an offset) is not used.
+	double CPT_CS[][]; // CPT[cs_a,rw_b] Conditional Probability Table for eligibility
+
+	// load()
+	// init() 
+	// mcmc()
 	ArrayList<Neighborhood> neighborhoodSet;
 	Dcp(int numNei, int neiSize, double hap, double fap, double map, 
-		double mawp, double hawp ){
+		double mawp, double hawp, Integer ob, String pathOfCpt ){
 		System.out.println("DCP Simulation Init");
 		this.numNei = numNei;
 		this.neiSize = neiSize;
@@ -26,7 +39,7 @@ public class Dcp{
 		this.mawp = mawp;
 		this.hawp = hawp;
 		neighborhoodSet = new ArrayList<Neighborhood>();
-		for(int i=1; i<=numNei;i++){
+		for(int i=1; i<= numNei;i++){
 			// 1 100
 			// 101 200
 			// 201 300
@@ -48,10 +61,54 @@ public class Dcp{
 			System.out.println((p-nha-nfa-nma)*1.0/p);
 
 		System.out.println("Done: Dcp constructor");
+		System.out.println("Start: Load data from hard-drive");
+		loadFromHardDrive(ob, pathOfCpt);
+		System.out.println("Done: Load data from hard-drive");
+
 	}
 	void printAgents(){}
 	void printTprFpr(){}
 	void printWitnessSet(){}
+	void loadFromHardDrive(Integer ob, String pathOfCpt){
+		this.ob = ob;//0 or others
+		Scanner s = null;
+		BufferedReader in = null;		
+		try {
+			in = new BufferedReader(new FileReader(pathOfCpt));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		s = new Scanner(in);
+		CPT_CS = new double[2][2];
+		prior = new double[3];
+//		CPT_RW = new double[2][2];
+//		CPT_self_CS = new double[2][2];
+//		CPT_self_RW = new double[2];
+//		CPT_observer_self_RW = new double[2];
+//		CPT_observer_self_CS = new double[2][2];
+//		CPT_observer_RW = new double[2][2];
+//		CPT_observer_CS = new double[2][2];
+		String line = s.nextLine();// Read the name of CPT
+		// System.out.println(line);
+		s.nextLine();// Read the headers of Table
+		CPT_CS[T][T] = Double.parseDouble(s.nextLine().split(" ")[2]);
+		CPT_CS[T][F] = Double.parseDouble(s.nextLine().split(" ")[2]);
+		CPT_CS[F][T] = Double.parseDouble(s.nextLine().split(" ")[2]);
+		CPT_CS[F][F] = Double.parseDouble(s.nextLine().split(" ")[2]);
+		// System.out.println(CPT_CS[T][T]);
+		// System.out.println(CPT_CS[T][F]);
+		// System.out.println(CPT_CS[F][T]);
+		// System.out.println(CPT_CS[F][F]);
+		s.nextLine();// Read the name of CPT: Priors
+		s.nextLine();// Read the headers of CPT
+		String p = s.nextLine();
+		prior[RW] = Double.parseDouble(p.split(" ")[0]);
+		prior[CS] = Double.parseDouble(p.split(" ")[1]);
+		// System.out.println(prior[RW]);		
+		// System.out.println(prior[CS]);	
+			
+
+	}
 	class Neighborhood{
 		ArrayList<Integer> agentSet;
 		HashMap<Integer, Agent> agentMap = new HashMap<Integer, Agent>();
@@ -65,18 +122,24 @@ public class Dcp{
 					// a.e_prob=
 					a.e_binary=1;
 					a.r_binary=1;
+					// this.e_prob=
+					// this.r_prob=					
 				}
 				else if(r>=hap && r<hap+fap){//false agents
 					a.role=2;
 					// a.e_prob=
 					a.e_binary=0;
 					a.r_binary=-1;
+					// this.e_prob=
+					// this.r_prob=					
 				}
 				else if(r>=hap+fap && r<hap+fap+map){//malicious agents
 					a.role=3;
 					// a.e_prob=
 					a.e_binary=1;
 					a.r_binary=0;
+					// this.e_prob=
+					// this.r_prob=					
 				}				
 				agentMap.put(j, a);
 			}
@@ -102,11 +165,13 @@ public class Dcp{
 		int e_binary;//groud truth for eligibility 1/0
 		int r_binary;//ground truth for reliability 1/0/-1 -1 for unknown
 
-		Agent(Integer id){
+		Agent(Integer id){//inactive agent by default
 			this.id = id;
 			this.role = 0;
 			this.e_binary=1;
 			this.r_binary=-1;
+			// this.e_prob=
+			// this.r_prob=
 		}
 	}
 	/*
@@ -126,7 +191,9 @@ public class Dcp{
 			Double.parseDouble(args[3]),//fap
 			Double.parseDouble(args[4]),//map
 			Double.parseDouble(args[5]),//mawp
-			Double.parseDouble(args[6])//hawp
+			Double.parseDouble(args[6]),//hawp
+			Integer.parseInt(args[7]),//ob
+			args[8]
 			);
 	}
 }
