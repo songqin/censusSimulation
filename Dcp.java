@@ -3,6 +3,7 @@ import java.util.*;
 import java.io.*;
 
 public class Dcp{
+	int fast=1;
 	int printLess=1;
 	int numNei;//number of neighborhoods in DCP
 	int neiSize;//number of residents per neighborhood
@@ -48,13 +49,13 @@ public class Dcp{
 	HashMap<Integer, Integer> NCSMapT;
 	//vector for counting bad quality
 	HashMap<Integer, Integer> NCSMapF ;
-	HashMap<Integer, Double> rwMap;
-	HashMap<Integer, Double> csMap;	
+	// HashMap<Integer, Double> rwMap;
+	// HashMap<Integer, Double> csMap;	
 	HashMap<Integer, Agent> agentStatsMap ;
 	int fixedCS = 0;	
 	int fixedRW = 0;	
 	int mcmcRounds=0;
-	int c;//parameter passed from Batch class
+	// int c;//parameter passed from Batch class
 	static Random rnd = new Random(0);
 	// load()
 	// init() 
@@ -64,8 +65,8 @@ public class Dcp{
 		float result = rnd.nextFloat() * max;
 		return result;
 	}	
-	Dcp(int numNei, int neiSize, double hap, double fap, double map, 
-		double mawp, double hawp, double fawp, Integer ob, int mcmcRounds, String pathOfCpt , int c){
+	Dcp(int numNei, int neiSize, double hap, double map, double fap, 
+		double hawp, double mawp, double fawp, Integer ob, int mcmcRounds, String pathOfCpt ){
 		this.numNei = numNei;
 		this.neiSize = neiSize;
 		this.p = numNei * neiSize;
@@ -77,7 +78,7 @@ public class Dcp{
 		this.ob=ob;
 		this.pathOfCpt = pathOfCpt;
 		this.mcmcRounds = mcmcRounds;
-		this.c = c;
+		// this.c = c;
 		agentStatsMap = new HashMap<Integer, Agent>();
 		loadFromHardDrive();//load cpt
 		neighborhoodSet = new ArrayList<Neighborhood>();
@@ -104,14 +105,18 @@ public class Dcp{
 				if(a.role==3) nnra++;
 			}
 		}
-		// System.out.println("percentage of honest agents:" + nha*1.0/p);
-		// System.out.println("percentage of fake agents:" +nfa*1.0/p);
-		// System.out.println("percentage of malicios agents:" +nma*1.0/p);
-		// System.out.println("percentage of inactive agents:" +(p-nha-nfa-nma)*1.0/p);
+		// System.out.println("#percentage of honest agents:" + nha*1.0/p);
+		// System.out.println("#percentage of fake agents:" +nfa*1.0/p);
+		// System.out.println("#percentage of malicios agents:" +nma*1.0/p);
+		// System.out.println("#percentage of inactive agents:" +(p-nha-nfa-nma)*1.0/p);
 		// System.out.println("Done: Dcp constructor");
 
 		//generate witness stances
 		populateWitnessStances();
+		// System.out.println(witnessMapCS.size());
+		// for(String k:witnessMapCS.keySet()){
+		// 	System.out.println(k+" "+witnessMapCS.get(k));
+		// }
 		mcmc(mcmcRounds);
 		// printAgentsStats();
 
@@ -124,10 +129,10 @@ public class Dcp{
 		//role=3 malicious agents (reliable=0, eligible=1)
 		//role=0 inactive agents (eligible=1 , reliable = 1)		
 		// System.out.println("Computing agent's statistics");
-		int tCS=0;//expectation of CS being true
-		int fCS=0;
-		int tRW=0;
-		int fRW=0;
+		double tCS=0;//expectation of CS being true
+		double fCS=0;
+		double tRW=0;
+		double fRW=0;
 		// System.out.println("id, role, e_binary,r_binary,e_prob, r_prob");
 		for(Agent a: agentStatsMap.values()){
 			// System.out.println(
@@ -138,16 +143,23 @@ public class Dcp{
 			// 	a.e_prob+" "+
 			// 	a.r_prob
 			// 	);
-			tCS+=a.e_prob;
-			fCS+=1-a.e_prob;
-			tRW+=a.r_prob;
-			fRW+=1-a.r_prob;
+			if(a.e_binary==1)
+				tCS+=a.e_prob;
+			else{
+				fCS+=a.e_prob;
+				// System.out.println(a.e_binary);
+				// System.out.println(fCS);
+				}
+			if(a.r_binary==1)
+				tRW+=a.r_prob;
+			else
+				fRW+=a.r_prob;
 		}	
-		// System.out.println("expectation: CS(true), CS(false),RW(true),RW(false)");
-		// System.out.println(tCS+" "+fCS+" "+tRW+" "+fRW);
-		// System.out.println("ground truth:");
-		// System.out.println(nea+" "+ nnea+" " +nra+" "+ nnra );
-		// System.out.println("tpr(CS) fpr(CS) tpr(RW) fpr(RW)");
+		System.out.println("expectation: CS(true), CS(false),RW(true),RW(false)");
+		System.out.println(tCS+" "+fCS+" "+tRW+" "+fRW);
+		System.out.println("ground truth:");
+		System.out.println(nea+" "+ nnea+" " +nra+" "+ nnra );
+		System.out.println("tpr(CS) fpr(CS) tpr(RW) fpr(RW)");
 		System.out.println(round+" "+tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra);
 	}
 	void printAgents(){}
@@ -188,8 +200,8 @@ public class Dcp{
 		String p = s.nextLine();
 		prior[RW] = Double.parseDouble(p.split(" ")[0]);
 		prior[CS] = Double.parseDouble(p.split(" ")[1]);
-		// System.out.println(prior[RW]);		
-		// System.out.println(prior[CS]);	
+		// System.out.println("#prior RW:"+prior[RW]);		
+		// System.out.println("#prior CS:"+prior[CS]);	
 		//
 
 
@@ -274,6 +286,7 @@ public class Dcp{
 						}
 						if(vote!=-1){
 							witnessMapCS.put(key, vote);
+							// System.out.println(key+" "+vote);
 						}
 					}
 				}			
@@ -314,6 +327,7 @@ public class Dcp{
 			// System.out.println("MCMC Round "+i);
 			for(Integer k: NRWMapT.keySet()){
 				if(!fixedMapRW.get(k)){
+
 					mcmc_A_RW(k);
 				}
 			}
@@ -322,33 +336,35 @@ public class Dcp{
 					mcmc_A_CS(k);		
 				}
 			}
-			if(rwMap==null)
-				rwMap=new HashMap<Integer, Double>();
-			if(csMap==null)
-				csMap=new HashMap<Integer, Double>();
-			for(Integer k: NRWMapT.keySet()){
-				int countT = NRWMapT.get(k);
-				int countF = NRWMapF.get(k);
-				agentStatsMap.get(k).r_prob= countT*1.0/(countT+countF);
-				// rwMap.put(k, countT*1.0/(countT+countF));
-			}
 
-			for(Integer k: NCSMapT.keySet()){
-				int countT = NCSMapT.get(k);
-				int countF = NCSMapF.get(k);
-				agentStatsMap.get(k).e_prob= countT*1.0/(countT+countF);
-				// csMap.put(k, countT*1.0/(countT+countF));
-	//			System.out.println("product: "+ k+" quality:" + countT*1.0/(countT+countF));
-			}
-			printAgentsStats(i+1);
+	// 		if(rwMap==null)
+	// 			rwMap=new HashMap<Integer, Double>();
+	// 		if(csMap==null)
+	// 			csMap=new HashMap<Integer, Double>();
+	// 		for(Integer k: NRWMapT.keySet()){
+	// 			int countT = NRWMapT.get(k);
+	// 			int countF = NRWMapF.get(k);
+	// 			agentStatsMap.get(k).r_prob= countT*1.0/(countT+countF);
+	// 			// rwMap.put(k, countT*1.0/(countT+countF));
+	// 		}
+
+	// 		for(Integer k: NCSMapT.keySet()){
+	// 			int countT = NCSMapT.get(k);
+	// 			int countF = NCSMapF.get(k);
+	// 			agentStatsMap.get(k).e_prob= countT*1.0/(countT+countF);
+	// 			// csMap.put(k, countT*1.0/(countT+countF));
+	// //			System.out.println("product: "+ k+" quality:" + countT*1.0/(countT+countF));
+	// 		}
+	// 		// if((i+1)%1000==0)
+	// 			printAgentsStats(i+1);
+	
 			// System.out.println(i+1+" "+agentStatsMap.get(1).r_prob+" "+agentStatsMap.get(1).e_prob);
 
 		}
-		/*
-		if(rwMap==null)
-			rwMap=new HashMap<Integer, Double>();
-		if(csMap==null)
-			csMap=new HashMap<Integer, Double>();
+		// if(rwMap==null)
+		// 	rwMap=new HashMap<Integer, Double>();
+		// if(csMap==null)
+		// 	csMap=new HashMap<Integer, Double>();
 		for(Integer k: NRWMapT.keySet()){
 			int countT = NRWMapT.get(k);
 			int countF = NRWMapF.get(k);
@@ -363,8 +379,8 @@ public class Dcp{
 			// csMap.put(k, countT*1.0/(countT+countF));
 //			System.out.println("product: "+ k+" quality:" + countT*1.0/(countT+countF));
 		}
-		System.out.println(i+1+" "+agentStatsMap.get(1).r_prob+" "+agentStatsMap.get(1).e_prob);
-		*/
+		printAgentsStats(x);
+			// System.out.println(i+1+" "+agentStatsMap.get(1).r_prob+" "+agentStatsMap.get(1).e_prob);
 // 		Gson gson = new Gson();
 // 		String json1 = gson.toJson(rwMap);
 // 		String json2 = gson.toJson(csMap);
@@ -410,18 +426,21 @@ public class Dcp{
 		double alpha_T = 1 * prior[RW];
 		double alpha_F = 1 * (1 - prior[RW]);
 		//if in file
-		
-		if(rwMap!=null && rwMap.containsKey(a)){
-			double rw = rwMap.get(a);
-			alpha_T = 1 * rw;
-			alpha_F = 1 * (1 - rw);
-		}
+		// if(rwMap!=null && rwMap.containsKey(a)){
+		// 	double rw = rwMap.get(a);
+		// 	alpha_T = 1 * rw;
+		// 	alpha_F = 1 * (1 - rw);
+		// }
+		// double rw = agentStatsMap.get(a).r_prob;
+		// double alpha_T = 1 * rw;
+		// double alpha_F = 1 * (1 - rw);
+		double[][] CPT_crt_CS = CPT_CS;
 		//enumerate all the reviewers and products
 		for(String k: witnessMapCS.keySet()){
 			Integer reviewer = Integer.parseInt(k.toString().split(" ")[0]);
 			Integer product = Integer.parseInt(k.toString().split(" ")[1]);
 			
-			double[][] CPT_crt_CS = CPT_CS;
+			
 
 			//when a is the reviewers
 			if(a==reviewer){
@@ -432,7 +451,7 @@ public class Dcp{
 					alpha_F *= CPT_crt_CS[F][state_product];
 				}
 				else{
-					int state_product = stateMapCS.get(product);
+					int state_product = stateMapCS.get(product);//efficiency
 					alpha_T *= 1 - CPT_crt_CS[T][state_product];
 					alpha_F *= 1 - CPT_crt_CS[F][state_product];
 				}
@@ -457,12 +476,14 @@ public class Dcp{
 		//TODO: count number of good product
 		double alpha_T = 1 * prior[CS];
 		double alpha_F = 1 * (1 - prior[CS]);
-		
-		if(csMap!=null && csMap.containsKey(a)){
-			double cs = rwMap.get(a);
-			alpha_T = 1 * cs;
-			alpha_F = 1 * (1 - cs);
-		}
+		// double cs = agentStatsMap.get(a).e_prob;
+		// double alpha_T = 1 * cs;
+		// double alpha_F = 1 * (1 - cs);
+		// if(csMap!=null && csMap.containsKey(a)){
+		// 	double cs = rwMap.get(a);
+		// 	alpha_T = 1 * cs;
+		// 	alpha_F = 1 * (1 - cs);
+		// }
 		//enumerate all the reviewers and products
 		for(String k: witnessMapCS.keySet()){
 			Integer reviewer = Integer.parseInt(k.toString().split(" ")[0]);
@@ -470,6 +491,7 @@ public class Dcp{
 			double[][] CPT_crt_CS = CPT_CS;
 			//when a is the products
 			if(a==product){
+				// System.out.println("a is product");
 				Integer vote = witnessMapCS.get(k);
 				if(vote==1){
 					int state_reviewer = stateMapRW.get(reviewer);
@@ -496,6 +518,7 @@ public class Dcp{
 			NCSMapF.put(a, c);
 		}
 	}
+	//test
 	public int sample(double d) {
 		float v = random(1.0f);
 		if (v < d)
@@ -572,15 +595,15 @@ public class Dcp{
 			Integer.parseInt(args[0]), //numNei
 			Integer.parseInt(args[1]), // neiSize
 			Double.parseDouble(args[2]),//hap
-			Double.parseDouble(args[3]),//fap
-			Double.parseDouble(args[4]),//map
-			Double.parseDouble(args[5]),//mawp
-			Double.parseDouble(args[6]),//hawp
+			Double.parseDouble(args[3]),//map
+			Double.parseDouble(args[4]),//fap
+			Double.parseDouble(args[5]),//hawp
+			Double.parseDouble(args[6]),//mawp
 			Double.parseDouble(args[7]),//fawp
 			Integer.parseInt(args[8]),//ob
 			Integer.parseInt(args[9]),//mcmc rounds
-			args[10],//pathOfCpt
-			Integer.parseInt(args[11])//c
+			args[10]//pathOfCpt
+			// Integer.parseInt(args[11])//c
 			);
 	}
 }

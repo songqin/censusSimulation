@@ -24,18 +24,31 @@ public class Batch {
 
 	public static void main(String[] args) {
 		try {
-			int numNei=1;
-			int neiSize=10000;//number of residents per neighborhood
-			double hap=0.01;//honest agent percentage (eligible=1 and reliable=1)
-			//5%, 10%,15%,20% 4^5=
-			double fap=0.01;//false agent percentage(not eligible (0), reliable(2 ,unknown,inactive))
-			double map=0.01;//malicious agent percentage (not reliable(0), but eligible(1))
-			double mawp=0.01;//malicious agent witness percentage
-			double hawp=0.01;//honest agent witness percentage
-			double fawp=0.01;//fake agnet witness percentage
-			int ob=0;//id of the observer			
-			int n=10000;//mcmc round
-			String pathOfCpt="./cpt.txt";
+
+			int numNei=Integer.parseInt(args[0]); //numNei
+			int neiSize=Integer.parseInt(args[1]); // neiSize
+			double hap=Double.parseDouble(args[2]);//hap
+			double map=Double.parseDouble(args[3]);//map
+			double fap=Double.parseDouble(args[4]);//fap
+			double hawp=Double.parseDouble(args[5]);//hawp
+			double mawp=Double.parseDouble(args[6]);//mawp
+			double fawp=Double.parseDouble(args[7]);//fawp
+			int ob=Integer.parseInt(args[8]);//ob
+			int n=Integer.parseInt(args[9]);//mcmc rounds
+			String pathOfCpt=args[10];//pathOfCpt
+			String chaningPara=args[11];//which para to vary. hap, map, etc.
+			double chaningVar=0.05;
+			// int numNei=1;
+			// int neiSize=100;//number of residents per neighborhood
+			// double hap=0.05;//honest agent percentage (eligible=1 and reliable=1)
+			// double map=0.05;//malicious agent percentage (not reliable(0), but eligible(1))
+			// double fap=0.05;//false agent percentage(not eligible (0), reliable(2 ,unknown,inactive))
+			// double hawp=0.05;//honest agent witness percentage
+			// double mawp=0.05;//malicious agent witness percentage
+			// double fawp=0.05;//fake agnet witness percentage
+			// int ob=0;//id of the observer			
+			// int n=5000;//mcmc round
+			// String pathOfCpt="./cpt.txt";
 			long startTime = System.currentTimeMillis();
 //			runProcess("javac Main.java");
 
@@ -61,11 +74,29 @@ public class Batch {
 //			}
 
 			String process="";
-			for(int i=1;i<=1;i++){
-				// n=i;
-				process="java Dcp "+numNei+" "+neiSize+" "+hap+" "+fap+" "+map+" "+mawp+" "+
-				hawp+" "+fawp+" "+ob+" "+n+" "+pathOfCpt+" "+n;
+			while((hap+map+fap <= 1) && (hawp+mawp+fawp<1)){
+				if(chaningPara.equals("hap")){
+					hap=chaningVar;
+				}
+				else if(chaningPara.equals("map")){
+					map=chaningVar;
+				}
+				else if(chaningPara.equals("fap")){
+					fap=chaningVar;
+				}
+				else if(chaningPara.equals("hawp")){
+					hawp=chaningVar;
+				}
+				else if(chaningPara.equals("mawp")){
+					mawp=chaningVar;
+				}
+				else if(chaningPara.equals("fawp")){
+					fawp=chaningVar;
+				}
+				process="java Dcp "+numNei+" "+neiSize+" "+hap+" "+map+" "+fap+" "+hawp+" "+
+				mawp+" "+fawp+" "+ob+" "+n+" "+pathOfCpt;
 				runProcess(process);
+				chaningVar+=0.05;
 
 			}
 			 // 1 100 0.3 0.1 0.1 0.1 0.1 0.1 0 7 ./cpt.txt";
@@ -77,7 +108,7 @@ public class Batch {
 			// runProcess(process);
 			long endTime   = System.currentTimeMillis();
 			long totalTime = endTime - startTime;
-			// System.out.println("time in minutes: "+ totalTime/1000.0/60);
+			System.out.println("#time in minutes: "+ totalTime/1000.0/60);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
