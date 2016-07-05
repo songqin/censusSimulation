@@ -59,3 +59,20 @@ java Batch 1 100 0.05 0.8 0.05 0.05 0.05 0.05 0 5 ./cpt.txt mawp>>./plots/roc4.3
 
 
 Thinking: Should FA be modelled as honest or not?
+
+gnuplot
+plot 'roc4.3.dat' using 3:2 with points
+
+experiments:
+java Batch3 1 100 0.05 0.05 0.05 0.05 0.05 0.05 0 100 ./cpt.txt mawp>>./plots/roc5.1.dat
+
+
+experiments
+ java Dcp 1 100 0.01666666666666657 0.9500000000000003 0.01666666666666657 0.05 0.9000000000000002 0.05 0 100 ./cpt.txt 1
+ #93.87999999999995 0.0 8.48 0.0
+ #95 5 9 91
+ 100 0.988210526315789 0.0 0.9422222222222223 0.0
+
+type of agents, eligible/not, reliable/not, active/inactive
+experiments: only fake and honest and inactive 
+ java Dcp 1 100 0.05 0.9500000000000003 0.01666666666666657 0.05 0.9000000000000002 0.05 0 100 ./cpt.txt 1 >>./plots/r1.1.dat
