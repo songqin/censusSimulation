@@ -76,3 +76,7 @@ experiments
 type of agents, eligible/not, reliable/not, active/inactive
 experiments: only fake and honest and inactive 
  java Dcp 1 100 0.05 0.9500000000000003 0.01666666666666657 0.05 0.9000000000000002 0.05 0 100 ./cpt.txt 1 >>./plots/r1.1.dat
+
+ experiments: improve runtime
+ dcp.java vs dcpV2.java
+java Dcp 1 100 0.05 0.05 0.05 

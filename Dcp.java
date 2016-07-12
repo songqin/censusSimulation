@@ -118,8 +118,8 @@ public class Dcp{
 		mcmc(mcmcRounds);
 		// printNeighborhoodAndAgents();
 		printTprFpr(mcmcRounds);
-		// printAllAgents();
-		printOneAgent(1);
+		printAllAgents();
+		// printOneAgent(1);
 		// test();
 
 
@@ -219,6 +219,8 @@ public class Dcp{
 		double fCS=0;
 		double tRW=0;
 		double fRW=0;
+			double l=0;
+		double k=0;
 		// System.out.println("id, role, e_binary,r_binary,e_prob, r_prob");
 		for(Agent a: agentStatsMap.values()){
 			if(a.e_binary==1)
@@ -232,6 +234,8 @@ public class Dcp{
 				tRW+=a.r_prob;
 			else
 				fRW+=a.r_prob;
+						l+=a.e_prob;
+			k+=a.e_prob;
 		}	
 		// System.out.println("#expectation: CS(true), CS(false),RW(true),RW(false)");
 		System.out.println("#"+tCS+" "+fCS+" "+tRW+" "+fRW);
@@ -240,6 +244,7 @@ public class Dcp{
 		// System.out.println("#tpr(CS) fpr(CS) tpr(RW) fpr(RW)");
 		System.out.println(round+" "+tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra);
 		System.out.println();
+		System.out.println(l + " " +k);
 	}
 	void printWitness(){
 		System.out.println("#Witness Stances:"+"size="+witnessMapCS.size());
@@ -319,19 +324,12 @@ public class Dcp{
 			}
 		}
 
-		for(int i=2;i<=0;i++){
+		for(int i=2;i<=10;i++){
 			witnessMapCS.put(i+" " +1, 1);
 		}
-		for(int i=2;i<=88;i++){
-			witnessMapCS.put(i+" " +1, 0);
-		}
-		for(int i=2;i<=2;i++){
-			witnessMapCS.put(1+" " +i, 1);
-		}
-		for(int i=2;i<=81;i++){
+		for(int i=2;i<=10;i++){
 			witnessMapCS.put(1+" " +i, 0);
 		}
-
 	}
 
 	void populateWitnessStances(){
