@@ -114,7 +114,7 @@ public class Dcp{
 		// printNeighborhoodAndAgents();
 		populateToyWitnessStances();
 		// populateWitnessStances();
-		// printWitness();
+		printWitness();
 		mcmc(mcmcRounds);
 		// printNeighborhoodAndAgents();
 		printTprFpr(mcmcRounds);
@@ -327,9 +327,9 @@ public class Dcp{
 		for(int i=2;i<=10;i++){
 			witnessMapCS.put(i+" " +1, 1);
 		}
-		for(int i=2;i<=10;i++){
-			witnessMapCS.put(1+" " +i, 0);
-		}
+		// for(int i=2;i<=10;i++){
+		// 	witnessMapCS.put(1+" " +i, 0);
+		// }
 	}
 
 	void populateWitnessStances(){
@@ -500,7 +500,7 @@ public class Dcp{
 	// 		for(Integer k: NCSMapT.keySet()){
 	// 			int countT = NCSMapT.get(k);
 	// 			int countF = NCSMapF.get(k);
-	// 			agentStatsMap.get(k).e_prob= countT*1.0/(countT+countF);
+	// 			agentStatsMap.get(k).`prob= countT*1.0/(countT+countF);
 	// 			// csMap.put(k, countT*1.0/(countT+countF));
 	// //			System.out.println("product: "+ k+" quality:" + countT*1.0/(countT+countF));
 	// 		}

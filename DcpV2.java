@@ -100,10 +100,10 @@ public class DcpV2{
 			 );
 			neighborhoods.add(n);
 		}
+		// printAllAgents();
 
 
 
-		
 
 		// for(Neighborhood n: neighborhoods){
 		// 	HashMap<String, Agent> m= n.idToAgents;
@@ -155,7 +155,7 @@ public class DcpV2{
 		//role=0 inactive agents (eligible=1 , reliable = 1)		
 		// System.out.println("Computing agent's statistics");
 		for(Agent a: idToAgents.values()){
-			if(a.id==id)
+			if(a.id.equals(id))
 			{
 				System.out.println("#"+
 							a.id+" "+
@@ -179,6 +179,7 @@ public class DcpV2{
 		//role=3 malicious agents (reliable=0, eligible=1)
 		//role=0 inactive agents (eligible=1 , reliable = 1)		
 		// System.out.println("Computing agent's statistics");
+		System.out.println();
 		for(Agent a: idToAgents.values()){
 			System.out.println("#"+
 				a.id+" "+
@@ -252,11 +253,39 @@ public class DcpV2{
 		System.out.println(l + " " +k);
 	}
 	void printWitness(){
-		// System.out.println("#Witness Stances:"+"size="+witnessMapCS.size());
-		// for(String key:witnessMapCS.keySet()){
-		// 	System.out.println("#"+key+" "+witnessMapCS.get(key));
-		// }
+		System.out.println("#--------------------------------");
+		System.out.println("#reviewerToProductAndVote");
+		for(String key:reviewerToProductAndVote.keySet()){
+			System.out.println("#"+key+" "+reviewerToProductAndVote.get(key));
+		}
+		System.out.println("#--------------------------------");
+		System.out.println("#productToReviewerAndVote:");
+		for(String key:productToReviewerAndVote.keySet()){
+			System.out.println("#"+key+" "+productToReviewerAndVote.get(key));
+		}
+		System.out.println("#--------------------------------");
+		System.out.println("#NRWMapT:");
+		for(String key:NRWMapT.keySet()){
+			System.out.println("#"+key+" "+NRWMapT.get(key));
+		}
+		System.out.println("#--------------------------------");
+		System.out.println("#NCSMapT:");
+		for(String key:NCSMapT.keySet()){
+			System.out.println("#"+key+" "+NCSMapT.get(key));
+		}
+		System.out.println("#--------------------------------");
+		System.out.println("#stateMapCS:");
+		for(String key:stateMapCS.keySet()){
+			System.out.println("#"+key+" "+stateMapCS.get(key));
+		}
+		System.out.println("#--------------------------------");
+		System.out.println("#stateMapRW:");
+		for(String key:stateMapRW.keySet()){
+			System.out.println("#"+key+" "+stateMapRW.get(key));
+		}
+		System.out.println("#--------------------------------");		
 	}
+
 	void readCPT(){
 		//populate the CPT and priors from what's learned from big data
 		Scanner s = null;
@@ -294,8 +323,8 @@ public class DcpV2{
 	void populateToyWitnessStances(){
 		// witnessMapCS = new HashMap<String, Integer>()
 		for(int i=2;i<=10;i++){
-			String aid=1+"_"+i+"";
-			String bid=1+"_"+1+"";
+			String aid=1+"_"+i;
+			String bid="1_1";
 			Integer vote=1;
 			if(reviewerToProductAndVote.containsKey(aid)){
 				reviewerToProductAndVote.get(aid).add(bid+" "+vote);
@@ -315,28 +344,28 @@ public class DcpV2{
 			}
 			// witnessMapCS.put(i+" " +1, 1);
 		}
-		for(int i=2;i<=10;i++){
-			String aid=1+"_"+1+"";
-			String bid=1+"_"+i+"";
-			Integer vote=0;
-			if(reviewerToProductAndVote.containsKey(aid)){
-				reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			}
-			else{
-				List<String> l = new ArrayList<String>();
-				l.add(bid+" "+vote);
-				reviewerToProductAndVote.put(aid, l);
-			}
-			if(productToReviewerAndVote.containsKey(bid)){
-				productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			}
-			else{
-				List<String> l = new ArrayList<String>();
-				l.add(aid+" "+vote);
-				productToReviewerAndVote.put(bid, l);
-			}
-			// witnessMapCS.put(1+" " +i, 0);
-		}
+		// for(int i=2;i<=10;i++){
+		// 	String aid=1+"_"+1+"";
+		// 	String bid=1+"_"+i+"";
+		// 	Integer vote=0;
+		// 	if(reviewerToProductAndVote.containsKey(aid)){
+		// 		reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+		// 	}
+		// 	else{
+		// 		List<String> l = new ArrayList<String>();
+		// 		l.add(bid+" "+vote);
+		// 		reviewerToProductAndVote.put(aid, l);
+		// 	}
+		// 	if(productToReviewerAndVote.containsKey(bid)){
+		// 		productToReviewerAndVote.get(bid).add(aid+" "+vote);
+		// 	}
+		// 	else{
+		// 		List<String> l = new ArrayList<String>();
+		// 		l.add(aid+" "+vote);
+		// 		productToReviewerAndVote.put(bid, l);
+		// 	}
+		// 	// witnessMapCS.put(1+" " +i, 0);
+		// }
 
 	}
 
@@ -383,12 +412,12 @@ public class DcpV2{
 		for (int i = 0; i < x; i++) {
 			// System.out.println("MCMC Round "+i);
 			for(String k: NRWMapT.keySet()){
-				if((!fixedMapRW.get(k)) && (reviewerToProductAndVote.get(k)!=null)){
+				if(!fixedMapRW.get(k)){
 					mcmc_A_RW(k);
 				}
 			}
 			for(String k: NCSMapT.keySet()){
-				if((!fixedMapCS.get(k)) && (productToReviewerAndVote.get(k)!=null)){
+				if(!fixedMapCS.get(k)){
 					mcmc_A_CS(k);		
 				}
 			}
@@ -420,22 +449,25 @@ public class DcpV2{
 		// double alpha_T = 1 * rw;
 		// double alpha_F = 1 * (1 - rw);
 		double[][] CPT_crt_CS = CPT_CS;
-		List<String> list = reviewerToProductAndVote.get(a);
-		for(int i=0; i<list.size(); i++) {
-		   String o = list.get(i);
-		   String product = o.split(" ")[0];
-		   String vote=o.split(" ")[1];
-			if(vote=="1"){
-				int state_product = stateMapCS.get(product);
-				alpha_T *= CPT_crt_CS[T][state_product];
-				alpha_F *= CPT_crt_CS[F][state_product];
-			}
-			else{
-				int state_product = stateMapCS.get(product);//efficiency
-				alpha_T *= 1 - CPT_crt_CS[T][state_product];
-				alpha_F *= 1 - CPT_crt_CS[F][state_product];
-			}
-		}			
+		if(reviewerToProductAndVote.get(a)!=null){
+			List<String> list = reviewerToProductAndVote.get(a);
+			for(int i=0; i<list.size(); i++) {
+			   String o = list.get(i);
+			   String product = o.split(" ")[0];
+			   String vote=o.split(" ")[1];
+				if(vote.equals("1")){
+					int state_product = stateMapCS.get(product);
+					alpha_T *= CPT_crt_CS[T][state_product];
+					alpha_F *= CPT_crt_CS[F][state_product];
+				}
+				else{
+					int state_product = stateMapCS.get(product);//efficiency
+					alpha_T *= 1 - CPT_crt_CS[T][state_product];
+					alpha_F *= 1 - CPT_crt_CS[F][state_product];
+				}
+			}			
+		}
+			
 		stateMapRW.put(a, sample(alpha_T / (alpha_T + alpha_F)));
 		if(stateMapRW.get(a)==1){
 			int c=NRWMapT.get(a);
@@ -453,21 +485,26 @@ public class DcpV2{
 		double alpha_T = 1 * prior[CS];
 		double alpha_F = 1 * (1 - prior[CS]);
 		double[][] CPT_crt_CS = CPT_CS;
-		List<String> list = productToReviewerAndVote.get(a);
-		for(int i=0; i<list.size(); i++) {
-		   String o = list.get(i);
-		   String reviewer = o.split(" ")[0];
-		   String vote=o.split(" ")[1];
-			if(vote=="1"){
-				int state_reviewer = stateMapRW.get(reviewer);
-				alpha_T *= CPT_crt_CS[T][state_reviewer];
-				alpha_F *= CPT_crt_CS[F][state_reviewer];
+		if(productToReviewerAndVote.get(a)!=null){
+			List<String> list = productToReviewerAndVote.get(a);
+			for(int i=0; i<list.size(); i++) {
+			   String o = list.get(i);
+			   // System.out.println("o:"+o);
+			   String reviewer = o.split(" ")[0];
+			   String vote=o.split(" ")[1];
+			   // System.out.println(vote);
+			   // System.out.println(vote.equals("1"));
+				if(vote.equals("1")){
+					int state_reviewer = stateMapRW.get(reviewer);
+					alpha_T *= CPT_crt_CS[T][state_reviewer];
+					alpha_F *= CPT_crt_CS[F][state_reviewer];
+				}
+				else{
+					int state_reviewer = stateMapRW.get(reviewer);
+					alpha_T *= 1 - CPT_crt_CS[T][state_reviewer];
+					alpha_F *= 1 - CPT_crt_CS[F][state_reviewer];
+				}		   
 			}
-			else{
-				int state_reviewer = stateMapRW.get(reviewer);
-				alpha_T *= 1 - CPT_crt_CS[T][state_reviewer];
-				alpha_F *= 1 - CPT_crt_CS[F][state_reviewer];
-			}		   
 		}
 		stateMapCS.put(a, sample(alpha_T / (alpha_T + alpha_F)));
 		if(stateMapCS.get(a)==1){
@@ -490,10 +527,12 @@ public class DcpV2{
 	//constructor
 	class Neighborhood{//Could be Buggy, review code ! 
 
-		HashMap<String, Agent> neighbors = new HashMap<String, Agent>();
+		HashMap<String, Agent> neighbors;
+
 		Neighborhood(int i, int neiSize, double nAttacker, double nNonAttacker, double priorCS, double priorRW,
 			int attackerType, int nonAttackerType
 		){
+			neighbors = new HashMap<String, Agent>();
 			int j=1;
 			for(;j<=nAttacker;j++){
 				String id = i+"_"+j;

@@ -50,6 +50,10 @@ public class Test{
 		s2=12+"";
 		if(s1==s2) System.out.println("equal");
 		String s3 =null;
+		String v="1 1".split(" ")[1];
+		System.out.println(v);
+		String s4="1";
+		System.out.println(s4.equals(v));
 	}
 }
 
