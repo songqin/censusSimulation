@@ -1,8 +1,21 @@
-plot 'A8N1nonAttackerWitness0.00' using 2:1 with linespoints title "nonattackerWitness=0.0",\
-'A8N1nonAttackerWitness0.05' using 2:1 with linespoints title "nonattackerWitness=0.05",\
-'A8N1nonAttackerWitness0.10' using 2:1 with linespoints title "nonattackerWitness=0.10",\
-'A8N1nonAttackerWitness0.15' using 2:1 with linespoints title "nonattackerWitness=0.15",\
-'A8N1nonAttackerWitness0.20' using 2:1 with linespoints title "nonattackerWitness=0.20",\
+set xrange [0:1]
+set yrange [0:1]
+
+set key vertical bottom right 
+
+set title "ROC attackerType1 nonattacker type1 "
+set label "attacker 50%, non-attacker 50%" at 0.8,0.55 center
+set label "% witnessed by attackers, % witnessed by non-attackers" at 0.65,0.35 center
+plot 'A1N1nonAttackerWitness0.00attackerWitness0.00' using 2:1 with linespoints title "0.00 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness0.05' using 2:1 with linespoints title "0.05 0.05",\
+ 'A1N1nonAttackerWitness0.10attackerWitness0.10' using 2:1 with linespoints title "0.10 0.10",\
+ 'A1N1nonAttackerWitness0.15attackerWitness0.15' using 2:1 with linespoints title "  0.15 0.15",\
+ 'A1N1nonAttackerWitness0.20attackerWitness0.20' using 2:1 with linespoints title "  0.20 0.20",\
+  'A1N1nonAttackerWitness0.25attackerWitness0.25' using 2:1 with linespoints title "  0.25 0.25",\
 x title ""
 pause -1
 quit
+
+
+
+

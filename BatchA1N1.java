@@ -6,7 +6,7 @@ import java.util.*;
 import java.io.*;
 import java.text.DecimalFormat;
 
-public class BatchA8N1{
+public class BatchA1N1{
 
 	private static void printLines(String name, InputStream ins)
 			throws Exception {
@@ -33,17 +33,19 @@ public class BatchA8N1{
 			int neiSize=100;
 			int ob=0;
 			String pathOfCpt="./cpt.txt";
-			int n =100000;
+			int n =10000;//100000 is good
 			long startTime = System.currentTimeMillis();
 			double nonAttackerWitness=0;
 			double nonattackerPercentage = Double.parseDouble(args[0]);
-			double attackerPercentage = Double.parseDouble(args[1]);
 			String process="";
-			String fn="A1N1 nonAttackerWitness";
-			while(nonAttackerWitness<=0.2){
-				String filename=fn+""+new DecimalFormat("#0.00").format(nonAttackerWitness);
+			String fn="A8N1nonAttackerWitness";
+			double attackerWitnessUp=0;
+			while(nonAttackerWitness<=0.25){
+				attackerWitnessUp=nonAttackerWitness;
+				String filename="A1N1nonAttackerWitness"+new DecimalFormat("#0.00").format(nonAttackerWitness)+
+				"attackerWitness"+new DecimalFormat("#0.00").format(attackerWitnessUp);
 				process="java DcpV2 "+numNei+" "+neiSize+" "+nonattackerPercentage+" "+nonAttackerWitness
-				+" "+ob+" "+n+" "+pathOfCpt+" 8 1 0 0"+" "+filename;
+				+" "+ob+" "+n+" "+pathOfCpt+" 1 1 "+attackerWitnessUp + " 0 "+filename;
 				System.out.println("#process: "+process);
 				runProcess(process);
 				nonAttackerWitness+=0.05;

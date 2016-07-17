@@ -85,7 +85,7 @@ java Dcp 1 100 0.05 0.05 0.05
 
 
 --------------------
-a8n1
+a8n1 redo
 
 //attackerType==8 && nonAttackerType==1
 meaningful
@@ -95,12 +95,20 @@ meaningful
  java BatchA8N1 0.1
 
 --------------------
-a8n2
+a8n2 redo
 //attackerType==8 && nonAttackerType==2
-meaningful:
+meaningful:?
+ java BatchA1N1 0.4 | folder:A1N1nonAttacker0.4
+java BatchA1N1 0.5
+--------------------
+a1n1
+java BatchA1N1V2 0.95
+java BatchA1N1V2 0.9
+java BatchA1N1V2 0.85
+java BatchA1N1V2 0.80
+--------------------
+a1n2
 
---------------------
---------------------
 --------------------
 --------------------
 --------------------

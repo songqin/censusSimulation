@@ -116,7 +116,7 @@ public class DcpV2{
 		mcmc(mcmcRounds);
 		// printNeighborhoodAndAgents();
 		// printAllAgents();
-		printTprFpr(mcmcRounds);
+		printTprFpr(1);
 		
 		// printOneAgent(1);
 		// test();
@@ -168,36 +168,36 @@ public class DcpV2{
 		//role=3 malicious agents (reliable=0, eligible=1)
 		//role=0 inactive agents (eligible=1 , reliable = 1)		
 		// System.out.println("Computing agent's statistics");
-		System.out.println("agent id, role, eligible, reliable, Eligible, Reliable, csUpvoted, csDownvoted, csUpvote, csDownvote");
+		System.out.println("agent_id, role,    eligible, reliable, Eligible, Reliable, csUpvoted, csDownvoted, csUpvote, csDownvote");
 		for(Agent a: idToAgents.values()){
 			System.out.println("#"+
-				a.id+" "+
-				a.role+" "+
-				a.e_binary+" "+
-				a.r_binary+" "+
-				a.e_prob+" "+
-				a.r_prob+" "+
-				a.csUpvotedCount+" "+
-				a.csDownvotedCount+" "+
-				a.csUpvoteCount+" "+
+				a.id+"     "+
+				a.role+"       "+
+				a.e_binary+"   "+
+				a.r_binary+"       |"+
+				a.e_prob+"    "+
+				a.r_prob+"     |"+
+				a.csUpvotedCount+"     "+
+				a.csDownvotedCount+"      |"+
+				a.csUpvoteCount+"     "+
 				a.csDownvoteCount
 				);
 		}
 		System.out.println("#--------------------------------");
 	}
 
-	void printTprFpr(int round){
+	void printTprFpr(int f){
 		FileOutputStream fop = null;
 		File file;
 		try {
 
 			file = new File("./plots/"+fileName);
 			fop = new FileOutputStream(file);
-
 			// if file doesnt exists, then create it
 			if (!file.exists()) {
 				file.createNewFile();
 			}
+					
 		} catch (IOException e) {
 			e.printStackTrace();
 		}			
@@ -253,18 +253,24 @@ public class DcpV2{
 			// 	else
 			// 		fRW+=a.r_prob;
 			// }
-			
-			// System.out.println("#expectation: CS(true), CS(false), RW(true), RW(false)");
-			// System.out.println("#"+tCS+" "+fCS+" "+tRW+" "+fRW);
-			// System.out.println("#-----------------------");
-			// System.out.println("#"+"nea nnea nra nnra");
-			// System.out.println("#"+nea+" "+ nnea+" " +nra+" "+ nnra );
-			// System.out.println("#-----------------------");
-			// System.out.println("#tpr(CS) fpr(CS) tpr(RW) fpr(RW)");
-			// System.out.println(tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra);
-			// System.out.println("#-----------------------");
+
 		}
+		// if(f==1)
+		// {		
+		// 	System.out.println("#expectation: CS(true), CS(false), RW(true), RW(false)");
+		// 	System.out.println("#"+tCS+" "+fCS+" "+tRW+" "+fRW);
+		// 	System.out.println("#-----------------------");
+		// 	System.out.println("#"+"nea nnea nra nnra");
+		// 	System.out.println("#"+nea+" "+ nnea+" " +nra+" "+ nnra );
+		// 	System.out.println("#-----------------------");
+		// 	System.out.println("#tpr(CS) fpr(CS) tpr(RW) fpr(RW)");
+		// 	System.out.println(tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra);
+		// 	System.out.println("#-----------------------");
+		// }		
 		try {
+			String zerozero="0.0 0.0 0.0 0.0"+"\n";
+			byte[] cc = zerozero.getBytes();
+			fop.write(cc);	
 			fop.flush();
 			fop.close();
 
@@ -386,8 +392,8 @@ public class DcpV2{
 						if(a.id!=b.id){
 							String aid=a.id;
 							String bid=b.id;
-							Integer vote;	
-							double r=Math.random();
+							Integer vote=-1;	
+							// double r=Math.random();
 							if(a.role.equals("nonAttacker_1")){
 								double r=Math.random();
 								if(r<k){
@@ -400,7 +406,7 @@ public class DcpV2{
 										vote=0;
 										a.csDownvoteCount++;
 										b.csDownvotedCount++;										
-									}
+									}									
 								}
 							}
 							else{//attacker_1
@@ -416,25 +422,20 @@ public class DcpV2{
 									// 	a.csDownvoteCount++;
 									// 	b.csDownvotedCount++;										
 									// }
+								}								
+							}
+							if(vote!=-1){
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
 								}
-							}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}								
+							}							
 
-							if(reviewerToProductAndVote.containsKey(aid)){
-								reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-							}
-							else{
-								List<String> l = new ArrayList<String>();
-								l.add(bid+" "+vote);
-								reviewerToProductAndVote.put(aid, l);
-							}
-							if(productToReviewerAndVote.containsKey(bid)){
-								productToReviewerAndVote.get(bid).add(aid+" "+vote);
-							}
-							else{
-								List<String> l = new ArrayList<String>();
-								l.add(aid+" "+vote);
-								productToReviewerAndVote.put(bid, l);
-							}								
+							
 						}
 					}
 					// System.out.println("c:"+c);
