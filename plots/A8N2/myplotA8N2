@@ -1,0 +1,14 @@
+plot 'A8N2nonAttacker0.00' using 2:1 with linespoints title "A8N2nonAttacker0.0",\
+'A8N2nonAttacker0.10' using 2:1 with linespoints title "A8N2nonAttacker0.10",\
+'A8N2nonAttacker0.20' using 2:1 with linespoints title "A8N2nonAttacker0.20",\
+'A8N2nonAttacker0.30' using 2:1 with linespoints title "A8N2nonAttacker0.30",\
+'A8N2nonAttacker0.40' using 2:1 with linespoints title "A8N2nonAttacker0.40",\
+'A8N2nonAttacker0.50' using 2:1 with linespoints title "A8N2nonAttacker0.50",\
+'A8N2nonAttacker0.60' using 2:1 with linespoints title "A8N2nonAttacker0.60",\
+'A8N2nonAttacker0.70' using 2:1 with linespoints title "A8N2nonAttacker0.70",\
+'A8N2nonAttacker0.80' using 2:1 with linespoints title "A8N2nonAttacker0.80",\
+'A8N2nonAttacker0.90' using 2:1 with linespoints title "A8N2nonAttacker0.90",\
+'A8N2nonAttacker0.10' using 2:1 with linespoints title "A8N2nonAttacker0.10",\
+x title ""
+pause -1
+quit

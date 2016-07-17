@@ -1,0 +1,8 @@
+plot 'A8N1nonAttackerWitness0.00' using 2:1 with linespoints title "nonattackerWitness=0.0",\
+'A8N1nonAttackerWitness0.05' using 2:1 with linespoints title "nonattackerWitness=0.05",\
+'A8N1nonAttackerWitness0.10' using 2:1 with linespoints title "nonattackerWitness=0.10",\
+'A8N1nonAttackerWitness0.15' using 2:1 with linespoints title "nonattackerWitness=0.15",\
+'A8N1nonAttackerWitness0.20' using 2:1 with linespoints title "nonattackerWitness=0.20",\
+x title ""
+pause -1
+quit
