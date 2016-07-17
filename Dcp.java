@@ -325,7 +325,7 @@ public class Dcp{
 		}
 
 		for(int i=2;i<=10;i++){
-			witnessMapCS.put(i+" " +1, 1);
+			witnessMapCS.put(1+" " +i, 1);
 		}
 		// for(int i=2;i<=10;i++){
 		// 	witnessMapCS.put(1+" " +i, 0);
@@ -711,6 +711,7 @@ public class Dcp{
 			System.out.println("Not Enough Arguments for DCP");
 			return;
 		}
+		long startTime = System.currentTimeMillis();
 		Dcp dcp = new Dcp(
 			Integer.parseInt(args[0]), //numNei
 			Integer.parseInt(args[1]), // neiSize
@@ -725,5 +726,8 @@ public class Dcp{
 			args[10]//pathOfCpt
 			, Integer.parseInt(args[11])//dummy
 			);
+		long endTime   = System.currentTimeMillis();
+		long totalTime = endTime - startTime;
+		System.out.println("#time in minutes: "+ totalTime/1000.0/60);	
 	}
 }

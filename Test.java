@@ -1,7 +1,22 @@
 import java.util.*;
 import java.io.*;
 public class Test{
+	static Random  rnd ;
+	Test(){
+		rnd = new Random(0);
+	}
+	public boolean sample(double d) {
+		float v = random(1.0f);
+		if (v < d)
+			return true;
+		return false;
+	}
+	public static float random(float max) {
+		float result = rnd.nextFloat() * max;
+		return result;
+	}		
 	public static void main(String[] args) {
+		
 		HashMap<Integer, List<String>> reviewerToProductAndVote;
 		reviewerToProductAndVote=new HashMap<Integer, List<String>>();
 		Integer a=1, b=2, vote=0;
@@ -54,6 +69,11 @@ public class Test{
 		System.out.println(v);
 		String s4="1";
 		System.out.println(s4.equals(v));
+		Test test = new Test();
+		for(double l=0.1;l<1;l+=0.1){
+			boolean mm = test.sample(l);
+			System.out.println(mm);
+		}
 	}
 }
 

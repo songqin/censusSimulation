@@ -10,6 +10,8 @@ public class DcpV2{
 	int p;//population
 	double nonAttackerPercentage;//honest agent percentage (eligible=1 and reliable=1)
 	double attackerPercentage;//malicious agent percentage (not reliable(0), but eligible(1))
+	int nAttacker;
+	int nNonAttacker;
 	int ob;//id of the observer
 	int nha=0;//number of honest agents
 	int nfa=0;//number of false agents
@@ -20,6 +22,7 @@ public class DcpV2{
 	int nnra=0;//number of not-reliable agents	
 	// note: n - nha-nfa-nma is inactive aligible agents
 	String pathOfCpt;//the file path of the cpt learned from big data
+	String fileName;
 	final public static int RW = 1;
 	final public static int CS = 2;
 	final public static int T = 1;
@@ -49,8 +52,12 @@ public class DcpV2{
 	int mcmcRounds=0;
 	int attackerType;
 	int nonAttackerType;
+	double attackerWitnessUp;
+	double attackerWitnessDown;
+	double nonAttackerWitness;
+	static Random rnd;
 	// int c;//parameter passed from Batch class
-	static Random rnd = new Random(0);
+	// static Random rnd = new Random(0);
 	// load()
 	// init() 
 	// mcmc()
@@ -60,25 +67,31 @@ public class DcpV2{
 		return result;
 	}	
 	//constructor
-	//n:a reference number
-	DcpV2(int numNei, int rNum, double attackerPercentage, double nonAttackerPercentage,  Integer ob, int mcmcRounds, String pathOfCpt, 
-		int attackerType, int nonAttackerType){
+	//n:a reference number 
+	DcpV2(int numNei, int neiSize, double nonAttackerPercentage, double nonAttackerWitness,  Integer ob, int mcmcRounds, String pathOfCpt, 
+		int attackerType, int nonAttackerType, double attackerWitnessUp, double attackerWitnessDown, String fileName){
+		rnd = new Random(0);
 		this.numNei = numNei;
-		this.neiSize = (int)(rNum*(attackerPercentage+nonAttackerPercentage));
-		this.p = numNei * neiSize;
-		this.attackerPercentage = attackerPercentage;
 		this.nonAttackerPercentage = nonAttackerPercentage;
+		this.attackerPercentage = 1-nonAttackerPercentage;	
+		this.neiSize = neiSize;
+		this.nAttacker=(int)(neiSize*attackerPercentage);
+		this.nNonAttacker=(int)(neiSize*nonAttackerPercentage);
+		this.p = numNei * neiSize;
+
 		this.ob=ob;
 		this.pathOfCpt = pathOfCpt;
 		this.mcmcRounds = mcmcRounds;
 		this.attackerType=attackerType;
 		this.nonAttackerType=nonAttackerType;
+		this.attackerWitnessUp=attackerWitnessUp;
+		this.attackerWitnessDown=attackerWitnessDown;
+		this.nonAttackerWitness=nonAttackerWitness;
+		this.fileName = fileName;
 		idToAgents = new HashMap<String, Agent>();
 		readCPT();//load cpt
-		// printCPT();
 		reviewerToProductAndVote=new HashMap<String, List<String>>();
 		productToReviewerAndVote=new HashMap<String, List<String>>();
-
 		stateMapRW = new HashMap<String, Integer>();
 		stateMapCS = new HashMap<String, Integer>();
 		fixedMapRW = new HashMap<String, Boolean>();
@@ -92,42 +105,18 @@ public class DcpV2{
 		NCSMapF = new HashMap<String, Integer>();
 		neighborhoods = new ArrayList<Neighborhood>();
 		for(int i=1; i<= numNei;i++){
-			// 1 100
-			// 101 200
-			// 201 300
-			Neighborhood n = new Neighborhood(i, neiSize, attackerPercentage, nonAttackerPercentage, this.prior[CS], this.prior[RW],
+			Neighborhood n = new Neighborhood(i, neiSize, nAttacker, nNonAttacker, this.prior[CS], this.prior[RW],
 				attackerType, nonAttackerType
 			 );
 			neighborhoods.add(n);
 		}
-		// printAllAgents();
-
-
-
-
-		// for(Neighborhood n: neighborhoods){
-		// 	HashMap<String, Agent> m= n.idToAgents;
-		// 	for(String k: m.keySet()){
-		// 		idToAgents.put(k, m.get(k));
-		// 		Agent a = m.get(k);
-		// 		if(a.role==1) nha++;
-		// 		else if(m.get(k).role==2) nfa++;
-		// 		else if(m.get(k).role==3) nma++;
-		// 		if(a.role!=2) nea++;
-		// 		if(a.role!=3) nra++;
-		// 		if(a.role==2) nnea++;
-		// 		if(a.role==3) nnra++;
-		// 	}
-		// }
-
-		// printNeighborhoodAndAgents();
-		populateToyWitnessStances();
-		// populateWitnessStances();
+		// populateToyWitnessStances();
+		populateWitnessStances();
 		// printWitness();
 		mcmc(mcmcRounds);
 		// printNeighborhoodAndAgents();
-		printAllAgents();
-		// printTprFpr(mcmcRounds);
+		// printAllAgents();
+		printTprFpr(mcmcRounds);
 		
 		// printOneAgent(1);
 		// test();
@@ -179,7 +168,7 @@ public class DcpV2{
 		//role=3 malicious agents (reliable=0, eligible=1)
 		//role=0 inactive agents (eligible=1 , reliable = 1)		
 		// System.out.println("Computing agent's statistics");
-		System.out.println();
+		System.out.println("agent id, role, eligible, reliable, Eligible, Reliable, csUpvoted, csDownvoted, csUpvote, csDownvote");
 		for(Agent a: idToAgents.values()){
 			System.out.println("#"+
 				a.id+" "+
@@ -193,64 +182,99 @@ public class DcpV2{
 				a.csUpvoteCount+" "+
 				a.csDownvoteCount
 				);
-		}	
+		}
+		System.out.println("#--------------------------------");
 	}
-	// void printNeighborhoodAndAgents(){
-	// 	for(Neighborhood n: neighborhoods){
-	// 		System.out.println("#neighborhood: "+n.id);
-	// 		HashMap<String, Agent> m = n.idToAgents;
-	// 		Collection<Agent> agents = m.values();
-	// 		System.out.println("#id role e_binary r_binary e_prob r_prob");
-	// 		for (Agent a : agents) {
-	// 			System.out.println("#"+
-	// 				a.id+" "+
-	// 				a.role+" "+
-	// 				a.e_binary+" "+
-	// 				a.r_binary+" "+
-	// 				a.e_prob+" "+
-	// 				a.r_prob
-	// 				);
-	// 		}
-	// 	}
-	// }
+
 	void printTprFpr(int round){
-		double tCS=0;//expectation of CS being true
-		double fCS=0;
-		double tRW=0;
-		double fRW=0;
-		double l=0;
-		double k=0;
-		// System.out.println("id, role, e_binary,r_binary,e_prob, r_prob");
-		for(Agent a: idToAgents.values()){
-			if(a.e_binary==1)
-				tCS+=a.e_prob;
-			else if (a.e_binary==-1){
-				tCS+=0;
+		FileOutputStream fop = null;
+		File file;
+		try {
+
+			file = new File("./plots/"+fileName);
+			fop = new FileOutputStream(file);
+
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
 			}
-			else{
-				fCS+=a.e_prob;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}			
+		for(double cutoff=0;cutoff<=1;cutoff+=0.001){
+
+			double tCS=0;//expectation of CS being true
+			double fCS=0;
+			double tRW=0;
+			double fRW=0;
+			// int tp1=0;
+			// int fp1=0;
+			// int tp2=0;
+			// int fp2=0;
+			for(Agent a: idToAgents.values()){
+				if((a.e_binary==1) && (a.e_prob>=cutoff)){
+					tCS++;
+				}
+				if((a.e_binary==0) && (a.e_prob>=cutoff)){
+					fCS++;
+				}
+				if((a.e_binary==1) && (a.e_prob>=cutoff)){
+					tRW++;
+				}
+				if((a.e_binary==0) && (a.e_prob>=cutoff)){
+					fRW++;
+				}
 			}
 
-			if(a.r_binary==1)
-				tRW+=a.r_prob;
-			else if (a.r_binary==-1){
-				tRW+=0;
-			}
-			else
-				fRW+=a.r_prob;
-			l+=a.e_prob;
-			k+=a.e_prob;
+			String content = tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra+"\n";
+			try {
+				byte[] contentInBytes = content.getBytes();
+				fop.write(contentInBytes);
+
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
+			// for(Agent a: idToAgents.values()){
+			// 	if(a.e_binary==1)
+			// 		tCS+=a.e_prob;
+			// 	else if (a.e_binary==-1){
+			// 		tCS+=0;
+			// 	}
+			// 	else{
+			// 		fCS+=a.e_prob;
+			// 	}
+
+			// 	if(a.r_binary==1)
+			// 		tRW+=a.r_prob;
+			// 	else if (a.r_binary==-1){
+			// 		tRW+=0;
+			// 	}
+			// 	else
+			// 		fRW+=a.r_prob;
+			// }
+			
+			// System.out.println("#expectation: CS(true), CS(false), RW(true), RW(false)");
+			// System.out.println("#"+tCS+" "+fCS+" "+tRW+" "+fRW);
+			// System.out.println("#-----------------------");
+			// System.out.println("#"+"nea nnea nra nnra");
+			// System.out.println("#"+nea+" "+ nnea+" " +nra+" "+ nnra );
+			// System.out.println("#-----------------------");
+			// System.out.println("#tpr(CS) fpr(CS) tpr(RW) fpr(RW)");
+			// System.out.println(tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra);
+			// System.out.println("#-----------------------");
+		}
+		try {
+			fop.flush();
+			fop.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}	
-		System.out.println("#expectation: CS(true), CS(false), RW(true), RW(false)");
-		System.out.println("#"+tCS+" "+fCS+" "+tRW+" "+fRW);
-		System.out.println("#-----------------------");
-		System.out.println("#"+"nea nnea nra nnra");
-		System.out.println("#"+nea+" "+ nnea+" " +nra+" "+ nnra );
-		System.out.println("#-----------------------");
-		System.out.println("#tpr(CS) fpr(CS) tpr(RW) fpr(RW)");
-		System.out.println(round+" "+tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra);
-		System.out.println("#-----------------------");
-		System.out.println(l + " " +k);
+
+
+				// System.out.println("Done");
+		// System.out.println(l + " " +k);
 	}
 	void printWitness(){
 		System.out.println("#--------------------------------");
@@ -321,10 +345,11 @@ public class DcpV2{
 	}
 
 	void populateToyWitnessStances(){
-		// witnessMapCS = new HashMap<String, Integer>()
+		// #1_93 [1_76 1, 1_75 1, 1_71 1, 1_86 1, 1_84 1, 1_82 1, 1_99 1, 1_95 1]
+
 		for(int i=2;i<=10;i++){
-			String aid=1+"_"+i;
-			String bid="1_1";
+			String aid=1+"_"+1;
+			String bid="1_"+i;
 			Integer vote=1;
 			if(reviewerToProductAndVote.containsKey(aid)){
 				reviewerToProductAndVote.get(aid).add(bid+" "+vote);
@@ -342,53 +367,174 @@ public class DcpV2{
 				l.add(aid+" "+vote);
 				productToReviewerAndVote.put(bid, l);
 			}
-			// witnessMapCS.put(i+" " +1, 1);
 		}
-		// for(int i=2;i<=10;i++){
-		// 	String aid=1+"_"+1+"";
-		// 	String bid=1+"_"+i+"";
-		// 	Integer vote=0;
-		// 	if(reviewerToProductAndVote.containsKey(aid)){
-		// 		reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-		// 	}
-		// 	else{
-		// 		List<String> l = new ArrayList<String>();
-		// 		l.add(bid+" "+vote);
-		// 		reviewerToProductAndVote.put(aid, l);
-		// 	}
-		// 	if(productToReviewerAndVote.containsKey(bid)){
-		// 		productToReviewerAndVote.get(bid).add(aid+" "+vote);
-		// 	}
-		// 	else{
-		// 		List<String> l = new ArrayList<String>();
-		// 		l.add(aid+" "+vote);
-		// 		productToReviewerAndVote.put(bid, l);
-		// 	}
-		// 	// witnessMapCS.put(1+" " +i, 0);
-		// }
-
 	}
 
 	void populateWitnessStances(){
-		// witnessMapCS = new HashMap<String, Integer>();
-		// stateMapRW = new HashMap<String, Integer>();
-		// stateMapCS = new HashMap<String, Integer>();
-		// fixedMapRW = new HashMap<String, Boolean>();
-		// fixedMapCS = new HashMap<String, Boolean>();
-		// NRWMapT = new HashMap<String, Integer>();
-		//vector for counting not-helpful 
-		// NRWMapF = new HashMap<String, Integer>();
-		//vector for counting good quality 
-		// NCSMapT = new HashMap<String, Integer>();
-		// vector for counting bad quality
-		// NCSMapF = new HashMap<String, Integer>();
 		for(Neighborhood n: neighborhoods){
 			HashMap<String, Agent> m = n.neighbors;
 			Collection<Agent> agents1 = m.values();
 			Collection<Agent> agents2 = m.values();
-			Collection<Agent> agents = m.values();
-			if(attackerType==8 && nonAttackerType==2){//inactive 	
+			// Collection<Agent> agents = m.values();
+			//todo
+			if(attackerType==1 && nonAttackerType==1){
+				double k = this.nonAttackerWitness;
+				double w = this.attackerWitnessUp;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote;	
+							double r=Math.random();
+							if(a.role.equals("nonAttacker_1")){
+								double r=Math.random();
+								if(r<k){
+									if(b.role.equals("nonAttacker_1")){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+									else{
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}
+								}
+							}
+							else{//attacker_1
+								double r=Math.random();
+								if(r<w){
+									if(b.role.equals("attacker_1")){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+									// else{
+									// 	vote=0;
+									// 	a.csDownvoteCount++;
+									// 	b.csDownvotedCount++;										
+									// }
+								}
+							}
+
+							if(reviewerToProductAndVote.containsKey(aid)){
+								reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+							}
+							else{
+								List<String> l = new ArrayList<String>();
+								l.add(bid+" "+vote);
+								reviewerToProductAndVote.put(aid, l);
+							}
+							if(productToReviewerAndVote.containsKey(bid)){
+								productToReviewerAndVote.get(bid).add(aid+" "+vote);
+							}
+							else{
+								List<String> l = new ArrayList<String>();
+								l.add(aid+" "+vote);
+								productToReviewerAndVote.put(bid, l);
+							}								
+						}
+					}
+					// System.out.println("c:"+c);
+				}				
 			}
+			else if(attackerType==1 && nonAttackerType==2){
+				
+			}	
+			else if(attackerType==2 && nonAttackerType==1){
+				
+			}	
+			else if(attackerType==2 && nonAttackerType==2){
+				
+			}
+			else if(attackerType==3 && nonAttackerType==1){
+				
+			}
+			else if(attackerType==3 && nonAttackerType==2){
+				
+			}
+			else if(attackerType==4 && nonAttackerType==1){
+				
+			}
+			else if(attackerType==4 && nonAttackerType==2){
+				
+			}
+			else if(attackerType==5 && nonAttackerType==1){
+				
+			}
+			else if(attackerType==5 && nonAttackerType==2){
+				
+			}
+			else if(attackerType==6 && nonAttackerType==1){
+				
+			}
+			else if(attackerType==7 && nonAttackerType==2){
+				
+			}
+			else if(attackerType==7 && nonAttackerType==1){
+				
+			}
+			else if(attackerType==7 && nonAttackerType==2){
+				
+			}
+			else if(attackerType==8 && nonAttackerType==1){
+				//inactive attacker
+				//nonattacker witness k% of agents 
+				double k = this.nonAttackerWitness;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							double r=Math.random();
+							if(r<k){
+								// c++;
+								if(a.role.equals("nonAttacker_1")){
+									String aid=a.id;
+									String bid=b.id;
+									Integer vote;
+									if(b.role.equals("nonAttacker_1")){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+									else{
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}
+									
+									if(reviewerToProductAndVote.containsKey(aid)){
+										reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+									}
+									else{
+										List<String> l = new ArrayList<String>();
+										l.add(bid+" "+vote);
+										reviewerToProductAndVote.put(aid, l);
+									}
+									if(productToReviewerAndVote.containsKey(bid)){
+										productToReviewerAndVote.get(bid).add(aid+" "+vote);
+									}
+									else{
+										List<String> l = new ArrayList<String>();
+										l.add(aid+" "+vote);
+										productToReviewerAndVote.put(bid, l);
+									}									
+								}
+							}
+						}
+					}
+					// System.out.println("c:"+c);
+				}
+
+			}
+			else if(attackerType==8 && nonAttackerType==2){
+				//do nothing for both inactive agents
+			}
+			else{
+				System.out.println("#Attacker/nonAttacker type error");
+			}					
 		}
 		// if(ob!=0){
 		// 	for(String k: witnessMapCS.keySet()){
@@ -448,10 +594,11 @@ public class DcpV2{
 		// double rw = idToAgents.get(a).r_prob;
 		// double alpha_T = 1 * rw;
 		// double alpha_F = 1 * (1 - rw);
-		double[][] CPT_crt_CS = CPT_CS;
+		
 		if(reviewerToProductAndVote.get(a)!=null){
 			List<String> list = reviewerToProductAndVote.get(a);
 			for(int i=0; i<list.size(); i++) {
+			   double[][] CPT_crt_CS = CPT_CS;
 			   String o = list.get(i);
 			   String product = o.split(" ")[0];
 			   String vote=o.split(" ")[1];
@@ -484,10 +631,11 @@ public class DcpV2{
 	public void mcmc_A_CS(String a) {
 		double alpha_T = 1 * prior[CS];
 		double alpha_F = 1 * (1 - prior[CS]);
-		double[][] CPT_crt_CS = CPT_CS;
+		
 		if(productToReviewerAndVote.get(a)!=null){
 			List<String> list = productToReviewerAndVote.get(a);
 			for(int i=0; i<list.size(); i++) {
+			   double[][] CPT_crt_CS = CPT_CS;
 			   String o = list.get(i);
 			   // System.out.println("o:"+o);
 			   String reviewer = o.split(" ")[0];
@@ -496,13 +644,13 @@ public class DcpV2{
 			   // System.out.println(vote.equals("1"));
 				if(vote.equals("1")){
 					int state_reviewer = stateMapRW.get(reviewer);
-					alpha_T *= CPT_crt_CS[T][state_reviewer];
-					alpha_F *= CPT_crt_CS[F][state_reviewer];
+					alpha_T *= CPT_crt_CS[state_reviewer][T];
+					alpha_F *= CPT_crt_CS[state_reviewer][F];
 				}
 				else{
 					int state_reviewer = stateMapRW.get(reviewer);
-					alpha_T *= 1 - CPT_crt_CS[T][state_reviewer];
-					alpha_F *= 1 - CPT_crt_CS[F][state_reviewer];
+					alpha_T *= 1 - CPT_crt_CS[state_reviewer][T];
+					alpha_F *= 1 - CPT_crt_CS[state_reviewer][F];
 				}		   
 			}
 		}
@@ -543,7 +691,53 @@ public class DcpV2{
 					attacker.r_binary=-1;
 					nnea++;
 				}
-				else{}
+				else if (attackerType==7){
+					attacker.role="attacker_7";
+					attacker.e_binary=0;
+					attacker.r_binary=1;
+					nnea++;
+					nra++;
+				}
+				// else if (attackerType==6){
+				// 	attacker.role="attacker_6";
+				// 	attacker.e_binary=0;
+				// 	attacker.r_binary=1;
+				// 	nnea++;				
+				// }
+				// else if (attackerType==5){
+				// 	attacker.role="attacker_5";
+				// 	attacker.e_binary=0;
+				// 	attacker.r_binary=1;
+				// 	nnea++;				
+				// }
+				else if (attackerType==4){
+					attacker.role="attacker_4";
+					attacker.e_binary=1;
+					attacker.r_binary=0;
+					nea++;
+					nnra++;
+				}
+				// else if (attackerType==3){
+				// 	attacker.role="attacker_3";
+				// 	attacker.e_binary=1;
+				// 	attacker.r_binary=0;
+				// 	nnra++;
+				// }
+				else if (attackerType==2){
+					attacker.role="attacker_2";
+					attacker.e_binary=0;
+					attacker.r_binary=0;
+					nnea++;				
+					nnra++;
+				}
+				else if (attackerType==1){
+					attacker.role="attacker_1";
+					attacker.e_binary=0;
+					attacker.r_binary=0;
+					nnea++;				
+					nnra++;	
+				}
+				else {System.out.println("#Error: unknown attackerType when generating Neighborhood");}
 				neighbors.put(id, attacker);
 				idToAgents.put(id, attacker);
 				stateMapRW.put(id, (int) Math.floor(random(2)));//0 or 1
@@ -560,12 +754,20 @@ public class DcpV2{
 			for(;j<=neiSize;j++){
 				String id = i+"_"+j;
 				Agent nonAttacker = new Agent(id,priorCS, priorRW);
-				if(nonAttackerType==2){
+				if(nonAttackerType==1){
+					nonAttacker.role="nonAttacker_1";
+					nonAttacker.e_binary=1;
+					nonAttacker.r_binary=1;
+					nea++;
+					nra++;					
+				}
+				else if(nonAttackerType==2){					
 					nonAttacker.role="nonAttacker_2";
 					nonAttacker.e_binary=1;
 					nonAttacker.r_binary=-1;
 					nea++;			
 				}
+				else {System.out.println("#Error: unknown nonAttackerType when generating Neighborhood");}
 				neighbors.put(id, nonAttacker);
 				idToAgents.put(id, nonAttacker);
 				stateMapRW.put(id, (int) Math.floor(random(2)));//0 or 1
@@ -609,20 +811,27 @@ public class DcpV2{
 
 	public static void main(String[] args){
 		if(args.length<=0) {
-			System.out.println("Not Enough Arguments for DCP");
+			System.out.println("#Not Enough Arguments for DCP");
 			return;
 		}
+		// long startTime = System.currentTimeMillis();
 		DcpV2 dcp = new DcpV2(
-			//int numNei, int neiSize, double attackerPercentage, double nonAttackerPercentage,  Integer ob, int mcmcRounds, String pathOfCpt 
+			//int numNei, int neiSize, double nonAttackerPercentage,  Integer ob, int mcmcRounds, String pathOfCpt 
 			Integer.parseInt(args[0]), //numNei
-			Integer.parseInt(args[1]), // neiSize
-			Double.parseDouble(args[2]),//attackerPercentage
-			Double.parseDouble(args[3]),//nonAttackerPercentage
+			Integer.parseInt(args[1]), // size of Neighborhood
+			Double.parseDouble(args[2]),//nonattackerPercentage
+			Double.parseDouble(args[3]),//nonAttackerWitness
 			Integer.parseInt(args[4]),//ob
 			Integer.parseInt(args[5]),//mcmc rounds
 			args[6],//pathOfCpt
 			Integer.parseInt(args[7]), //attackerType
-			Integer.parseInt(args[8]) //nonAttackerType
+			Integer.parseInt(args[8]), //nonAttackerType
+			Double.parseDouble(args[9]),//attackerWitnessUp
+			Double.parseDouble(args[10]),//attackerWitnessDown
+			args[11]//filename to write out tpr, fpr
 			);
+		// long endTime   = System.currentTimeMillis();
+		// long totalTime = endTime - startTime;
+		// System.out.println("#time in minutes: "+ totalTime/1000.0/60);			
 	}
 }
