@@ -4,7 +4,7 @@ set yrange [0:1]
 set key horizontal bottom right 
 
 set title "ROC attackerType1 nonattacker type1 "
-set label "attacker 5%, non-attacker 95%" at 0.8,0.55 center
+set label "attacker 20%, non-attacker 80%" at 0.8,0.55 center
 set label "% witnessed by non-attackers, % witnessed by attackers" at 0.65,0.47 center
 plot 'A1N1nonAttackerWitness0.05attackerWitness0.00' using 2:1 with linespoints title "  0.05 0.00",\
 'A1N1nonAttackerWitness0.05attackerWitness0.05' using 2:1 with linespoints title "  0.05 0.05",\

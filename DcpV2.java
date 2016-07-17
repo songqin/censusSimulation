@@ -410,19 +410,19 @@ public class DcpV2{
 								}
 							}
 							else{//attacker_1
-								double r=Math.random();
-								if(r<w){
-									if(b.role.equals("attacker_1")){
+								if(b.role.equals("attacker_1")){
+									double r=Math.random();
+									if(r<w){
 										vote=1;
 										a.csUpvoteCount++;
 										b.csUpvotedCount++;										
 									}
-									// else{
-									// 	vote=0;
-									// 	a.csDownvoteCount++;
-									// 	b.csDownvotedCount++;										
-									// }
-								}								
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
 							}
 							if(vote!=-1){
 								if(productToReviewerAndVote.containsKey(bid)){
@@ -442,7 +442,7 @@ public class DcpV2{
 				}				
 			}
 			else if(attackerType==1 && nonAttackerType==2){
-				
+					
 			}	
 			else if(attackerType==2 && nonAttackerType==1){
 				
