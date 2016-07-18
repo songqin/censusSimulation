@@ -1,0 +1,16 @@
+set xrange [0:1]
+set yrange [0:1]
+
+set key horizontal top left 
+
+set title "ROC attackerType8 nonattacker type2 "
+set label "attacker 5%, non-attacker 95%" at 0.8,0.55 center
+#set label "% of ineligible agents promoted by attackers" at 0.3,0.8 center
+plot 'nonAttackerWitness0.00attackerWitness0.00' using 2:1 with linespoints title "0.00",\
+x title "y=x"
+pause -1
+quit
+
+
+
+

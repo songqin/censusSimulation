@@ -1,0 +1,38 @@
+set xrange [0:1]
+set yrange [0:1]
+
+set key horizontal top left 
+
+set title "ROC attackerType1 nonattacker type2 "
+set label "attacker 5%, non-attacker 95%" at 0.8,0.55 center
+set label "% of ineligible agents promoted by attackers" at 0.3,0.8 center
+plot 'nonAttackerWitness0.00attackerWitness0.00' using 2:1 with linespoints title "0.00",\
+'nonAttackerWitness0.00attackerWitness0.05' using 2:1 with linespoints title "0.05",\
+'nonAttackerWitness0.00attackerWitness0.10' using 2:1 with linespoints title "0.10",\
+'nonAttackerWitness0.00attackerWitness0.15' using 2:1 with linespoints title "0.15",\
+'nonAttackerWitness0.00attackerWitness0.20' using 2:1 with linespoints title "0.20",\
+'nonAttackerWitness0.00attackerWitness0.25' using 2:1 with linespoints title "0.25",\
+'nonAttackerWitness0.00attackerWitness0.30' using 2:1 with linespoints title "0.30",\
+'nonAttackerWitness0.00attackerWitness0.35' using 2:1 with linespoints title "0.35",\
+x title "y=x"
+pause -1
+quit
+
+
+
+#'nonAttackerWitness0.00attackerWitness0.40' using 2:1 with linespoints title "0.40",\
+#'nonAttackerWitness0.00attackerWitness0.45' using 2:1 with linespoints title "0.45",\
+#'nonAttackerWitness0.00attackerWitness0.50' using 2:1 with linespoints title "0.50",\
+#'nonAttackerWitness0.00attackerWitness0.55' using 2:1 with linespoints title "0.55",\
+#'nonAttackerWitness0.00attackerWitness0.60' using 2:1 with linespoints title "0.60",\
+#'nonAttackerWitness0.00attackerWitness0.65' using 2:1 with linespoints title "0.65",\
+#'nonAttackerWitness0.00attackerWitness0.70' using 2:1 with linespoints title "0.70",\
+#'nonAttackerWitness0.00attackerWitness0.75' using 2:1 with linespoints title "0.75",\
+#'nonAttackerWitness0.00attackerWitness0.80' using 2:1 with linespoints title "0.80",\
+#'nonAttackerWitness0.00attackerWitness0.85' using 2:1 with linespoints title "0.85",\
+#'nonAttackerWitness0.00attackerWitness0.90' using 2:1 with linespoints title "0.90",\
+#'nonAttackerWitness0.00attackerWitness0.95' using 2:1 with linespoints title "0.95",\
+
+	
+
+

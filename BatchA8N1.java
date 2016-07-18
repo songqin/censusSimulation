@@ -33,17 +33,18 @@ public class BatchA8N1{
 			int neiSize=100;
 			int ob=0;
 			String pathOfCpt="./cpt.txt";
-			int n =100000;
+			int n =10000;
 			long startTime = System.currentTimeMillis();
-			double nonAttackerWitness=0;
+			double nonAttackerWitness=0.05;
 			double nonattackerPercentage = Double.parseDouble(args[0]);
-			double attackerPercentage = Double.parseDouble(args[1]);
+			// double attackerPercentage = Double.parseDouble(args[1]);
+			double attackerWitnessUp=0;
 			String process="";
-			String fn="A1N1 nonAttackerWitness";
-			while(nonAttackerWitness<=0.2){
-				String filename=fn+""+new DecimalFormat("#0.00").format(nonAttackerWitness);
+			while(nonAttackerWitness<=1){
+				String filename="nonAttackerWitness"+new DecimalFormat("#0.00").format(nonAttackerWitness)+
+				"attackerWitness"+new DecimalFormat("#0.00").format(attackerWitnessUp);
 				process="java DcpV2 "+numNei+" "+neiSize+" "+nonattackerPercentage+" "+nonAttackerWitness
-				+" "+ob+" "+n+" "+pathOfCpt+" 8 1 0 0"+" "+filename;
+				+" "+ob+" "+n+" "+pathOfCpt+" 8 1 "+attackerWitnessUp + " 0 "+filename;
 				System.out.println("#process: "+process);
 				runProcess(process);
 				nonAttackerWitness+=0.05;

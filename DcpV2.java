@@ -434,21 +434,146 @@ public class DcpV2{
 									productToReviewerAndVote.put(bid, l);
 								}								
 							}							
-
-							
 						}
 					}
 					// System.out.println("c:"+c);
 				}				
 			}
 			else if(attackerType==1 && nonAttackerType==2){
-					
+				double w = this.attackerWitnessUp;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							// double r=Math.random();
+							if(a.role.equals("attacker_1")){
+								if(b.role.equals("attacker_1")){
+									double r=Math.random();
+									if(r<w){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
+							}
+							if(vote!=-1){
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}								
+							}							
+						}
+					}
+					// System.out.println("c:"+c);
+				}					
 			}	
 			else if(attackerType==2 && nonAttackerType==1){
-				
+				double k = this.nonAttackerWitness;
+				double w = this.attackerWitnessDown;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							// double r=Math.random();
+							if(a.role.equals("nonAttacker_1")){
+								double r=Math.random();
+								if(r<k){
+									if(b.role.equals("nonAttacker_1")){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+									else{
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}									
+								}
+							}
+							else{//attacker_2
+								if(b.role.equals("nonAttacker_1")){
+									double r=Math.random();
+									if(r<w){
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
+							}
+							if(vote!=-1){
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}								
+							}							
+						}
+					}
+					// System.out.println("c:"+c);
+				}				
 			}	
 			else if(attackerType==2 && nonAttackerType==2){
-				
+				double w = this.attackerWitnessDown;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							// double r=Math.random();
+							if(a.role.equals("attacker_2")){
+								if(b.role.equals("nonAttacker_2")){
+									double r=Math.random();
+									if(r<w){
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
+							}
+							if(vote!=-1){
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}								
+							}							
+						}
+					}
+					// System.out.println("c:"+c);
+				}					
 			}
 			else if(attackerType==3 && nonAttackerType==1){
 				
@@ -456,8 +581,62 @@ public class DcpV2{
 			else if(attackerType==3 && nonAttackerType==2){
 				
 			}
+			//a4n1
 			else if(attackerType==4 && nonAttackerType==1){
-				
+				double k = this.nonAttackerWitness;
+				double w = this.attackerWitnessDown;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							// double r=Math.random();
+							if(a.role.equals("nonAttacker_1")){
+								double r=Math.random();
+								if(r<k){
+									if(b.role.equals("nonAttacker_1")){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+									else{
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}									
+								}
+							}
+							else{//attacker_2
+								if(b.role.equals("nonAttacker_1")){
+									double r=Math.random();
+									if(r<w){
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
+							}
+							if(vote!=-1){
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}								
+							}							
+						}
+					}
+					// System.out.println("c:"+c);
+				}					
 			}
 			else if(attackerType==4 && nonAttackerType==2){
 				
@@ -469,13 +648,196 @@ public class DcpV2{
 				
 			}
 			else if(attackerType==6 && nonAttackerType==1){
-				
+				double k = this.nonAttackerWitness;
+				double w = this.attackerWitnessDown;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							// double r=Math.random();
+							if(a.role.equals("nonAttacker_1")){
+								double r=Math.random();
+								if(r<k){
+									if(b.role.equals("nonAttacker_1")){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+									else{
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}									
+								}
+							}
+							else{//attacker_6
+								if(b.role.equals("attacker_6")){
+									double r=Math.random();
+									if(r<w){
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
+							}
+							if(vote!=-1){
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}								
+							}							
+						}
+					}
+					// System.out.println("c:"+c);
+				}				
 			}
+			else if(attackerType==6 && nonAttackerType==2){
+				double k = this.nonAttackerWitness;
+				double w = this.attackerWitnessDown;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							if(a.role.equals("attacker_6")){//attacker_7
+								if(b.role.equals("attacker_6")){
+									double r=Math.random();
+									if(r<w){
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
+							}
+							if(vote!=-1){
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}								
+							}							
+						}
+					}
+					// System.out.println("c:"+c);
+				}				
+			}			
 			else if(attackerType==7 && nonAttackerType==2){
-				
+				double k = this.nonAttackerWitness;
+				double w = this.attackerWitnessUp;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							if(a.role.equals("attacker_7")){//attacker_7
+								if(b.role.equals("nonAttacker_2")){
+									double r=Math.random();
+									if(r<w){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
+							}
+							if(vote!=-1){
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}								
+							}							
+						}
+					}
+					// System.out.println("c:"+c);
+				}				
 			}
 			else if(attackerType==7 && nonAttackerType==1){
-				
+				double k = this.nonAttackerWitness;
+				double w = this.attackerWitnessUp;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							// double r=Math.random();
+							if(a.role.equals("nonAttacker_1")){
+								double r=Math.random();
+								if(r<k){
+									if(b.role.equals("nonAttacker_1")){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+									else{
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;										
+									}									
+								}
+							}
+							else{//attacker_7
+								if(b.role.equals("nonAttacker_1")){
+									double r=Math.random();
+									if(r<w){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
+							}
+							if(vote!=-1){
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}								
+							}							
+						}
+					}
+					// System.out.println("c:"+c);
+				}					
 			}
 			else if(attackerType==7 && nonAttackerType==2){
 				
@@ -699,12 +1061,14 @@ public class DcpV2{
 					nnea++;
 					nra++;
 				}
-				// else if (attackerType==6){
-				// 	attacker.role="attacker_6";
-				// 	attacker.e_binary=0;
-				// 	attacker.r_binary=1;
-				// 	nnea++;				
-				// }
+				else if (attackerType==6){
+					attacker.role="attacker_6";
+					attacker.e_binary=0;
+					attacker.r_binary=1;
+					
+					nnea++;		
+					nra++;		
+				}
 				// else if (attackerType==5){
 				// 	attacker.role="attacker_5";
 				// 	attacker.e_binary=0;

@@ -110,8 +110,13 @@ java BatchA1N1V2 0.80
 a1n2
 
 --------------------
+a4 all eligible, to false positive = 0  
 --------------------
+a7n2 plot is interesting
+a7n1 not interesting
 --------------------
+a6n2 interesting
+a6n1 
 --------------------
 --------------------
 

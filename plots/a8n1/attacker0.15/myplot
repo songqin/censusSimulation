@@ -1,0 +1,27 @@
+set xrange [0:1]
+set yrange [0:1]
+
+set key horizontal top left 
+
+set title "ROC attackerType8 nonattacker type2 "
+set label "attacker 15%, non-attacker 85%" at 0.8,0.55 center
+set label "% of agents witnessed by non-attackers" at 0.3,0.8 center
+plot 'nonAttackerWitness0.05attackerWitness0.00' using 2:1 with linespoints title "0.05",\
+'nonAttackerWitness0.10attackerWitness0.00' using 2:1 with linespoints title "0.10",\
+'nonAttackerWitness0.15attackerWitness0.00' using 2:1 with linespoints title "0.15",\
+'nonAttackerWitness0.20attackerWitness0.00' using 2:1 with linespoints title "0.20",\
+'nonAttackerWitness0.25attackerWitness0.00' using 2:1 with linespoints title "0.25",\
+'nonAttackerWitness0.30attackerWitness0.00' using 2:1 with linespoints title "0.30",\
+'nonAttackerWitness0.35attackerWitness0.00' using 2:1 with linespoints title "0.35",\
+'nonAttackerWitness0.40attackerWitness0.00' using 2:1 with linespoints title "0.40",\
+'nonAttackerWitness0.45attackerWitness0.00' using 2:1 with linespoints title "0.45",\
+'nonAttackerWitness0.50attackerWitness0.00' using 2:1 with linespoints title "0.50",\
+'nonAttackerWitness0.55attackerWitness0.00' using 2:1 with linespoints title "0.55",\
+x title "y=x"
+pause -1
+quit
+
+
+
+
+
