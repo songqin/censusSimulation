@@ -1,0 +1,16 @@
+set xrange [0:1]
+set yrange [0:1]
+
+set key horizontal bottom right 
+
+set title "ROC attackerType1 nonattacker type1 "
+set label "attacker 10%, non-attacker 90%" at 0.8,0.55 center
+set label "% witnessed by non-attackers, % witnessed by attackers" at 0.65,0.47 center
+plot 'test' using 2:1 with linespoints title "  0.05 0.05",\
+x title "y=x"
+pause -1
+quit
+
+
+
+

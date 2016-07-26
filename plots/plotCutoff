@@ -1,0 +1,29 @@
+set xrange [0:1]
+set yrange [0:1]
+
+set key horizontal bottom right 
+
+set title "ROC curve identifies eligible agents with attacker type1(5%) vs. nonattacker type1(95%) "
+set xlabel "cutoff value for generating ROC curve"
+set ylabel "tpr/fpr"
+set label "nawp awp" at 0.4,0.3 center
+plot 'A1N1nonAttackerWitness0.05attackerWitness0.00' using 5:1 with linespoints title " tpr",\
+'A1N1nonAttackerWitness0.05attackerWitness0.00' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness0.20' using 5:1 with linespoints title "  tpr",\
+'A1N1nonAttackerWitness0.05attackerWitness0.20' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness0.40' using 5:1 with linespoints title "  tpr",\
+'A1N1nonAttackerWitness0.05attackerWitness0.40' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness0.60' using 5:1 with linespoints title "  tpr",\
+'A1N1nonAttackerWitness0.05attackerWitness0.60' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness0.80' using 5:1 with linespoints title "  tpr",\
+'A1N1nonAttackerWitness0.05attackerWitness0.80' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness1.00' using 5:1 with linespoints title "tpr",\
+'A1N1nonAttackerWitness0.05attackerWitness1.00' using 5:2 with linespoints title " fpr 1.0"
+
+
+pause -1
+quit
+
+
+
+

@@ -1,0 +1,44 @@
+set xrange [0:1]
+set yrange [0:1]
+
+set key horizontal bottom right 
+
+set title "ROC curve identifies eligible agents with attacker type1(5%) vs. nonattacker type1(95%) "
+set xlabel "fpr"
+set ylabel "tpr"
+set label "nawp awp" at 0.4,0.3 center
+plot 'A1N1nonAttackerWitness0.05attackerWitness0.00' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness0.00' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness0.05' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness0.05' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness0.10' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness0.10' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness0.15' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness0.15' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness0.20' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness0.20' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness0.30' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness0.30' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness0.35' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness0.35' using 5:2 with linespoints title "  0.05 0.05",\
+'A1N1nonAttackerWitness0.05attackerWitness1.00' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness1.00' using 5:2 with linespoints title "  0.05 0.05",\
+
+'A1N1nonAttackerWitness0.05attackerWitness' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness' using 5:2 with linespoints title "  0.05 0.05",\
+
+'A1N1nonAttackerWitness0.05attackerWitness' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness' using 5:2 with linespoints title "  0.05 0.05",\
+
+'A1N1nonAttackerWitness0.05attackerWitness' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness' using 5:2 with linespoints title "  0.05 0.05",\
+
+'A1N1nonAttackerWitness0.05attackerWitness' using 5:1 with linespoints title "  0.05 0.00",\
+'A1N1nonAttackerWitness0.05attackerWitness' using 5:2 with linespoints title "  0.05 0.05",\
+
+pause -1
+quit
+
+
+
+

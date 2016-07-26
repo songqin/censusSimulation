@@ -1,0 +1,36 @@
+set xrange [0:1]
+set yrange [0:1]
+#set terminal pdf
+#set output 'out.pdf'
+set key horizontal bottom left 
+set xlabel "false positive rate"
+set ylabel "true positive rate"
+set title "ROC curve identifies eligible agents for attacker:type2, nonattacker:type1"
+
+set label "ap=5%, nap=95%, nawp=5\%" at 0.70,0.47 center
+set label "awap, area under the curve (AUC)" at 0.5,0.2 center
+plot 'attackerWitness0.00' using 2:1 with linespoints title "0.00",\
+'attackerWitness0.10' using 2:1 with linespoints title "0.10",\
+'attackerWitness0.20' using 2:1 with linespoints title "0.20",\
+'attackerWitness0.30' using 2:1 with linespoints title "0.30",\
+'attackerWitness0.40' using 2:1 with linespoints title "0.40",\
+'attackerWitness0.50' using 2:1 with linespoints title "0.50",\
+'attackerWitness0.60' using 2:1 with linespoints title "0.60",\
+'attackerWitness0.70' using 2:1 with linespoints title "0.70",\
+'attackerWitness0.80' using 2:1 with linespoints title "0.80",\
+'attackerWitness0.90' using 2:1 with linespoints title "0.90",\
+'attackerWitness1.00' using 2:1 with linespoints title "1.00",\
+x title ""
+pause -1
+quit
+
+
+
+
+
+
+
+
+
+
+

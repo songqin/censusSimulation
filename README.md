@@ -118,7 +118,12 @@ a7n1 not interesting
 a6n2 interesting
 a6n1 
 --------------------
+
+
+more population
+reduced to experiment mcmc round to 1000 to save some time
 --------------------
+a1n1
 
 --------------------
 --------------------

@@ -201,7 +201,7 @@ public class DcpV2{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}			
-		for(double cutoff=0;cutoff<=1;cutoff+=0.001){
+		for(double cutoff=0;cutoff<=1;cutoff+=0.01){
 
 			double tCS=0;//expectation of CS being true
 			double fCS=0;
@@ -226,7 +226,7 @@ public class DcpV2{
 				}
 			}
 
-			String content = tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra+"\n";
+			String content = tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra+" "+cutoff+"\n";
 			try {
 				byte[] contentInBytes = content.getBytes();
 				fop.write(contentInBytes);
