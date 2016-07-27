@@ -7,14 +7,14 @@ set xlabel "false positive rate"
 set ylabel "true positive rate"
 set title "ROC curve identifies eligible agents for attacker:type2, nonattacker:type1"
 
-set label "ap=20%, nap=80%, nawp=5\%" at 0.70,0.47 center
+set label "ap=15%, nap=95%, nawp=5\%" at 0.70,0.47 center
 set label "awap, area under the curve (AUC)" at 0.5,0.2 center
 plot 'attackerWitness0.00' using 2:1 with linespoints title "0%, 0.999",\
-'attackerWitness0.30' using 2:1 with linespoints title "30%, 0.940",\
-'attackerWitness0.50' using 2:1 with linespoints title "50%, 0.797",\
-'attackerWitness0.60' using 2:1 with linespoints title "60%, 0.703",\
-'attackerWitness0.70' using 2:1 with linespoints title "70%, 0.586",\
-'attackerWitness0.80' using 2:1 with linespoints title "80%, 0.460",\
+'attackerWitness0.30' using 2:1 with linespoints title "30%, 0.975",\
+'attackerWitness0.40' using 2:1 with linespoints title "40%, 0.946",\
+'attackerWitness0.70' using 2:1 with linespoints title "70%, 0.783",\
+'attackerWitness0.90' using 2:1 with linespoints title "90%, 0.614",\
+'attackerWitness1.00' using 2:1 with linespoints title "100%, 0.528",\
 x title ""
 #pause -1
 #quit

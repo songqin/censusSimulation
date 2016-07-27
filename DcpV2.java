@@ -1,15 +1,15 @@
 //decentralized census problem
 import java.util.*;
 import java.io.*;
-
+import java.math.*;
 public class DcpV2{
 	int fast=1;
 	int printLess=1;
 	int numNei;//number of neighborhoods in DCP
 	int neiSize;//number of residents per neighborhood
 	int p;//population
-	double nonAttackerPercentage;//honest agent percentage (eligible=1 and reliable=1)
-	double attackerPercentage;//malicious agent percentage (not reliable(0), but eligible(1))
+	BigDecimal nonAttackerPercentage;//honest agent percentage (eligible=1 and reliable=1)
+	BigDecimal attackerPercentage;//malicious agent percentage (not reliable(0), but eligible(1))
 	int nAttacker;
 	int nNonAttacker;
 	int ob;//id of the observer
@@ -52,9 +52,9 @@ public class DcpV2{
 	int mcmcRounds=0;
 	int attackerType;
 	int nonAttackerType;
-	double attackerWitnessUp;
-	double attackerWitnessDown;
-	double nonAttackerWitness;
+	BigDecimal attackerWitnessUp;
+	BigDecimal attackerWitnessDown;
+	BigDecimal nonAttackerWitness;
 	static Random rnd;
 	// int c;//parameter passed from Batch class
 	// static Random rnd = new Random(0);
@@ -68,15 +68,20 @@ public class DcpV2{
 	}	
 	//constructor
 	//n:a reference number 
-	DcpV2(int numNei, int neiSize, double nonAttackerPercentage, double nonAttackerWitness,  Integer ob, int mcmcRounds, String pathOfCpt, 
-		int attackerType, int nonAttackerType, double attackerWitnessUp, double attackerWitnessDown, String fileName){
+	DcpV2(int numNei, int neiSize, BigDecimal nonAttackerPercentage, BigDecimal nonAttackerWitness,  Integer ob, int mcmcRounds, String pathOfCpt, 
+		int attackerType, int nonAttackerType, BigDecimal attackerWitnessUp, BigDecimal attackerWitnessDown, String fileName){
 		rnd = new Random(0);
 		this.numNei = numNei;
 		this.nonAttackerPercentage = nonAttackerPercentage;
-		this.attackerPercentage = 1-nonAttackerPercentage;	
+		System.out.println("#"+nonAttackerPercentage);
+		this.attackerPercentage = BigDecimal.ONE.subtract(nonAttackerPercentage);	
 		this.neiSize = neiSize;
-		this.nAttacker=(int)(neiSize*attackerPercentage);
-		this.nNonAttacker=(int)(neiSize*nonAttackerPercentage);
+		this.nAttacker=(attackerPercentage.multiply(new BigDecimal(neiSize))).intValue();
+		this.nNonAttacker=(nonAttackerPercentage.multiply(new BigDecimal(neiSize))).intValue();
+		
+		System.out.println(attackerPercentage);
+		System.out.println(nAttacker);
+		System.out.println(nNonAttacker);
 		this.p = numNei * neiSize;
 
 		this.ob=ob;
@@ -112,11 +117,11 @@ public class DcpV2{
 		}
 		// populateToyWitnessStances();
 		populateWitnessStances();
-		// printWitness();
-		mcmc(mcmcRounds);
+		printWitness();
+		// mcmc(mcmcRounds);
 		// printNeighborhoodAndAgents();
 		// printAllAgents();
-		printTprFpr(1);
+		// printTprFpr(1);
 		
 		// printOneAgent(1);
 		// test();
@@ -284,6 +289,9 @@ public class DcpV2{
 	}
 	void printWitness(){
 		System.out.println("#--------------------------------");
+		System.out.println("nAttacker:"+nAttacker);
+		System.out.println("nNonAttacker:"+nNonAttacker);
+		System.out.println("#--------------------------------");
 		System.out.println("#reviewerToProductAndVote");
 		for(String key:reviewerToProductAndVote.keySet()){
 			System.out.println("#"+key+" "+reviewerToProductAndVote.get(key));
@@ -293,26 +301,26 @@ public class DcpV2{
 		for(String key:productToReviewerAndVote.keySet()){
 			System.out.println("#"+key+" "+productToReviewerAndVote.get(key));
 		}
-		System.out.println("#--------------------------------");
-		System.out.println("#NRWMapT:");
-		for(String key:NRWMapT.keySet()){
-			System.out.println("#"+key+" "+NRWMapT.get(key));
-		}
-		System.out.println("#--------------------------------");
-		System.out.println("#NCSMapT:");
-		for(String key:NCSMapT.keySet()){
-			System.out.println("#"+key+" "+NCSMapT.get(key));
-		}
-		System.out.println("#--------------------------------");
-		System.out.println("#stateMapCS:");
-		for(String key:stateMapCS.keySet()){
-			System.out.println("#"+key+" "+stateMapCS.get(key));
-		}
-		System.out.println("#--------------------------------");
-		System.out.println("#stateMapRW:");
-		for(String key:stateMapRW.keySet()){
-			System.out.println("#"+key+" "+stateMapRW.get(key));
-		}
+		// System.out.println("#--------------------------------");
+		// System.out.println("#NRWMapT:");
+		// for(String key:NRWMapT.keySet()){
+		// 	System.out.println("#"+key+" "+NRWMapT.get(key));
+		// }
+		// System.out.println("#--------------------------------");
+		// System.out.println("#NCSMapT:");
+		// for(String key:NCSMapT.keySet()){
+		// 	System.out.println("#"+key+" "+NCSMapT.get(key));
+		// }
+		// System.out.println("#--------------------------------");
+		// System.out.println("#stateMapCS:");
+		// for(String key:stateMapCS.keySet()){
+		// 	System.out.println("#"+key+" "+stateMapCS.get(key));
+		// }
+		// System.out.println("#--------------------------------");
+		// System.out.println("#stateMapRW:");
+		// for(String key:stateMapRW.keySet()){
+		// 	System.out.println("#"+key+" "+stateMapRW.get(key));
+		// }
 		System.out.println("#--------------------------------");		
 	}
 
@@ -384,8 +392,8 @@ public class DcpV2{
 			// Collection<Agent> agents = m.values();
 			//todo
 			if(attackerType==1 && nonAttackerType==1){
-				double k = this.nonAttackerWitness;
-				double w = this.attackerWitnessUp;
+				BigDecimal k = this.nonAttackerWitness;
+				BigDecimal w = this.attackerWitnessUp;
 				for (Agent a : agents1) {
 					// int c=0;
 					for (Agent b : agents2) {
@@ -393,10 +401,10 @@ public class DcpV2{
 							String aid=a.id;
 							String bid=b.id;
 							Integer vote=-1;	
-							// double r=Math.random();
+							// BigDecimal r=new BigDecimal(Math.random());
 							if(a.role.equals("nonAttacker_1")){
-								double r=Math.random();
-								if(r<k){
+								BigDecimal r=new BigDecimal(Math.random());
+								if(r.compareTo(k)==-1){
 									if(b.role.equals("nonAttacker_1")){
 										vote=1;
 										a.csUpvoteCount++;
@@ -411,8 +419,8 @@ public class DcpV2{
 							}
 							else{//attacker_1
 								if(b.role.equals("attacker_1")){
-									double r=Math.random();
-									if(r<w){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
 										vote=1;
 										a.csUpvoteCount++;
 										b.csUpvotedCount++;										
@@ -440,7 +448,7 @@ public class DcpV2{
 				}				
 			}
 			else if(attackerType==1 && nonAttackerType==2){
-				double w = this.attackerWitnessUp;
+				BigDecimal w = this.attackerWitnessUp;
 				for (Agent a : agents1) {
 					// int c=0;
 					for (Agent b : agents2) {
@@ -448,11 +456,11 @@ public class DcpV2{
 							String aid=a.id;
 							String bid=b.id;
 							Integer vote=-1;	
-							// double r=Math.random();
+							// BigDecimal r=new BigDecimal(Math.random());
 							if(a.role.equals("attacker_1")){
 								if(b.role.equals("attacker_1")){
-									double r=Math.random();
-									if(r<w){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
 										vote=1;
 										a.csUpvoteCount++;
 										b.csUpvotedCount++;										
@@ -480,8 +488,8 @@ public class DcpV2{
 				}					
 			}	
 			else if(attackerType==2 && nonAttackerType==1){
-				double k = this.nonAttackerWitness;
-				double w = this.attackerWitnessDown;
+				BigDecimal k = this.nonAttackerWitness;
+				BigDecimal w = this.attackerWitnessDown;
 				for (Agent a : agents1) {
 					// int c=0;
 					for (Agent b : agents2) {
@@ -489,10 +497,10 @@ public class DcpV2{
 							String aid=a.id;
 							String bid=b.id;
 							Integer vote=-1;	
-							// double r=Math.random();
+							// BigDecimal r=new BigDecimal(Math.random());
 							if(a.role.equals("nonAttacker_1")){
-								double r=Math.random();
-								if(r<k){
+								BigDecimal r=new BigDecimal(Math.random());
+								if(r.compareTo(k)==-1){
 									if(b.role.equals("nonAttacker_1")){
 										vote=1;
 										a.csUpvoteCount++;
@@ -507,8 +515,8 @@ public class DcpV2{
 							}
 							else{//attacker_2
 								if(b.role.equals("nonAttacker_1")){
-									double r=Math.random();
-									if(r<w){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
 										vote=0;
 										a.csDownvoteCount++;
 										b.csDownvotedCount++;										
@@ -536,7 +544,7 @@ public class DcpV2{
 				}				
 			}	
 			else if(attackerType==2 && nonAttackerType==2){
-				double w = this.attackerWitnessDown;
+				BigDecimal w = this.attackerWitnessDown;
 				for (Agent a : agents1) {
 					// int c=0;
 					for (Agent b : agents2) {
@@ -544,11 +552,11 @@ public class DcpV2{
 							String aid=a.id;
 							String bid=b.id;
 							Integer vote=-1;	
-							// double r=Math.random();
+							// BigDecimal r=new BigDecimal(Math.random());
 							if(a.role.equals("attacker_2")){
 								if(b.role.equals("nonAttacker_2")){
-									double r=Math.random();
-									if(r<w){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
 										vote=0;
 										a.csDownvoteCount++;
 										b.csDownvotedCount++;										
@@ -561,6 +569,14 @@ public class DcpV2{
 								// }
 							}
 							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
 								if(productToReviewerAndVote.containsKey(bid)){
 									productToReviewerAndVote.get(bid).add(aid+" "+vote);
 								}
@@ -568,7 +584,7 @@ public class DcpV2{
 									List<String> l = new ArrayList<String>();
 									l.add(aid+" "+vote);
 									productToReviewerAndVote.put(bid, l);
-								}								
+								}																	
 							}							
 						}
 					}
@@ -583,8 +599,8 @@ public class DcpV2{
 			}
 			//a4n1
 			else if(attackerType==4 && nonAttackerType==1){
-				double k = this.nonAttackerWitness;
-				double w = this.attackerWitnessDown;
+				BigDecimal k = this.nonAttackerWitness;
+				BigDecimal w = this.attackerWitnessDown;
 				for (Agent a : agents1) {
 					// int c=0;
 					for (Agent b : agents2) {
@@ -592,10 +608,10 @@ public class DcpV2{
 							String aid=a.id;
 							String bid=b.id;
 							Integer vote=-1;	
-							// double r=Math.random();
+							// BigDecimal r=new BigDecimal(Math.random());
 							if(a.role.equals("nonAttacker_1")){
-								double r=Math.random();
-								if(r<k){
+								BigDecimal r=new BigDecimal(Math.random());
+								if(r.compareTo(k)==-1){
 									if(b.role.equals("nonAttacker_1")){
 										vote=1;
 										a.csUpvoteCount++;
@@ -610,8 +626,8 @@ public class DcpV2{
 							}
 							else{//attacker_2
 								if(b.role.equals("nonAttacker_1")){
-									double r=Math.random();
-									if(r<w){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
 										vote=0;
 										a.csDownvoteCount++;
 										b.csDownvotedCount++;										
@@ -648,8 +664,8 @@ public class DcpV2{
 				
 			}
 			else if(attackerType==6 && nonAttackerType==1){
-				double k = this.nonAttackerWitness;
-				double w = this.attackerWitnessDown;
+				BigDecimal k = this.nonAttackerWitness;
+				BigDecimal w = this.attackerWitnessDown;
 				for (Agent a : agents1) {
 					// int c=0;
 					for (Agent b : agents2) {
@@ -657,10 +673,10 @@ public class DcpV2{
 							String aid=a.id;
 							String bid=b.id;
 							Integer vote=-1;	
-							// double r=Math.random();
+							// BigDecimal r=new BigDecimal(Math.random());
 							if(a.role.equals("nonAttacker_1")){
-								double r=Math.random();
-								if(r<k){
+								BigDecimal r=new BigDecimal(Math.random());
+								if(r.compareTo(k)==-1){
 									if(b.role.equals("nonAttacker_1")){
 										vote=1;
 										a.csUpvoteCount++;
@@ -675,8 +691,8 @@ public class DcpV2{
 							}
 							else{//attacker_6
 								if(b.role.equals("attacker_6")){
-									double r=Math.random();
-									if(r<w){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
 										vote=0;
 										a.csDownvoteCount++;
 										b.csDownvotedCount++;										
@@ -704,8 +720,8 @@ public class DcpV2{
 				}				
 			}
 			else if(attackerType==6 && nonAttackerType==2){
-				double k = this.nonAttackerWitness;
-				double w = this.attackerWitnessDown;
+				BigDecimal k = this.nonAttackerWitness;
+				BigDecimal w = this.attackerWitnessDown;
 				for (Agent a : agents1) {
 					// int c=0;
 					for (Agent b : agents2) {
@@ -715,8 +731,8 @@ public class DcpV2{
 							Integer vote=-1;	
 							if(a.role.equals("attacker_6")){//attacker_7
 								if(b.role.equals("attacker_6")){
-									double r=Math.random();
-									if(r<w){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
 										vote=0;
 										a.csDownvoteCount++;
 										b.csDownvotedCount++;										
@@ -744,8 +760,8 @@ public class DcpV2{
 				}				
 			}			
 			else if(attackerType==7 && nonAttackerType==2){
-				double k = this.nonAttackerWitness;
-				double w = this.attackerWitnessUp;
+				BigDecimal k = this.nonAttackerWitness;
+				BigDecimal w = this.attackerWitnessUp;
 				for (Agent a : agents1) {
 					// int c=0;
 					for (Agent b : agents2) {
@@ -755,8 +771,8 @@ public class DcpV2{
 							Integer vote=-1;	
 							if(a.role.equals("attacker_7")){//attacker_7
 								if(b.role.equals("nonAttacker_2")){
-									double r=Math.random();
-									if(r<w){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
 										vote=1;
 										a.csUpvoteCount++;
 										b.csUpvotedCount++;										
@@ -784,8 +800,8 @@ public class DcpV2{
 				}				
 			}
 			else if(attackerType==7 && nonAttackerType==1){
-				double k = this.nonAttackerWitness;
-				double w = this.attackerWitnessUp;
+				BigDecimal k = this.nonAttackerWitness;
+				BigDecimal w = this.attackerWitnessUp;
 				for (Agent a : agents1) {
 					// int c=0;
 					for (Agent b : agents2) {
@@ -793,10 +809,10 @@ public class DcpV2{
 							String aid=a.id;
 							String bid=b.id;
 							Integer vote=-1;	
-							// double r=Math.random();
+							// BigDecimal r=new BigDecimal(Math.random());
 							if(a.role.equals("nonAttacker_1")){
-								double r=Math.random();
-								if(r<k){
+								BigDecimal r=new BigDecimal(Math.random());
+								if(r.compareTo(k)==-1){
 									if(b.role.equals("nonAttacker_1")){
 										vote=1;
 										a.csUpvoteCount++;
@@ -811,8 +827,8 @@ public class DcpV2{
 							}
 							else{//attacker_7
 								if(b.role.equals("nonAttacker_1")){
-									double r=Math.random();
-									if(r<w){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
 										vote=1;
 										a.csUpvoteCount++;
 										b.csUpvotedCount++;										
@@ -845,13 +861,13 @@ public class DcpV2{
 			else if(attackerType==8 && nonAttackerType==1){
 				//inactive attacker
 				//nonattacker witness k% of agents 
-				double k = this.nonAttackerWitness;
+				BigDecimal k = this.nonAttackerWitness;
 				for (Agent a : agents1) {
 					// int c=0;
 					for (Agent b : agents2) {
 						if(a.id!=b.id){
-							double r=Math.random();
-							if(r<k){
+							BigDecimal r=new BigDecimal(Math.random());
+							if(r.compareTo(k)==-1){
 								// c++;
 								if(a.role.equals("nonAttacker_1")){
 									String aid=a.id;
@@ -1040,7 +1056,7 @@ public class DcpV2{
 
 		HashMap<String, Agent> neighbors;
 
-		Neighborhood(int i, int neiSize, double nAttacker, double nNonAttacker, double priorCS, double priorRW,
+		Neighborhood(int i, int neiSize, int nAttacker, int nNonAttacker, double priorCS, double priorRW,
 			int attackerType, int nonAttackerType
 		){
 			neighbors = new HashMap<String, Agent>();
@@ -1184,15 +1200,15 @@ public class DcpV2{
 			//int numNei, int neiSize, double nonAttackerPercentage,  Integer ob, int mcmcRounds, String pathOfCpt 
 			Integer.parseInt(args[0]), //numNei
 			Integer.parseInt(args[1]), // size of Neighborhood
-			Double.parseDouble(args[2]),//nonattackerPercentage
-			Double.parseDouble(args[3]),//nonAttackerWitness
+			new BigDecimal(args[2]),//nonattackerPercentage
+			new BigDecimal(args[3]),//nonAttackerWitness
 			Integer.parseInt(args[4]),//ob
 			Integer.parseInt(args[5]),//mcmc rounds
 			args[6],//pathOfCpt
 			Integer.parseInt(args[7]), //attackerType
 			Integer.parseInt(args[8]), //nonAttackerType
-			Double.parseDouble(args[9]),//attackerWitnessUp
-			Double.parseDouble(args[10]),//attackerWitnessDown
+			new BigDecimal(args[9]),//attackerWitnessUp
+			new BigDecimal(args[10]),//attackerWitnessDown
 			args[11]//filename to write out tpr, fpr
 			);
 		// long endTime   = System.currentTimeMillis();

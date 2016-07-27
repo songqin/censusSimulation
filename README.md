@@ -126,6 +126,11 @@ reduced to experiment mcmc round to 1000 to save some time
 a1n1
 
 --------------------
+7 27 16
+bug: witnessSet has 2. only 1 is populated
+double precision problem->solution BigDecimal
+java DcpV2 1 100 0.9 0.0 0 1000 ./cpt.txt 2 2 0.0 0.05 attackerWitness0.05
+
 --------------------
 --------------------
 
