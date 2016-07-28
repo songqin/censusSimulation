@@ -1,0 +1,78 @@
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.0 0 attackerWitness0.00
+  attackerDownCount:0 
+ attakcerUpCount:0 
+ nonAttackerDownCount:2393 
+ nonAttackerUpCount:44714 
+ nonAttackerTotalWitCount:447142393
+0.1
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.1 0 attackerWitness0.10
+  attackerDownCount:0 
+ attakcerUpCount:214 
+ nonAttackerDownCount:2393 
+ nonAttackerUpCount:44454 
+ nonAttackerTotalWitCount:444542393
+0.2
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.2 0 attackerWitness0.20
+  attackerDownCount:0 
+ attakcerUpCount:421 
+ nonAttackerDownCount:2328 
+ nonAttackerUpCount:44567 
+ nonAttackerTotalWitCount:445672328
+0.30000000000000004
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.30000000000000004 0 attackerWitness0.30
+  attackerDownCount:0 
+ attakcerUpCount:584 
+ nonAttackerDownCount:2423 
+ nonAttackerUpCount:44816 
+ nonAttackerTotalWitCount:448162423
+0.4
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.4 0 attackerWitness0.40
+  attackerDownCount:0 
+ attakcerUpCount:823 
+ nonAttackerDownCount:2394 
+ nonAttackerUpCount:44821 
+ nonAttackerTotalWitCount:448212394
+0.5
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.5 0 attackerWitness0.50
+  attackerDownCount:0 
+ attakcerUpCount:990 
+ nonAttackerDownCount:2362 
+ nonAttackerUpCount:44646 
+ nonAttackerTotalWitCount:446462362
+0.6
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.6 0 attackerWitness0.60
+  attackerDownCount:0 
+ attakcerUpCount:1224 
+ nonAttackerDownCount:2340 
+ nonAttackerUpCount:44526 
+ nonAttackerTotalWitCount:445262340
+0.7
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.7 0 attackerWitness0.70
+  attackerDownCount:0 
+ attakcerUpCount:1378 
+ nonAttackerDownCount:2373 
+ nonAttackerUpCount:44690 
+ nonAttackerTotalWitCount:446902373
+0.7999999999999999
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.7999999999999999 0 attackerWitness0.80
+  attackerDownCount:0 
+ attakcerUpCount:1582 
+ nonAttackerDownCount:2365 
+ nonAttackerUpCount:44424 
+ nonAttackerTotalWitCount:444242365
+0.8999999999999999
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.8999999999999999 0 attackerWitness0.90
+  attackerDownCount:0 
+ attakcerUpCount:1788 
+ nonAttackerDownCount:2379 
+ nonAttackerUpCount:44439 
+ nonAttackerTotalWitCount:444392379
+0.9999999999999999
+#process: java DcpV2 100 100 0.95 0.05 0 1000 ./cpt.txt 1 1 0.9999999999999999 0 attackerWitness1.00
+  attackerDownCount:0 
+ attakcerUpCount:2000 
+ nonAttackerDownCount:2444 
+ nonAttackerUpCount:44563 
+ nonAttackerTotalWitCount:445632444
+1.0999999999999999
+#time in minutes: 6.730283333333333

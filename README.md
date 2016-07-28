@@ -126,14 +126,21 @@ reduced to experiment mcmc round to 1000 to save some time
 a1n1
 
 --------------------
-7 27 16
+7 26 16
 bug: witnessSet has 2. only 1 is populated
 double precision problem->solution BigDecimal
 java DcpV2 1 100 0.9 0.0 0 1000 ./cpt.txt 2 2 0.0 0.05 attackerWitness0.05
 
 --------------------
+7 27 16
+populate witness stance: too random not enough witness stances
+learned:compute area under the curve todo: read theory of trapz, nump, scipy
+rerun a1n1 experiments to see if result is the same after fixed bug (reviewerToProductAndVote)
+make sure: edit populateWitness for each experiments
+for a1n1 ap=5%, when awfp=20%, 1/5, each will witness 1, 40%, witness 2, 60% for 3, 80% for 4, 100% for 5 agents. 
 --------------------
-
+7 28 16
+explain how witness is populated with probability
 --------------------
 --------------------
 --------------------

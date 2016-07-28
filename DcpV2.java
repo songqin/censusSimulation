@@ -55,6 +55,10 @@ public class DcpV2{
 	BigDecimal attackerWitnessUp;
 	BigDecimal attackerWitnessDown;
 	BigDecimal nonAttackerWitness;
+	int attackerDownCount=0;
+	int attackerUpCount=0;
+	int nonAttackerDownCount=0;
+	int nonAttackerUpCount=0;
 	static Random rnd;
 	// int c;//parameter passed from Batch class
 	// static Random rnd = new Random(0);
@@ -73,15 +77,12 @@ public class DcpV2{
 		rnd = new Random(0);
 		this.numNei = numNei;
 		this.nonAttackerPercentage = nonAttackerPercentage;
-		System.out.println("#"+nonAttackerPercentage);
 		this.attackerPercentage = BigDecimal.ONE.subtract(nonAttackerPercentage);	
 		this.neiSize = neiSize;
 		this.nAttacker=(attackerPercentage.multiply(new BigDecimal(neiSize))).intValue();
-		this.nNonAttacker=(nonAttackerPercentage.multiply(new BigDecimal(neiSize))).intValue();
-		
-		System.out.println(attackerPercentage);
-		System.out.println(nAttacker);
-		System.out.println(nNonAttacker);
+		this.nNonAttacker=(nonAttackerPercentage.multiply(new BigDecimal(neiSize))).intValue();		
+		// System.out.println(nAttacker);
+		// System.out.println(nNonAttacker);
 		this.p = numNei * neiSize;
 
 		this.ob=ob;
@@ -117,12 +118,17 @@ public class DcpV2{
 		}
 		// populateToyWitnessStances();
 		populateWitnessStances();
-		printWitness();
-		// mcmc(mcmcRounds);
+		// printWitness();
+		mcmc(mcmcRounds);
 		// printNeighborhoodAndAgents();
 		// printAllAgents();
-		// printTprFpr(1);
-		
+		printTprFpr(1);
+		System.out.println(	" attackerDownCount:"+attackerDownCount +
+			 " \nattakcerUpCount:"+attackerUpCount +
+			 " \nnonAttackerDownCount:"+nonAttackerDownCount+
+			 " \nnonAttackerUpCount:"+nonAttackerUpCount+
+			 " \nnonAttackerTotalWitCount:"+(nonAttackerUpCount+nonAttackerDownCount)
+			 );
 		// printOneAgent(1);
 		// test();
 
@@ -293,14 +299,21 @@ public class DcpV2{
 		System.out.println("nNonAttacker:"+nNonAttacker);
 		System.out.println("#--------------------------------");
 		System.out.println("#reviewerToProductAndVote");
+		int attackerDown=0;
+		int attakcerUp=0;
+		int nonAttackerDown=0;
+		int nonAttackerUp=0;
 		for(String key:reviewerToProductAndVote.keySet()){
 			System.out.println("#"+key+" "+reviewerToProductAndVote.get(key));
+			// System.out.println(reviewerToProductAndVote.get(key).size());
+			// c+=reviewerToProductAndVote.get(key).size();
 		}
+		// System.out.println("c:"+c);
 		System.out.println("#--------------------------------");
-		System.out.println("#productToReviewerAndVote:");
-		for(String key:productToReviewerAndVote.keySet()){
-			System.out.println("#"+key+" "+productToReviewerAndVote.get(key));
-		}
+		// System.out.println("#productToReviewerAndVote:");
+		// for(String key:productToReviewerAndVote.keySet()){
+		// 	System.out.println("#"+key+" "+productToReviewerAndVote.get(key));
+		// }
 		// System.out.println("#--------------------------------");
 		// System.out.println("#NRWMapT:");
 		// for(String key:NRWMapT.keySet()){
@@ -408,12 +421,14 @@ public class DcpV2{
 									if(b.role.equals("nonAttacker_1")){
 										vote=1;
 										a.csUpvoteCount++;
-										b.csUpvotedCount++;										
+										b.csUpvotedCount++;	
+										this.nonAttackerUpCount++;									
 									}
 									else{
 										vote=0;
 										a.csDownvoteCount++;
-										b.csDownvotedCount++;										
+										b.csDownvotedCount++;	
+										this.nonAttackerDownCount++;									
 									}									
 								}
 							}
@@ -423,7 +438,8 @@ public class DcpV2{
 									if(r.compareTo(w)==-1){
 										vote=1;
 										a.csUpvoteCount++;
-										b.csUpvotedCount++;										
+										b.csUpvotedCount++;		
+										this.attackerUpCount++;									
 									}
 								}
 								// else{
@@ -433,6 +449,14 @@ public class DcpV2{
 								// }
 							}
 							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
 								if(productToReviewerAndVote.containsKey(bid)){
 									productToReviewerAndVote.get(bid).add(aid+" "+vote);
 								}
@@ -440,7 +464,7 @@ public class DcpV2{
 									List<String> l = new ArrayList<String>();
 									l.add(aid+" "+vote);
 									productToReviewerAndVote.put(bid, l);
-								}								
+								}																
 							}							
 						}
 					}
@@ -473,6 +497,14 @@ public class DcpV2{
 								// }
 							}
 							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
 								if(productToReviewerAndVote.containsKey(bid)){
 									productToReviewerAndVote.get(bid).add(aid+" "+vote);
 								}
@@ -480,7 +512,7 @@ public class DcpV2{
 									List<String> l = new ArrayList<String>();
 									l.add(aid+" "+vote);
 									productToReviewerAndVote.put(bid, l);
-								}								
+								}																	
 							}							
 						}
 					}
@@ -529,6 +561,14 @@ public class DcpV2{
 								// }
 							}
 							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
 								if(productToReviewerAndVote.containsKey(bid)){
 									productToReviewerAndVote.get(bid).add(aid+" "+vote);
 								}
@@ -546,7 +586,6 @@ public class DcpV2{
 			else if(attackerType==2 && nonAttackerType==2){
 				BigDecimal w = this.attackerWitnessDown;
 				for (Agent a : agents1) {
-					// int c=0;
 					for (Agent b : agents2) {
 						if(a.id!=b.id){
 							String aid=a.id;
@@ -556,10 +595,12 @@ public class DcpV2{
 							if(a.role.equals("attacker_2")){
 								if(b.role.equals("nonAttacker_2")){
 									BigDecimal r=new BigDecimal(Math.random());
+									// System.out.println(r+" "+w);
 									if(r.compareTo(w)==-1){
 										vote=0;
 										a.csDownvoteCount++;
-										b.csDownvotedCount++;										
+										b.csDownvotedCount++;
+										this.attackerDownCount++;	
 									}
 								}
 								// else{
@@ -588,7 +629,6 @@ public class DcpV2{
 							}							
 						}
 					}
-					// System.out.println("c:"+c);
 				}					
 			}
 			else if(attackerType==3 && nonAttackerType==1){
@@ -640,6 +680,14 @@ public class DcpV2{
 								// }
 							}
 							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
 								if(productToReviewerAndVote.containsKey(bid)){
 									productToReviewerAndVote.get(bid).add(aid+" "+vote);
 								}
@@ -705,6 +753,14 @@ public class DcpV2{
 								// }
 							}
 							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
 								if(productToReviewerAndVote.containsKey(bid)){
 									productToReviewerAndVote.get(bid).add(aid+" "+vote);
 								}
@@ -712,7 +768,7 @@ public class DcpV2{
 									List<String> l = new ArrayList<String>();
 									l.add(aid+" "+vote);
 									productToReviewerAndVote.put(bid, l);
-								}								
+								}									
 							}							
 						}
 					}
@@ -745,6 +801,14 @@ public class DcpV2{
 								// }
 							}
 							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
 								if(productToReviewerAndVote.containsKey(bid)){
 									productToReviewerAndVote.get(bid).add(aid+" "+vote);
 								}
@@ -752,7 +816,7 @@ public class DcpV2{
 									List<String> l = new ArrayList<String>();
 									l.add(aid+" "+vote);
 									productToReviewerAndVote.put(bid, l);
-								}								
+								}									
 							}							
 						}
 					}
@@ -785,6 +849,14 @@ public class DcpV2{
 								// }
 							}
 							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
 								if(productToReviewerAndVote.containsKey(bid)){
 									productToReviewerAndVote.get(bid).add(aid+" "+vote);
 								}
@@ -841,6 +913,14 @@ public class DcpV2{
 								// }
 							}
 							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
 								if(productToReviewerAndVote.containsKey(bid)){
 									productToReviewerAndVote.get(bid).add(aid+" "+vote);
 								}
@@ -866,40 +946,28 @@ public class DcpV2{
 					// int c=0;
 					for (Agent b : agents2) {
 						if(a.id!=b.id){
-							BigDecimal r=new BigDecimal(Math.random());
-							if(r.compareTo(k)==-1){
+
 								// c++;
-								if(a.role.equals("nonAttacker_1")){
-									String aid=a.id;
-									String bid=b.id;
-									Integer vote;
-									if(b.role.equals("nonAttacker_1")){
+							if(a.role.equals("nonAttacker_1")){
+								String aid=a.id;
+								String bid=b.id;
+								Integer vote=-1;
+								if(b.role.equals("nonAttacker_1")){
+									BigDecimal r=new BigDecimal(Math.random());									
+									if(r.compareTo(k)==-1){
 										vote=1;
 										a.csUpvoteCount++;
-										b.csUpvotedCount++;										
-									}
-									else{
+										b.csUpvotedCount++;	
+									}									
+								}
+								else{
+									BigDecimal r=new BigDecimal(Math.random());										
+									if(r.compareTo(k)==-1){									
 										vote=0;
 										a.csDownvoteCount++;
 										b.csDownvotedCount++;										
 									}
-									
-									if(reviewerToProductAndVote.containsKey(aid)){
-										reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-									}
-									else{
-										List<String> l = new ArrayList<String>();
-										l.add(bid+" "+vote);
-										reviewerToProductAndVote.put(aid, l);
-									}
-									if(productToReviewerAndVote.containsKey(bid)){
-										productToReviewerAndVote.get(bid).add(aid+" "+vote);
-									}
-									else{
-										List<String> l = new ArrayList<String>();
-										l.add(aid+" "+vote);
-										productToReviewerAndVote.put(bid, l);
-									}									
+								}
 								}
 							}
 						}
@@ -907,7 +975,7 @@ public class DcpV2{
 					// System.out.println("c:"+c);
 				}
 
-			}
+			
 			else if(attackerType==8 && nonAttackerType==2){
 				//do nothing for both inactive agents
 			}
@@ -1063,7 +1131,7 @@ public class DcpV2{
 			int j=1;
 			for(;j<=nAttacker;j++){
 				String id = i+"_"+j;
-				Agent attacker = new Agent(id,priorCS, priorRW);
+				Agent attacker = new Agent(id, true, priorCS, priorRW);
 				if(attackerType==8){
 					attacker.role="attacker_8";
 					attacker.e_binary=0;
@@ -1134,7 +1202,7 @@ public class DcpV2{
 			}
 			for(;j<=neiSize;j++){
 				String id = i+"_"+j;
-				Agent nonAttacker = new Agent(id,priorCS, priorRW);
+				Agent nonAttacker = new Agent(id, false, priorCS, priorRW);
 				if(nonAttackerType==1){
 					nonAttacker.role="nonAttacker_1";
 					nonAttacker.e_binary=1;
@@ -1176,8 +1244,10 @@ public class DcpV2{
 		int csUpvoteCount;
 		int csDownvotedCount;//number of votes from others
 		int csUpvotedCount;
-		Agent(String id, double priorCS, double priorRW){//inactive agent by default
+		boolean isAttacker;
+		Agent(String id, boolean isAttacker, double priorCS, double priorRW){//inactive agent by default
 			this.id = id;
+			this.isAttacker=isAttacker;
 			this.role = "N/A";
 			this.e_binary=-1;//0-ineligible, 1-eligible, -1-N/A
 			this.r_binary=-1;//0-reliable, 1-not reliable, -1-N/A
