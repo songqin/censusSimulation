@@ -20,76 +20,75 @@ x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
 # Compute the area using the composite trapezoidal rule.
 area = trapz(y, x)
 area = abs(area)
-print("area 0.00=", area)
-
-
-f='attackerWitness0.01'
-x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
-# Compute the area using the composite trapezoidal rule.
-area = trapz(y, x)
-area = abs(area)
-print("area 0.01=", area)
-
-f='attackerWitness0.02'
-x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
-# Compute the area using the composite trapezoidal rule.
-area = trapz(y, x)
-area = abs(area)
-print("area 0.02=", area)
-
-f='attackerWitness0.03'
-x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
-# Compute the area using the composite trapezoidal rule.
-area = trapz(y, x)
-area = abs(area)
-print("area 0.03=", area)
-
-f='attackerWitness0.04'
-x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
-# Compute the area using the composite trapezoidal rule.
-area = trapz(y, x)
-area = abs(area)
-print("area 0.04=", area)
-
-f='attackerWitness0.05'
-x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
-# Compute the area using the composite trapezoidal rule.
-area = trapz(y, x)
-area = abs(area)
-print("area 0.05=", area)
-
-f='attackerWitness0.06'
-x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
-# Compute the area using the composite trapezoidal rule.
-area = trapz(y, x)
-area = abs(area)
-print("area 0.06=", area)
-
-f='attackerWitness0.07'
-x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
-# Compute the area using the composite trapezoidal rule.
-area = trapz(y, x)
-area = abs(area)
-print("area 0.07=", area)
-
-f='attackerWitness0.08'
-x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
-# Compute the area using the composite trapezoidal rule.
-area = trapz(y, x)
-area = abs(area)
-print("area 0.08=", area)
-
-f='attackerWitness0.09'
-x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
-# Compute the area using the composite trapezoidal rule.
-area = trapz(y, x)
-area = abs(area)
-print("area 0.09=", area)
+print("area 0=", area)
 
 f='attackerWitness0.10'
 x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
 # Compute the area using the composite trapezoidal rule.
 area = trapz(y, x)
 area = abs(area)
-print("area 0.10=", area)
+print("area 0.1=", area)
+
+f='attackerWitness0.20'
+x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
+# Compute the area using the composite trapezoidal rule.
+area = trapz(y, x)
+area = abs(area)
+print("area 0.2=", area)
+
+f='attackerWitness0.30'
+x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
+# Compute the area using the composite trapezoidal rule.
+area = trapz(y, x)
+area = abs(area)
+print("area 0.3=", area)
+
+f='attackerWitness0.40'
+x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
+# Compute the area using the composite trapezoidal rule.
+area = trapz(y, x)
+area = abs(area)
+print("area 0.4=", area)
+
+f='attackerWitness0.50'
+x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
+# Compute the area using the composite trapezoidal rule.
+area = trapz(y, x)
+area = abs(area)
+print("area0.5 =", area)
+
+f='attackerWitness0.60'
+x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
+# Compute the area using the composite trapezoidal rule.
+area = trapz(y, x)
+area = abs(area)
+print("area0.6=", area)
+
+f='attackerWitness0.70'
+x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
+# Compute the area using the composite trapezoidal rule.
+area = trapz(y, x)
+area = abs(area)
+print("area 0.7=", area)
+
+f='attackerWitness0.80'
+x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
+# Compute the area using the composite trapezoidal rule.
+area = trapz(y, x)
+area = abs(area)
+print("area 0.8=", area)
+
+f='attackerWitness0.90'
+x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
+# Compute the area using the composite trapezoidal rule.
+area = trapz(y, x)
+area = abs(area)
+print("area 0.9=", area)
+
+f='attackerWitness1.00'
+x,y=np.loadtxt(f, delimiter=' ', usecols=(1,0),unpack=True)
+# Compute the area using the composite trapezoidal rule.
+area = trapz(y, x)
+area = abs(area)
+print("area 1.0=", area)
 
