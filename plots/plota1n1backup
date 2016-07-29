@@ -10,6 +10,7 @@ set label "ap=5%, nap=95%, nawp=0.05%" at 0.70,0.47 center
 set label "awfp, area under the curve (AUC)" at 0.5,0.2 center
 
 plot 'attackerWitness0.00' using 2:1 with linespoints title "  0.00",\
+'attackerWitness0.05' using 2:1 with linespoints title "  0.05",\
 'attackerWitness0.10' using 2:1 with linespoints title "  0.10",\
 'attackerWitness0.20' using 2:1 with linespoints title "  0.20",\
 'attackerWitness0.30' using 2:1 with linespoints title "  0.30",\

@@ -46,7 +46,7 @@ public class BatchA1N1V2{
 				+" "+ob+" "+n+" "+pathOfCpt+" 1 1 "+attackerWitnessUp + " 0 "+filename;
 				System.out.println("#process: "+process);
 				runProcess(process);
-				attackerWitnessUp+=0.1;//0.05(used)
+				attackerWitnessUp+=0.05;//0.05(used)
 				System.out.println(attackerWitnessUp);
 
 			}
