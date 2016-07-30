@@ -3,7 +3,10 @@ set yrange [0:1]
 set terminal pdf
 set output 'a1n120.pdf'
 set key horizontal bottom right 
+set xlabel "false positive rate"
+set ylabel "true positive rate"
 
+set label "y=x" at 0.55, 0.5 center
 #set title "ROC curve identifies eligible agents for attacker:type1, nonattacker:type1"
 #set label "100 neighborhoods, 100 agents/neighborhood," at 0.70,0.47 center
 #set label "ap=5%, nap=95%, nawp=0.05%" at 0.70,0.4 center
