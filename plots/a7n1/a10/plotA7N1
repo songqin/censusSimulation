@@ -5,7 +5,7 @@ set xrange [0:1]
 set yrange [0:1]
 set terminal pdf
 
-set output 'a7n160.pdf'
+set output 'a7n110.pdf'
 
 set key horizontal bottom right 
 set xlabel "false positive rate"
@@ -14,8 +14,9 @@ set ylabel "true positive rate"
 #set label "y=x" at 0.5, 0.4 center
 set label "awfp, area under the curve (AUC)" at 0.5,0.2 center
 
-plot 'attackerWitness0.00' using 2:1 with linespoints title "0% 0.99",\
-'attackerWitness0.10' using 2:1 with linespoints title "10% 1.0",\
+plot 'attackerWitness0.00' using 2:1 with linespoints title "0% 1.0",\
+'attackerWitness0.50' using 2:1 with linespoints title "50% 1.0",\
+'attackerWitness1.00' using 2:1 with linespoints title "100% 1.0",\
 x title "y=x"
 #pause -1
 #quit
