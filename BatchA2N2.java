@@ -29,8 +29,8 @@ public class BatchA2N2{
 	public static void main(String[] args) {
 		try {
 
-			int numNei=1; //numNei
-			int neiSize=1000;
+			int numNei=100; //numNei
+			int neiSize=100;
 			int ob=0;
 			String pathOfCpt="./cpt.txt";
 			int n =1000;//100000 is good
