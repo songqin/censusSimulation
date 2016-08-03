@@ -536,12 +536,14 @@ public class DcpV2{
 									if(b.role.equals("nonAttacker_1")){
 										vote=1;
 										a.csUpvoteCount++;
-										b.csUpvotedCount++;										
+										b.csUpvotedCount++;		
+										this.nonAttackerUpCount++;							
 									}
 									else{
 										vote=0;
 										a.csDownvoteCount++;
-										b.csDownvotedCount++;										
+										b.csDownvotedCount++;	
+										this.nonAttackerUpCount++;									
 									}									
 								}
 							}
@@ -551,7 +553,8 @@ public class DcpV2{
 									if(r.compareTo(w)==-1){
 										vote=0;
 										a.csDownvoteCount++;
-										b.csDownvotedCount++;										
+										b.csDownvotedCount++;
+										this.attackerDownCount++;										
 									}
 								}
 								// else{

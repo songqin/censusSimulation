@@ -1,0 +1,26 @@
+
+
+
+
+set xrange [0:1]
+set yrange [0:1]
+set terminal pdf
+set output 'a2n150.pdf'
+set key horizontal bottom right 
+set xlabel "false positive rate"
+set ylabel "true positive rate"
+
+set label "y=x" at 0.55, 0.5 center
+set label "awap, area under the curve (AUC)" at 0.5,0.2 center
+
+plot 'attackerWitness0.10' using 2:1 with linespoints title "10% 0.98",\
+'attackerWitness0.30' using 2:1 with linespoints title "30% 0.96",\
+'attackerWitness0.50' using 2:1 with linespoints title "50% 0.91",\
+'attackerWitness0.70' using 2:1 with linespoints title "70% 0.84",\
+'attackerWitness1.00' using 2:1 with linespoints title "100% 0.67",\
+x title ""
+#pause -1
+#quit
+
+
+
