@@ -10,7 +10,7 @@ set title "ROC curve identifies eligible agents for attacker:type2, nonattacker:
 set label "ap=5%, nap=95%, nawp=5\%" at 0.70,0.47 center
 set label "awap, area under the curve (AUC)" at 0.5,0.2 center
 plot 'attackerWitness0.00' using 2:1 with linespoints title "0.00",\
-'attackerWitness0.10' using 2:1 with linespoints title "0.10",\
+'attackerWitness0.05' using 2:1 with linespoints title "0.10",\
 'attackerWitness0.20' using 2:1 with linespoints title "0.20",\
 'attackerWitness0.30' using 2:1 with linespoints title "0.30",\
 'attackerWitness0.40' using 2:1 with linespoints title "0.40",\

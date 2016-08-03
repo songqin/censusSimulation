@@ -42,14 +42,14 @@ public class BatchA2N1{
 			double attackerWitnessUp=0;
 			int attackerType=2;
 			int nonAttackerType=1;			
-			while(attackerWitnessDown<1.05){
+			while(attackerWitnessDown<0.12){
 				String filename=
 				"attackerWitness"+new DecimalFormat("#0.00").format(attackerWitnessDown);
 				process="java DcpV2 "+numNei+" "+neiSize+" "+nonattackerPercentage+" "+nonAttackerWitness
 				+" "+ob+" "+n+" "+pathOfCpt+" "+attackerType+" "+nonAttackerType+" "+attackerWitnessUp +" "+attackerWitnessDown+ " "+filename;
 				System.out.println("#process: "+process);
 				runProcess(process);
-				attackerWitnessDown+=0.1;
+				attackerWitnessDown+=0.02;
 			}
 			// while((hap+map+fap <= 1) && (hawp+mawp+fawp<1)){
 			// 	if(chaningPara.equals("hap")){
