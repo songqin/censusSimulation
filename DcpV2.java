@@ -938,9 +938,9 @@ public class DcpV2{
 					// System.out.println("c:"+c);
 				}					
 			}
-			else if(attackerType==7 && nonAttackerType==2){
+			// else if(attackerType==7 && nonAttackerType==2){
 				
-			}
+			// }
 			else if(attackerType==8 && nonAttackerType==1){
 				//inactive attacker
 				//nonattacker witness k% of agents 
