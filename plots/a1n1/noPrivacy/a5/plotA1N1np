@@ -1,0 +1,18 @@
+set xrange [0:1]
+set yrange [0:1]
+set terminal pdf
+set output 'a1n15np.pdf'
+set key horizontal bottom right 
+
+
+set label "awfp, area under the curve (AUC)" at 0.5,0.2 center
+
+plot 'attackerWitness0.00' using 2:1 with linespoints title "0.00 1",\
+'attackerWitness0.20' using 2:1 with linespoints title "0.20 1",\
+'attackerWitness0.40' using 2:1 with linespoints title "0.40 0.84",\
+'attackerWitness0.60' using 2:1 with linespoints title "0.60 0.53",\
+'attackerWitness0.80' using 2:1 with linespoints title "0.80 0.5",\
+'attackerWitness1.00' using 2:1 with linespoints title "100% 0.5",\
+x title "y=x"
+#pause -1
+#quit

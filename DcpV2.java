@@ -117,11 +117,14 @@ public class DcpV2{
 			neighborhoods.add(n);
 		}
 		// populateToyWitnessStances();
+		System.out.println("populate witness");
 		populateWitnessStances();
 		// printWitness();
+		System.out.println("mcmc");
 		mcmc(mcmcRounds);
 		// printNeighborhoodAndAgents();
 		// printAllAgents();
+		System.out.println("compute and write tpr,fpr");
 		printTprFpr(1);
 		System.out.println(	" attackerDownCount:"+attackerDownCount +
 			 " \nattakcerUpCount:"+attackerUpCount +
@@ -709,10 +712,119 @@ public class DcpV2{
 				
 			}
 			else if(attackerType==5 && nonAttackerType==1){
-				
+				BigDecimal k = this.nonAttackerWitness;
+				BigDecimal w = this.attackerWitnessUp;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							// BigDecimal r=new BigDecimal(Math.random());
+							if(a.role.equals("nonAttacker_1")){
+								BigDecimal r=new BigDecimal(Math.random());
+								if(r.compareTo(k)==-1){
+									if(b.role.equals("nonAttacker_1")){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;	
+										this.nonAttackerUpCount++;									
+									}
+									else{
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;	
+										this.nonAttackerDownCount++;									
+									}									
+								}
+							}
+							else{//attacker_1
+								if(b.role.equals("attacker_5")){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;		
+										this.attackerUpCount++;									
+									}
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
+							}
+							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}																
+							}							
+						}
+					}
+					// System.out.println("c:"+c);
+				}					
 			}
 			else if(attackerType==5 && nonAttackerType==2){
-				
+				BigDecimal w = this.attackerWitnessUp;
+				for (Agent a : agents1) {
+					// int c=0;
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							// BigDecimal r=new BigDecimal(Math.random());
+							if(a.role.equals("attacker_5")){
+								if(b.role.equals("attacker_5")){
+									BigDecimal r=new BigDecimal(Math.random());
+									if(r.compareTo(w)==-1){
+										vote=1;
+										a.csUpvoteCount++;
+										b.csUpvotedCount++;										
+									}
+								}
+								// else{
+								// 	vote=0;
+								// 	a.csDownvoteCount++;
+								// 	b.csDownvotedCount++;										
+								// }
+							}
+							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}																	
+							}							
+						}
+					}
+					// System.out.println("c:"+c);
+				}					
 			}
 			else if(attackerType==6 && nonAttackerType==1){
 				BigDecimal k = this.nonAttackerWitness;
@@ -1156,12 +1268,13 @@ public class DcpV2{
 					nnea++;		
 					nra++;		
 				}
-				// else if (attackerType==5){
-				// 	attacker.role="attacker_5";
-				// 	attacker.e_binary=0;
-				// 	attacker.r_binary=1;
-				// 	nnea++;				
-				// }
+				else if (attackerType==5){
+					attacker.role="attacker_5";
+					attacker.e_binary=1;
+					attacker.r_binary=0;
+					nea++;
+					nnra++;				
+				}
 				else if (attackerType==4){
 					attacker.role="attacker_4";
 					attacker.e_binary=1;

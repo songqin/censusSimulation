@@ -29,24 +29,24 @@ public class BatchA1N1V2{
 	public static void main(String[] args) {
 		try {
 
-			int numNei=100; //numNei 200000
-			int neiSize=100;
+			int numNei=1; //numNei 200000
+			int neiSize=1000;
 			int ob=0;
 			String pathOfCpt="./cpt.txt";
-			int n =1000;//100000 is good, reduced to 1000
+			int n =100;//100000 is good, reduced to 1000
 			long startTime = System.currentTimeMillis();
 			double nonAttackerWitness=0.05;
 			double nonattackerPercentage = Double.parseDouble(args[0]);
 			String process="";
 			double attackerWitnessUp=0;
-			while(attackerWitnessUp<=1){
+			while(attackerWitnessUp<1.01){
 				String filename=
 				"attackerWitness"+new DecimalFormat("#0.00").format(attackerWitnessUp);
 				process="java DcpV2 "+numNei+" "+neiSize+" "+nonattackerPercentage+" "+nonAttackerWitness
 				+" "+ob+" "+n+" "+pathOfCpt+" 1 1 "+attackerWitnessUp + " 0 "+filename;
 				System.out.println("#process: "+process);
 				runProcess(process);
-				attackerWitnessUp+=0.05;//0.05(used)
+				attackerWitnessUp+=0.1;//0.05(used)
 				System.out.println(attackerWitnessUp);
 
 			}
