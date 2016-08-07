@@ -10,7 +10,7 @@ set xlabel "false positive rate"
 set ylabel "true positive rate"
 
 set label "y=x" at 0.55, 0.5 center
-set label "awap, area under the curve (AUC)" at 0.5,0.2 center
+set label "awfp, area under the curve (AUC)" at 0.5,0.2 center
 
 plot 'attackerWitness0.00' using 2:1 with linespoints title "0% 0.48",\
 'attackerWitness0.10' using 2:1 with linespoints title "1% 0.0",\
