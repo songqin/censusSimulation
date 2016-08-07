@@ -29,11 +29,11 @@ public class BatchA6N2{
 	public static void main(String[] args) {
 		try {
 
-			int numNei=100; //numNei
-			int neiSize=100;
+			int numNei=1; //numNei
+			int neiSize=1000;
 			int ob=0;
 			String pathOfCpt="./cpt.txt";
-			int n =1000;//100000 is good
+			int n =100;//100000 is good
 			long startTime = System.currentTimeMillis();
 			double nonAttackerWitness=0.05;
 			double nonattackerPercentage = Double.parseDouble(args[0]);;
@@ -42,7 +42,7 @@ public class BatchA6N2{
 			int nonAttackerType=2;
 			double attackerwitnessDown=0;
 			double attackerWitnessUp=0;		
-			while(attackerwitnessDown<1.1){
+			while(attackerwitnessDown<0.41){
 				String filename=
 				"attackerWitness"+new DecimalFormat("#0.00").format(attackerwitnessDown);
 				process="java DcpV2 "+numNei+" "+neiSize+" "+nonattackerPercentage+" "+nonAttackerWitness

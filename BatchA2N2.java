@@ -29,11 +29,11 @@ public class BatchA2N2{
 	public static void main(String[] args) {
 		try {
 
-			int numNei=100; //numNei
-			int neiSize=100;
+			int numNei=1; //numNei
+			int neiSize=1000;
 			int ob=0;
 			String pathOfCpt="./cpt.txt";
-			int n =1000;//100000 is good
+			int n =100;//100000 is good
 			long startTime = System.currentTimeMillis();
 			double nonAttackerWitness=0;
 			double nonattackerPercentage = Double.parseDouble(args[0]);
