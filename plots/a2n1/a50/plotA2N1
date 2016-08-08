@@ -17,7 +17,7 @@ plot 'attackerWitness0.10' using 2:1 with linespoints title "10% 0.98",\
 'attackerWitness0.30' using 2:1 with linespoints title "30% 0.96",\
 'attackerWitness0.50' using 2:1 with linespoints title "50% 0.91",\
 'attackerWitness0.70' using 2:1 with linespoints title "70% 0.84",\
-'attackerWitness1.00' using 2:1 with linespoints title "100% 0.67",\
+'attackerWitness0.90' using 2:1 with linespoints title "90% 0.73",\
 x title ""
 #pause -1
 #quit
