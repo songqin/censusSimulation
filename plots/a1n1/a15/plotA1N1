@@ -14,6 +14,7 @@ set label "y=x" at 0.55, 0.5 center
 set label "awfp, area under the curve (AUC)" at 0.5,0.2 center
 
 plot 'attackerWitness0.00' using 2:1 with linespoints title "0% 0.99",\
+'attackerWitness0.05' using 2:1 with linespoints title "5% 0.97",\
 'attackerWitness0.10' using 2:1 with linespoints title "10% 0.91",\
 'attackerWitness0.20' using 2:1 with linespoints title "20% 0.73",\
 'attackerWitness0.30' using 2:1 with linespoints title "30% 0.59",\
