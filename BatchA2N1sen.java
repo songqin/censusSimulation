@@ -40,11 +40,11 @@ public class BatchA2N1sen{
 			double attackerPercentage=0;
 			double nonattackerPercentage= 1.0-attackerPercentage;
 			String process="";
-			double attackerWitnessDown=Double.parseDouble(args[0]);//0
+			double attackerWitnessDown=Double.parseDouble(args[0]);
 			double attackerWitnessUp=0;
 			int attackerType=2;
 			int nonAttackerType=1;			
-			while(attackerPercentage<1.01){//0.261
+			while(attackerPercentage<1.01){
 				String filename=
 				"attackerWitness"+new DecimalFormat("#0.00").format(attackerPercentage);
 				process="java DcpV2 "+numNei+" "+neiSize+" "+nonattackerPercentage+" "+nonAttackerWitness

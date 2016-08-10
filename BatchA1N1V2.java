@@ -38,7 +38,7 @@ public class BatchA1N1V2{
 			double nonAttackerWitness=0.05;
 			double nonattackerPercentage = Double.parseDouble(args[0]);
 			String process="";
-			double attackerWitnessUp=0;
+			double attackerWitnessUp=0.05;
 			while(attackerWitnessUp<1.01){
 				String filename=
 				"attackerWitness"+new DecimalFormat("#0.00").format(attackerWitnessUp);
@@ -48,7 +48,6 @@ public class BatchA1N1V2{
 				runProcess(process);
 				attackerWitnessUp+=0.1;//0.05(used)
 				System.out.println(attackerWitnessUp);
-
 			}
 			// while((hap+map+fap <= 1) && (hawp+mawp+fawp<1)){
 			// 	if(chaningPara.equals("hap")){

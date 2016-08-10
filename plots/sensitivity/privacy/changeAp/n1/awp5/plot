@@ -1,0 +1,23 @@
+
+#awp 0.05 nawp 0.05
+
+set xrange [0:1]
+set yrange [0:1]
+set terminal pdf
+set output 'awp5senchangeap.pdf'
+set key horizontal bottom right 
+set xlabel "percentage of attackers"
+set ylabel "area under curve"
+
+#set title "ROC curve identifies eligible agents for attacker:type1, nonattacker:type1"
+set label "awp=5%, nawp=5% " at 0.20,0.20 center
+#set label "ap=5%, nap=95%, nawp=0.05%" at 0.70,0.4 center
+
+#set label "awfp, area under the curve (AUC)" at 0.5,0.2 center
+
+plot 'a1n1' using 1:2 with linespoints title "a1n1",\
+'a2n1' using 1:2 with linespoints title "a2n1",\
+'a3n1' using 1:2 with linespoints title "a3n1",\
+'a4n1' using 1:2 with linespoints title "a4n1"
+#pause -1
+#quit
