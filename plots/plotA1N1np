@@ -1,7 +1,7 @@
 set xrange [0:1]
 set yrange [0:1]
 set terminal pdf
-set output 'a1n1np20.pdf'
+set output 'a1n1np5.pdf'
 set key horizontal bottom right 
 
 
