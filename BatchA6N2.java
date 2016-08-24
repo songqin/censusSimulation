@@ -30,12 +30,12 @@ public class BatchA6N2{
 		try {
 
 			int numNei=1; //numNei
-			int neiSize=1000;
+			int neiSize=10000;
 			int ob=0;
 			String pathOfCpt="./cpt.txt";
-			int n =100;//100000 is good
+			int n =1000;//100000 is good
 			long startTime = System.currentTimeMillis();
-			double nonAttackerWitness=0.05;
+			double nonAttackerWitness=0.05/100;
 			double nonattackerPercentage = Double.parseDouble(args[0]);;
 			String process="";
 			int attackerType=6;
@@ -44,12 +44,12 @@ public class BatchA6N2{
 			double attackerWitnessUp=0;		
 			while(attackerwitnessDown<0.41){
 				String filename=
-				"attackerWitness"+new DecimalFormat("#0.00").format(attackerwitnessDown);
+				"attackerWitness"+new DecimalFormat("#0.000").format(attackerwitnessDown);
 				process="java DcpV2 "+numNei+" "+neiSize+" "+nonattackerPercentage+" "+nonAttackerWitness
 				+" "+ob+" "+n+" "+pathOfCpt+" "+attackerType+" "+nonAttackerType+" "+attackerWitnessUp +" "+attackerwitnessDown +" "+filename;
 				System.out.println("#process: "+process);
 				runProcess(process);
-				attackerwitnessDown+=0.1;
+				attackerwitnessDown+=0.1/100;
 			}
 			// while((hap+map+fap <= 1) && (hawp+mawp+fawp<1)){
 			// 	if(chaningPara.equals("hap")){
