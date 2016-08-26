@@ -120,23 +120,34 @@ public class DCPCorruptedNeighborhood{
 		// populateToyWitnessStances();
 		System.out.println("populate witness");
 		populateWitnessStances2();
-		printWitness();
-		System.out.println("mcmc");
-		mcmc(mcmcRounds);
+		// printWitness();
+		// System.out.println("mcmc");
+		// printAllAgents();
+		// mcmc(mcmcRounds);
 		// printNeighborhoodAndAgents();
-		printAllAgents();
-		for(int i=0;i<100;i++){
+		// printAllAgents();
+		double t=0.95;//threshold
+		System.out.println(idToAgents.size());
+		for(int i=1;i<=200;i++){//180-190
 			anchoring1();
-			// printWitness();
-			// System.out.println("mcmc");
-			
+			mcmc(mcmcRounds);
+			double c=0.0;
+			for(Agent a: idToAgents.values()){
+				if(a.e_prob<t){
+					c++;
+				}
+			}
+			System.out.println(i+" "+c/idToAgents.size());
+
+
 			// printNeighborhoodAndAgents();
 			// printAllAgents();
 
-		}
-		printWitness();
-		mcmc(mcmcRounds);
-		printOneAgent("1_2");
+			}
+		// printWitness();
+		// mcmc(mcmcRounds);
+		// printAllAgents();
+		// printOneAgent("1_2");
 		// System.out.println("compute and write tpr,fpr");
 		// printTprFpr(1);
 		// System.out.println(	" attackerDownCount:"+attackerDownCount +
@@ -324,6 +335,12 @@ public class DCPCorruptedNeighborhood{
 			// System.out.println(reviewerToProductAndVote.get(key).size());
 			// c+=reviewerToProductAndVote.get(key).size();
 		}
+		System.out.println("#productToReviewerAndVote");
+		for(String key:productToReviewerAndVote.keySet()){
+			System.out.println("#"+key+" "+productToReviewerAndVote.get(key));
+			// System.out.println(reviewerToProductAndVote.get(key).size());
+			// c+=reviewerToProductAndVote.get(key).size();
+		}
 		// System.out.println("c:"+c);
 		System.out.println("#--------------------------------");
 		// System.out.println("#productToReviewerAndVote:");
@@ -417,7 +434,7 @@ public class DCPCorruptedNeighborhood{
 		maxAgentId++;
 		String id=maxAgentId+"";
 		// System.out.println(maxAgentId);
-		Agent nonAttacker = new Agent(id+"", false, this.prior[CS], this.prior[CS]);
+		Agent nonAttacker = new Agent(id+"", false, this.prior[CS], this.prior[RW]);
 		idToAgents.put(id, nonAttacker);
 		stateMapRW.put(id, (int) Math.floor(random(2)));//0 or 1
 		stateMapCS.put(id, (int) Math.floor(random(2)));//0 or 1
@@ -440,10 +457,13 @@ public class DCPCorruptedNeighborhood{
 				BigDecimal w = this.attackerWitnessUp;
 				for (Agent a : agents1) {
 					Integer vote=0;
+					nonAttacker.csDownvoteCount++;
+					a.csDownvotedCount++;
 					String aid=nonAttacker.id;
 					String bid=a.id;
 					if(reviewerToProductAndVote.containsKey(aid)){
 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+
 					}
 					else{
 						List<String> l = new ArrayList<String>();
@@ -1259,11 +1279,14 @@ public class DCPCorruptedNeighborhood{
 		for (int i = 0; i < x; i++) {
 			// System.out.println("MCMC Round "+i);
 			for(String k: NRWMapT.keySet()){
+				// System.out.println("k:   "+k);
 				if(!fixedMapRW.get(k)){
+					// if(k.equals("50")) System.out.println("AHHHHHH");
 					mcmc_A_RW(k);
 				}
 			}
 			for(String k: NCSMapT.keySet()){
+				// System.out.println("k2:   "+k);
 				if(!fixedMapCS.get(k)){
 					mcmc_A_CS(k);		
 				}
@@ -1338,18 +1361,23 @@ public class DCPCorruptedNeighborhood{
 			for(int i=0; i<list.size(); i++) {
 			   double[][] CPT_crt_CS = CPT_CS;
 			   String o = list.get(i);
+			   // System.out.println("a:"+a);
 			   // System.out.println("o:"+o);
 			   String reviewer = o.split(" ")[0];
 			   String vote=o.split(" ")[1];
+			   // System.out.println("reviewer,vote:"+reviewer+" "+vote);
 			   // System.out.println(vote);
 			   // System.out.println(vote.equals("1"));
 				if(vote.equals("1")){
 					int state_reviewer = stateMapRW.get(reviewer);
+					 // System.out.p/rintln("state_if:"+state_reviewer);
+
 					alpha_T *= CPT_crt_CS[state_reviewer][T];
 					alpha_F *= CPT_crt_CS[state_reviewer][F];
 				}
 				else{
 					int state_reviewer = stateMapRW.get(reviewer);
+					// System.out.println("state_else:"+state_reviewer);
 					alpha_T *= 1 - CPT_crt_CS[state_reviewer][T];
 					alpha_F *= 1 - CPT_crt_CS[state_reviewer][F];
 				}		   

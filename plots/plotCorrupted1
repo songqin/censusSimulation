@@ -1,0 +1,22 @@
+
+
+
+#set xrange [0:1]
+set yrange [0:1]
+set terminal pdf
+
+set output 'corrupted1.pdf'
+
+set key horizontal bottom right 
+set xlabel "number of honest agents from outside neighborhood "
+set ylabel "percentage of correctly identified attackers"
+
+#set object circle at first 193,1.0 radius char 0.5 title "hahah"
+#set label "(193, 1.0)" at 187, 0.93 center
+
+plot 'corrupted100' using 1:2 with linespoints title "",\
+
+#pause -1
+#quit
+
+
