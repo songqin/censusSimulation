@@ -120,7 +120,7 @@ public class DCPCorruptedNeighborhood{
 		// populateToyWitnessStances();
 		System.out.println("populate witness");
 		populateWitnessStances2();
-		// printWitness();
+		printWitness();
 		// System.out.println("mcmc");
 		// printAllAgents();
 		// mcmc(mcmcRounds);
@@ -128,17 +128,18 @@ public class DCPCorruptedNeighborhood{
 		// printAllAgents();
 		double t=0.95;//threshold
 		System.out.println(idToAgents.size());
-		for(int i=1;i<=200;i++){//180-190
+		for(int i=1;i<=170;i++){//180-190
 			anchoring1();
-			mcmc(mcmcRounds);
-			double c=0.0;
-			for(Agent a: idToAgents.values()){
-				if(a.e_prob<t){
-					c++;
+			// if(i%10==0){
+				mcmc(mcmcRounds);
+				double c=0.0;
+				for(Agent a: idToAgents.values()){
+					if(a.e_prob<t){
+						c++;
+					}
 				}
-			}
-			System.out.println(i+" "+c/idToAgents.size());
-
+				System.out.println(i+" "+c/idToAgents.size());
+			// }
 
 			// printNeighborhoodAndAgents();
 			// printAllAgents();
@@ -480,6 +481,42 @@ public class DCPCorruptedNeighborhood{
 					}						
 				}				
 			}
+			if(attackerType==2){// witness against eligible A2N1
+				for (Agent a : agents1) {
+					Integer vote=-1;
+					if(a.role.equals("nonAttacker_1")){
+						vote=1;
+						nonAttacker.csUpvoteCount++;
+						a.csUpvotedCount++;	
+						this.nonAttackerUpCount++;									
+					}
+					else{
+						vote=0;
+						nonAttacker.csDownvoteCount++;
+						a.csDownvotedCount++;	
+						this.nonAttackerDownCount++;									
+					}						
+					String aid=nonAttacker.id;
+					String bid=a.id;
+					if(reviewerToProductAndVote.containsKey(aid)){
+						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+
+					}
+					else{
+						List<String> l = new ArrayList<String>();
+						l.add(bid+" "+vote);
+						reviewerToProductAndVote.put(aid, l);
+					}
+					if(productToReviewerAndVote.containsKey(bid)){
+						productToReviewerAndVote.get(bid).add(aid+" "+vote);
+					}
+					else{
+						List<String> l = new ArrayList<String>();
+						l.add(aid+" "+vote);
+						productToReviewerAndVote.put(bid, l);
+					}						
+				}				
+			}			
 		}		
 	}
 	void populateWitnessStances2(){
@@ -556,6 +593,55 @@ public class DCPCorruptedNeighborhood{
 					// System.out.println("c:"+c);
 				}				
 			}
+			else if(attackerType==2 && nonAttackerType==2){//changed to wit
+				BigDecimal w = this.attackerWitnessDown;
+				for (Agent a : agents1) {
+					for (Agent b : agents2) {
+						if(a.id!=b.id){
+							String aid=a.id;
+							String bid=b.id;
+							Integer vote=-1;	
+							// BigDecimal r=new BigDecimal(Math.random());
+							if(a.role.equals("attacker_2")){
+								if(b.role.equals("nonAttacker_2")){
+									BigDecimal r=new BigDecimal(Math.random());
+									// System.out.println(r+" "+w);
+									if(r.compareTo(w)==-1){
+										vote=0;
+										a.csDownvoteCount++;
+										b.csDownvotedCount++;
+										this.attackerDownCount++;	
+									}
+								}
+								else{
+									vote=1;
+									a.csUpvoteCount++;
+									b.csUpvotedCount++;										
+								}
+							}
+							if(vote!=-1){
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+								}
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}																	
+							}							
+						}
+					}
+				}					
+			}
+
 		}
 	}
 
@@ -748,7 +834,8 @@ public class DCPCorruptedNeighborhood{
 					// System.out.println("c:"+c);
 				}				
 			}	
-			else if(attackerType==2 && nonAttackerType==2){
+			//witness for attacker and against non-attackers
+			else if(attackerType==2 && nonAttackerType==2){//changed to wit
 				BigDecimal w = this.attackerWitnessDown;
 				for (Agent a : agents1) {
 					for (Agent b : agents2) {
@@ -768,11 +855,11 @@ public class DCPCorruptedNeighborhood{
 										this.attackerDownCount++;	
 									}
 								}
-								// else{
-								// 	vote=0;
-								// 	a.csDownvoteCount++;
-								// 	b.csDownvotedCount++;										
-								// }
+								else{
+									vote=1;
+									a.csUpvoteCount++;
+									b.csUpvotedCount++;										
+								}
 							}
 							if(vote!=-1){
 								if(reviewerToProductAndVote.containsKey(aid)){

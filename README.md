@@ -176,3 +176,6 @@ explain how witness is populated with probability
 --------------------
 --------------------
 --------------------
+anchoring neighborhood
+experiment 2
+java DCPCorruptedNeighborhood 1 10 0.1 0.0 0 1000 ./cpt.txt 2 2 0 1.0  attackerWitness1.00
