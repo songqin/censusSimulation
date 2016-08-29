@@ -74,6 +74,9 @@ public class Test{
 			boolean mm = test.sample(l);
 			System.out.println(mm);
 		}
+		for(int j=0;j<=2000;j+=100){
+			System.out.println(j+" "+0.0);
+		}
 	}
 }
 

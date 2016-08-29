@@ -122,29 +122,75 @@ public class DCPCorruptedNeighborhood{
 		populateWitnessStances2();
 		// printWitness();
 		// System.out.println("mcmc");
-		// printAllAgents();
+		printAllAgents();
+		double t=0.8;//threshold
+		double d=0.0;
+		for(Neighborhood n: neighborhoods){
+				HashMap<String, Agent> m = n.neighbors;
+				Collection<Agent> agents1 = m.values();
+				double c=0.0;
+				for (Agent a : agents1) {
+					if((a.e_binary==0) && (a.e_prob<t)){
+						d++;
+					}
+				}
+		}
+		System.out.println(" 0 anchor:"+d/90);
 		// mcmc(mcmcRounds);
 		// printNeighborhoodAndAgents();
 		// printAllAgents();
-		double t=0.95;//threshold
-		System.out.println(idToAgents.size());
-		for(int i=1;i<=2110;i++){//180-190
+		
+				// double cc=0.0;
+				// for(Agent a: idToAgents.values()){
+				// 	// System.out.println(a.e_prob);
+				// 	if((a.e_prob<t) && (a.e_binary==0)){
+				// 		cc++;
+				// 	}
+				// }
+				// // System.out.println(i+" "+c/idToAgents.size());
+				// System.out.println(0+" "+cc/9);		
+		// System.out.println(idToAgents.size());
+		// for(int i=1;i<=200;i++){//180-190
+		// 	anchoring1();
+		// 	// if(i>160){
+		// 		mcmc(mcmcRounds);
+		// 		// printAllAgents();}
+		// 		double c=0.0;
+		// 		for(Agent a: idToAgents.values()){
+		// 			// System.out.println(a.e_prob);
+		// 			if((a.e_prob<t) && (a.e_binary==0)){
+		// 				c++;
+		// 			}
+		// 		}
+		// 		// System.out.println(i+" "+c/idToAgents.size());
+		// 		System.out.println(i+" "+c/9);
+		// 	// }
+
+		// 	// printNeighborhoodAndAgents();
+		// 	// printAllAgents();
+
+		// 	}
+		for(int i=1;i<=3000;i++){
 			anchoring1();
-			if(i>2105){
+			// printWitness();
+			if(i%1==0 && i>1900){
+			// if(i>100){
+				// System.out.println(i);
+				// printAllAgents();
 				mcmc(mcmcRounds);
-				double c=0.0;
-				for(Agent a: idToAgents.values()){
-					if(a.e_prob<t){
-						c++;
+				for(Neighborhood n: neighborhoods){
+					HashMap<String, Agent> m = n.neighbors;
+					Collection<Agent> agents1 = m.values();
+					double c=0.0;
+					for (Agent a : agents1) {
+						if((a.e_binary==0) && (a.e_prob<t)){
+							c++;
+						}
 					}
-				}
-				System.out.println(i+" "+c/idToAgents.size());
-			}
-
-			// printNeighborhoodAndAgents();
-			// printAllAgents();
-
-			}
+					System.out.println(i+" "+c/90);
+				}	
+			}	//if
+		}
 		// printWitness();
 		// mcmc(mcmcRounds);
 		// printAllAgents();
