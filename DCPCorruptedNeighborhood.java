@@ -120,7 +120,7 @@ public class DCPCorruptedNeighborhood{
 		// populateToyWitnessStances();
 		System.out.println("populate witness");
 		populateWitnessStances2();
-		printWitness();
+		// printWitness();
 		// System.out.println("mcmc");
 		// printAllAgents();
 		// mcmc(mcmcRounds);
@@ -128,9 +128,9 @@ public class DCPCorruptedNeighborhood{
 		// printAllAgents();
 		double t=0.95;//threshold
 		System.out.println(idToAgents.size());
-		for(int i=1;i<=170;i++){//180-190
+		for(int i=1;i<=2110;i++){//180-190
 			anchoring1();
-			// if(i%10==0){
+			if(i>2105){
 				mcmc(mcmcRounds);
 				double c=0.0;
 				for(Agent a: idToAgents.values()){
@@ -139,7 +139,7 @@ public class DCPCorruptedNeighborhood{
 					}
 				}
 				System.out.println(i+" "+c/idToAgents.size());
-			// }
+			}
 
 			// printNeighborhoodAndAgents();
 			// printAllAgents();
