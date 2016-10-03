@@ -116,7 +116,8 @@ public class PowerLaw {
      */
     public static void main(String[] args) {
         //
-        PowerLaw p = new PowerLaw(new Random(555));
+        // PowerLaw p = new PowerLaw(new Random(555));
+        PowerLaw p = new PowerLaw(new Random());
 
         /*
          * double[] numbers = {0, 1, 2, 3}; for (int i = 0; i < 5; i++) {

@@ -7,7 +7,7 @@ import java.math.*;
 How many I witness = Power Law
 Attacker 1: 
 */
-public class PDCPExp1{
+public class PDCPExp2{
 	static PowerLaw pl;
 	int fast=1;
 	int printLess=1;
@@ -80,7 +80,7 @@ public class PDCPExp1{
 	//constructor
 	//hoa: honest agents
 	// ma: malicious agents
-	PDCPExp1(int numNei, int neiSize, BigDecimal hoaPercentage, BigDecimal maPercentage, int mcmcRounds,  
+	PDCPExp2(int numNei, int neiSize, BigDecimal hoaPercentage, BigDecimal maPercentage, int mcmcRounds,  
 		int attackerType,  String fileName){
 		rnd = new Random(0);
 		// pl = new PowerLaw(new Random());
@@ -501,14 +501,14 @@ public class PDCPExp1{
 						// Integer csVote=-1;	
 						// Integer rwVote=-1;
 						// BigDecimal r=new BigDecimal(Math.random());
-						if(a.role.equals("hoa")){
+						if(b.role.equals("hoa")){
 							BigDecimal r=new BigDecimal(Math.random());
 							if(r.compareTo(k)==-1){//< less than
 								//todo: witness cs rw, mcmc. ob for odcp
-								if(b.role.equals("hoa")){
+								if(a.role.equals("hoa")){
 									vote=1;
 								}
-								else if(b.role.equals("ia")){
+								else if(a.role.equals("ia")){
 									vote=1;
 									// a.csUpvoteCount++;
 									// b.csUpvotedCount++;	
@@ -522,8 +522,8 @@ public class PDCPExp1{
 								}									
 							}
 						}
-						else if(a.role.equals("attacker_1")){//attacker_1
-							if(b.role.equals("attacker_1")){
+						else if(b.role.equals("attacker_1")){//attacker_1
+							if(a.role.equals("attacker_1")){
 								BigDecimal r=new BigDecimal(Math.random());
 								if(r.compareTo(k)==-1){
 									vote=1;
@@ -539,21 +539,21 @@ public class PDCPExp1{
 							// }
 						}
 						if(vote!=-1){
-							if(reviewerToProductAndVote.containsKey(aid)){
-								reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-							}
-							else{
-								List<String> l = new ArrayList<String>();
-								l.add(bid+" "+vote);
-								reviewerToProductAndVote.put(aid, l);
-							}
-							if(productToReviewerAndVote.containsKey(bid)){
-								productToReviewerAndVote.get(bid).add(aid+" "+vote);
+							if(reviewerToProductAndVote.containsKey(bid)){
+								reviewerToProductAndVote.get(bid).add(aid+" "+vote);
 							}
 							else{
 								List<String> l = new ArrayList<String>();
 								l.add(aid+" "+vote);
-								productToReviewerAndVote.put(bid, l);
+								reviewerToProductAndVote.put(bid, l);
+							}
+							if(productToReviewerAndVote.containsKey(aid)){
+								productToReviewerAndVote.get(aid).add(bid+" "+vote);
+							}
+							else{
+								List<String> l = new ArrayList<String>();
+								l.add(bid+" "+vote);
+								productToReviewerAndVote.put(aid, l);
 							}																
 						}							
 					}
@@ -1608,7 +1608,7 @@ public class PDCPExp1{
 		}
 		long startTime = System.currentTimeMillis();
 
-		PDCPExp1 dcp = new PDCPExp1(
+		PDCPExp2 dcp = new PDCPExp2(
 			//int numNei, int neiSize, double nonAttackerPercentage,  Integer ob, int mcmcRounds, String pathOfCpt 
 			Integer.parseInt(args[0]), //numNei
 			Integer.parseInt(args[1]), // size of Neighborhood
