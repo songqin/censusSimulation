@@ -14,7 +14,7 @@ set ylabel "true positive rate"
 #set label "y=x" at 0.5, 0.4 center
 set label "awfp, area under the curve (AUC)" at 0.5,0.2 center
 
-plot 'gaussianFile.txt' using 1:2 with points title "0% 0.99"
+plot 'gaussianData' using 1:2 with points title "0% 0.99"
 pause -1
 quit
 

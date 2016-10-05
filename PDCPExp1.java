@@ -1,4 +1,11 @@
-//decentralized census problem
+
+/*
+Order of creating agents
+1 Active Agents:
+	HOA
+	MA
+2 Inactive Agents: 
+*/
 import java.util.*;
 import java.io.*;
 import java.math.*;
@@ -80,21 +87,26 @@ public class PDCPExp1{
 	//constructor
 	//hoa: honest agents
 	// ma: malicious agents
-	PDCPExp1(int numNei, int neiSize, BigDecimal hoaPercentage, BigDecimal maPercentage, int mcmcRounds,  
-		int attackerType,  String fileName){
+	// (int numNei, int neiSize, BigDecimal hoaPercentage, BigDecimal maPercentage, int mcmcRounds,  
+	// 	int attackerType,  String fileName)
+	PDCPExp1(int numNei, int neiSize, int nAttacker, int nHOA, 
+		 int mcmcRounds,  int attackerType,  String fileName){
 		rnd = new Random(0);
 		// pl = new PowerLaw(new Random());
 		this.numNei = numNei;
-		this.hoaPercentage = hoaPercentage;
-		this.maPercentage = maPercentage;
-		this.iaPercentage = BigDecimal.ONE.subtract(hoaPercentage).subtract(maPercentage);	
+		// this.hoaPercentage = hoaPercentage;
+		// this.maPercentage = maPercentage;
+		// this.iaPercentage = BigDecimal.ONE.subtract(hoaPercentage).subtract(maPercentage);	
 		this.neiSize = neiSize;
-		this.nAttacker=(maPercentage.multiply(new BigDecimal(neiSize))).intValue();
-		this.nHOA=(hoaPercentage.multiply(new BigDecimal(neiSize))).intValue();		
-		this.nIA = (iaPercentage.multiply(new BigDecimal(neiSize))).intValue();		
-		System.out.println(nAttacker);
-		System.out.println(nHOA);		
-		System.out.println(nIA);		
+		// this.nAttacker=(maPercentage.multiply(new BigDecimal(neiSize))).intValue();
+		this.nAttacker = nAttacker;
+		this.nHOA = nHOA;
+		this.nIA = neiSize-nAttacker-nHOA;
+		// this.nHOA=(hoaPercentage.multiply(new BigDecimal(neiSize))).intValue();		
+		// this.nIA = (iaPercentage.multiply(new BigDecimal(neiSize))).intValue();		
+		System.out.println("nAttacker:" + nAttacker);
+		System.out.println("nHOA:" + nHOA);		
+		System.out.println("nIA: "+nIA);		
 		this.ob=ob;
 		this.pathOfCpt = "./cpt.txt";
 		this.mcmcRounds = mcmcRounds;
@@ -126,18 +138,15 @@ public class PDCPExp1{
 			 );
 			neighborhoods.add(n);
 		}
-		// populateToyWitnessStances();
 		// System.out.println("populate witness");
-		populateWitnessStances();
-		// printWitness();
-		printCPT();
+		// populateWitnessStances();
+		// // printWitness();
+		// printCPT();
 
-		System.out.println("mcmc");
-		mcmc(mcmcRounds);
-		// printNeighborhoodAndAgents();
-		printAllAgents();
-		// System.out.println("compute and write tpr,fpr");
-		printTprFpr(1);
+		// System.out.println("mcmc");
+		// mcmc(mcmcRounds);
+		// printAllAgents();
+		// printTprFpr(1);
 		// System.out.println(	" attackerDownCount:"+attackerDownCount +
 		// 	 " \nattakcerUpCount:"+attackerUpCount +
 		// 	 " \nnonAttackerDownCount:"+nonAttackerDownCount+
@@ -189,13 +198,26 @@ public class PDCPExp1{
 							a.r_binary+" "+
 							a.e_prob+" "+
 							a.r_prob+" "+
-							a.csUpvotedCount+" "+
-							a.csDownvotedCount+" "+
-							a.csUpvoteCount+" "+
-							a.csDownvoteCount
+							a.nVotedUpByOthers+" "+
+							a.nVotedDownByOthers+" "+
+							a.nVoteUpOthers+" "+
+							a.nVoteDownOthers
 							);
 			}
 		}	
+	}
+	void printAgent(Agent a){
+		System.out.println("agent_id, role,    eligible (CS), reliable(RW), csUpvoted, csDownvoted, csUpvote, csDownvote");
+		System.out.println("#"+
+			a.id+"     "+
+			a.role+"       "+
+			a.e_binary+"("+a.e_prob+")    "+
+			a.r_binary+"("+a.r_prob+")    "+
+			a.nVotedUpByOthers+"     "+
+			a.nVotedDownByOthers+"      |"+
+			a.nVoteUpOthers+"     "+
+			a.nVoteDownOthers
+			);		
 	}
 	void printAllAgents(){
 		//role=1 honest agents (eligible=1, reliable=1), 
@@ -219,10 +241,10 @@ public class PDCPExp1{
 				a.role+"       "+
 				a.e_binary+"("+a.e_prob+")    "+
 				a.r_binary+"("+a.r_prob+")    "+
-				a.csUpvotedCount+"     "+
-				a.csDownvotedCount+"      |"+
-				a.csUpvoteCount+"     "+
-				a.csDownvoteCount
+				a.nVotedUpByOthers+"     "+
+				a.nVotedDownByOthers+"      |"+
+				a.nVoteUpOthers+"     "+
+				a.nVoteDownOthers
 				);
 		}
 		System.out.println(hoa+" "+ia+" "+ma);
@@ -510,14 +532,14 @@ public class PDCPExp1{
 								}
 								else if(b.role.equals("ia")){
 									vote=1;
-									// a.csUpvoteCount++;
-									// b.csUpvotedCount++;	
+									// a.nVoteUpOthers++;
+									// b.nVotedUpByOthers++;	
 									// this.nonAttackerUpCount++;									
 								}
 								else {
 									vote=0;
-									// a.csDownvoteCount++;
-									// b.csDownvotedCount++;	
+									// a.nVoteDownOthers++;
+									// b.nVotedDownByOthers++;	
 									// this.nonAttackerDownCount++;									
 								}									
 							}
@@ -527,15 +549,15 @@ public class PDCPExp1{
 								BigDecimal r=new BigDecimal(Math.random());
 								if(r.compareTo(k)==-1){
 									vote=1;
-									// a.csUpvoteCount++;
-									// b.csUpvotedCount++;		
+									// a.nVoteUpOthers++;
+									// b.nVotedUpByOthers++;		
 									// this.attackerUpCount++;									
 								}
 							}
 							// else{
 							// 	vote=0;
-							// 	a.csDownvoteCount++;
-							// 	b.csDownvotedCount++;										
+							// 	a.nVoteDownOthers++;
+							// 	b.nVotedDownByOthers++;										
 							// }
 						}
 						if(vote!=-1){
@@ -579,14 +601,14 @@ public class PDCPExp1{
 			// 					if(r.compareTo(k)==-1){
 			// 						if(b.role.equals("nonAttacker_1")){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;	
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;	
 			// 							this.nonAttackerUpCount++;									
 			// 						}
 			// 						else{
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;	
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;	
 			// 							this.nonAttackerDownCount++;									
 			// 						}									
 			// 					}
@@ -596,15 +618,15 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;		
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;		
 			// 							this.attackerUpCount++;									
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -645,14 +667,14 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;										
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;										
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -694,14 +716,14 @@ public class PDCPExp1{
 			// 					if(r.compareTo(k)==-1){
 			// 						if(b.role.equals("nonAttacker_1")){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;		
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;		
 			// 							this.nonAttackerUpCount++;							
 			// 						}
 			// 						else{
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;	
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;	
 			// 							this.nonAttackerUpCount++;									
 			// 						}									
 			// 					}
@@ -711,15 +733,15 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;
 			// 							this.attackerDownCount++;										
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -760,15 +782,15 @@ public class PDCPExp1{
 			// 						// System.out.println(r+" "+w);
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;
 			// 							this.attackerDownCount++;	
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -816,13 +838,13 @@ public class PDCPExp1{
 			// 					if(r.compareTo(k)==-1){
 			// 						if(b.role.equals("nonAttacker_1")){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;										
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;										
 			// 						}
 			// 						else{
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;										
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;										
 			// 						}									
 			// 					}
 			// 				}
@@ -831,14 +853,14 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;										
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;										
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -883,14 +905,14 @@ public class PDCPExp1{
 			// 					if(r.compareTo(k)==-1){
 			// 						if(b.role.equals("nonAttacker_1")){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;	
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;	
 			// 							this.nonAttackerUpCount++;									
 			// 						}
 			// 						else{
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;	
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;	
 			// 							this.nonAttackerDownCount++;									
 			// 						}									
 			// 					}
@@ -900,15 +922,15 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;		
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;		
 			// 							this.attackerUpCount++;									
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -949,14 +971,14 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;										
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;										
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -998,13 +1020,13 @@ public class PDCPExp1{
 			// 					if(r.compareTo(k)==-1){
 			// 						if(b.role.equals("nonAttacker_1")){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;										
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;										
 			// 						}
 			// 						else{
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;										
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;										
 			// 						}									
 			// 					}
 			// 				}
@@ -1013,14 +1035,14 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;										
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;										
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -1061,14 +1083,14 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;										
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;										
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -1109,14 +1131,14 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;										
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;										
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -1158,13 +1180,13 @@ public class PDCPExp1{
 			// 					if(r.compareTo(k)==-1){
 			// 						if(b.role.equals("nonAttacker_1")){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;										
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;										
 			// 						}
 			// 						else{
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;										
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;										
 			// 						}									
 			// 					}
 			// 				}
@@ -1173,14 +1195,14 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());
 			// 						if(r.compareTo(w)==-1){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;										
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;										
 			// 						}
 			// 					}
 			// 					// else{
 			// 					// 	vote=0;
-			// 					// 	a.csDownvoteCount++;
-			// 					// 	b.csDownvotedCount++;										
+			// 					// 	a.nVoteDownOthers++;
+			// 					// 	b.nVotedDownByOthers++;										
 			// 					// }
 			// 				}
 			// 				if(vote!=-1){
@@ -1227,16 +1249,16 @@ public class PDCPExp1{
 			// 						BigDecimal r=new BigDecimal(Math.random());									
 			// 						if(r.compareTo(k)==-1){
 			// 							vote=1;
-			// 							a.csUpvoteCount++;
-			// 							b.csUpvotedCount++;	
+			// 							a.nVoteUpOthers++;
+			// 							b.nVotedUpByOthers++;	
 			// 						}									
 			// 					}
 			// 					else{
 			// 						BigDecimal r=new BigDecimal(Math.random());										
 			// 						if(r.compareTo(k)==-1){									
 			// 							vote=0;
-			// 							a.csDownvoteCount++;
-			// 							b.csDownvotedCount++;										
+			// 							a.nVoteDownOthers++;
+			// 							b.nVotedDownByOthers++;										
 			// 						}
 			// 					}
 			// 					}
@@ -1429,72 +1451,67 @@ public class PDCPExp1{
 	}	
 	//constructor
 	class Neighborhood{//Could be Buggy, review code ! 
-
+		//agents in the current neighborhood
+		//key=agent id, value=agent object
 		HashMap<String, Agent> neighbors;
+		int neiId;//id of this neighborhood, e.g., 1, 2, 3, ..., 100
+		List<Agent> hacs = new ArrayList<Agent>();
+		List<Agent> attackers = new ArrayList<Agent>();
+		List<Agent> ias = new ArrayList<Agent>();
+		List<Agent> uncensables = new ArrayList<Agent>();
+		List<Agent> censables = new ArrayList<Agent>();
 		Neighborhood(int i, int neiSize, int nAttacker, int  nHOA, int nIA, double priorCS, double priorRW,
 			int attackerType
 		){
+			this.neiId=i;
 			neighbors = new HashMap<String, Agent>();
+			double percentageCensable=0.9;
+			double percentageUncensable=0.1;
+			double percentageActive;
+			double percentageInactive;
+			//Create agents in this neighorhood
 			int j=1;
+			int isCensable;
+			//Create malicious agents
 			for(;j<=nAttacker;j++){
+				//i=neighborhood id, j=local agent id
 				String id = i+"_"+j;
-				Agent attacker = new Agent(id, true, priorCS, priorRW);
-				if(attackerType==8){
-					attacker.role="attacker_8";
-					attacker.e_binary=0;
-					attacker.r_binary=-1;
-					nnea++;
-				}
-				else if (attackerType==7){
-					attacker.role="attacker_7";
-					attacker.e_binary=0;
-					attacker.r_binary=1;
-					nnea++;
-					nra++;
-				}
-				else if (attackerType==6){
-					attacker.role="attacker_6";
-					attacker.e_binary=0;
-					attacker.r_binary=1;
-					
-					nnea++;		
-					nra++;		
-				}
-				else if (attackerType==5){
-					attacker.role="attacker_5";
-					attacker.e_binary=1;
+				isCensable = sample(percentageCensable);
+				Agent attacker = new Agent(id);
+				if (attackerType==2){//FUA
+					attacker.role="FUA";
+					attacker.e_binary=isCensable;
 					attacker.r_binary=0;
-					nea++;
-					nnra++;				
-				}
-				else if (attackerType==4){
-					attacker.role="attacker_4";
-					attacker.e_binary=1;
-					attacker.r_binary=0;
-					nea++;
+					attacker.e_prob=priorCS;
+					attacker.r_prob=priorRW;
+					if(isCensable==1){
+						nea++;				
+						censables.add(attacker);
+						}
+					else{
+						nnea++;							
+						uncensables.add(attacker);
+					}
 					nnra++;
 				}
-				// else if (attackerType==3){
-				// 	attacker.role="attacker_3";
-				// 	attacker.e_binary=1;
-				// 	attacker.r_binary=0;
-				// 	nnra++;
-				// }
-				else if (attackerType==2){
-					attacker.role="attacker_2";
-					attacker.e_binary=0;
+				else if (attackerType==1){//FFA
+					attacker.role="FFA";
+					attacker.e_binary=isCensable;//censable
 					attacker.r_binary=0;
-					nnea++;				
-					nnra++;
-				}
-				else if (attackerType==1){
-					attacker.role="attacker_1";
-					attacker.e_binary=0;
-					attacker.r_binary=0;
-					nnea++;				
+					attacker.e_prob=priorCS;
+					attacker.r_prob=priorRW;					
+					if(isCensable==1){
+						nea++;				
+						censables.add(attacker);
+						}
+					else{
+						nnea++;							
+						uncensables.add(attacker);
+					}
 					nnra++;	
 				}
 				else {System.out.println("#Error: unknown attackerType when generating Neighborhood");}
+				attackers.add(attacker);
 				neighbors.put(id, attacker);
 				idToAgents.put(id, attacker);
 				stateMapRW.put(id, (int) Math.floor(random(2)));//0 or 1
@@ -1508,16 +1525,26 @@ public class PDCPExp1{
 				NCSMapT.put(id, 0);
 				NCSMapF.put(id, 0);					
 			}
-			//Generation of HOAs
+			//Create HACs
 			for(;j<=nAttacker+nHOA;j++){
 				String id = i+"_"+j;
-				Agent nonAttacker = new Agent(id, false, priorCS, priorRW);
+				isCensable = sample(percentageCensable);
+				Agent hac = new Agent(id);
 				// if(nonAttackerType==1){
-				nonAttacker.role="hoa";
-				nonAttacker.e_binary=1;
-				nonAttacker.r_binary=1;
-				nea++;
-				nra++;					
+				hac.role="HOA";
+				hac.e_binary=isCensable;
+				hac.r_binary=1;
+				if(isCensable==1){
+					nea++;				
+					censables.add(hac);
+					}
+				else{
+					nnea++;							
+					uncensables.add(hac);
+				}				
+				hac.e_prob=priorCS;
+				hac.r_prob=priorRW;				
+				nra++;
 				// }
 				// else if(nonAttackerType==2){					
 				// 	nonAttacker.role="nonAttacker_2";
@@ -1526,8 +1553,9 @@ public class PDCPExp1{
 				// 	nea++;			
 				// }
 				// else {System.out.println("#Error: unknown nonAttackerType when generating Neighborhood");}
-				neighbors.put(id, nonAttacker);
-				idToAgents.put(id, nonAttacker);
+				hacs.add(hac);
+				neighbors.put(id, hac);
+				idToAgents.put(id, hac);
 				stateMapRW.put(id, (int) Math.floor(random(2)));//0 or 1
 				stateMapCS.put(id, (int) Math.floor(random(2)));//0 or 1
 				if(!fixedMapRW.containsKey(id))
@@ -1543,12 +1571,22 @@ public class PDCPExp1{
 			//Generation of IAs
 			for(;j<=neiSize;j++){
 				String id = i+"_"+j;
-				Agent iA = new Agent(id, false, priorCS, priorRW);
+				isCensable = sample(percentageCensable);
+				Agent iA = new Agent(id);
 				// if(nonAttackerType==1){
-				iA.role="ia";
+				iA.role="IA";
 				iA.e_binary=1;
 				iA.r_binary=-1;//unknown
-				nea++;
+				iA.e_prob=priorCS;
+				iA.r_prob=priorRW;
+				if(isCensable==1){
+					nea++;				
+					censables.add(iA);
+					}
+				else{
+					nnea++;							
+					uncensables.add(iA);
+				}				
 				// nra++;					
 				// }
 				// else if(nonAttackerType==2){					
@@ -1558,6 +1596,7 @@ public class PDCPExp1{
 				// 	nea++;			
 				// }
 				// else {System.out.println("#Error: unknown nonAttackerType when generating Neighborhood");}
+				ias.add(iA);
 				neighbors.put(id, iA);
 				idToAgents.put(id, iA);
 				stateMapRW.put(id, (int) Math.floor(random(2)));//0 or 1
@@ -1571,6 +1610,14 @@ public class PDCPExp1{
 				NCSMapT.put(id, 0);
 				NCSMapF.put(id, 0);					
 			}		
+			System.out.println("Neighborhood #:" + neiId);
+			System.out.println("Number of agents:" + (hacs.size()+attackers.size()+ias.size()));
+			System.out.println("Number of hacs: "+hacs.size());
+			System.out.println("Number of attackers: "+attackers.size());
+			System.out.println("size of ias: "+ias.size());
+			System.out.println("size of uncensables: "+uncensables.size());
+			System.out.println("size of censables: "+censables.size());
+			System.out.println();
 		}
 	}
 	//constructor
@@ -1581,23 +1628,22 @@ public class PDCPExp1{
 		double r_prob;//random var for reliability
 		int e_binary;//groud truth for eligibility 1/0
 		int r_binary;//ground truth for reliability 1/0
-		int csDownvoteCount;//numver of votes of the current agent casted to others
-		int csUpvoteCount;
-		int csDownvotedCount;//number of votes from others
-		int csUpvotedCount;
-		boolean isAttacker;
-		Agent(String id, boolean isAttacker, double priorCS, double priorRW){//inactive agent by default
+		int nVoteDownOthers;//numver of votes of the current agent casted to others
+		int nVoteUpOthers;
+		int nVotedDownByOthers;//number of votes from others
+		int nVotedUpByOthers;
+		// , double priorCS, double priorRW
+		Agent(String id){//inactive agent by default
 			this.id = id;
-			this.isAttacker=isAttacker;
 			this.role = "N/A";
 			this.e_binary=-1;//0-ineligible, 1-eligible, -1-N/A
 			this.r_binary=-1;//0-reliable, 1-not reliable, -1-N/A
-			this.e_prob=priorCS;
-			this.r_prob=priorRW;
-			this.csDownvoteCount=0;
-			this.csUpvoteCount=0;
-			this.csDownvotedCount=0;
-			this.csUpvotedCount=0;
+			// this.e_prob=priorCS;
+			// this.r_prob=priorRW;
+			this.nVoteDownOthers=0;
+			this.nVoteUpOthers=0;
+			this.nVotedDownByOthers=0;
+			this.nVotedUpByOthers=0;
 		}
 	}
 
@@ -1612,8 +1658,9 @@ public class PDCPExp1{
 			//int numNei, int neiSize, double nonAttackerPercentage,  Integer ob, int mcmcRounds, String pathOfCpt 
 			Integer.parseInt(args[0]), //numNei
 			Integer.parseInt(args[1]), // size of Neighborhood
-			new BigDecimal(args[2]),//hoaPercentage
-			new BigDecimal(args[3]),//maPercentage
+			// new BigDecimal(args[2]),//hoaPercentage
+			Integer.parseInt(args[2]),//n attacker
+			Integer.parseInt(args[3]),//n HOA
 			Integer.parseInt(args[4]),//mcmc rounds
 			Integer.parseInt(args[5]),//attacker TYpe
 			args[6]//filename to write out tpr, fpr
