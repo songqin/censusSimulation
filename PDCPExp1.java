@@ -80,6 +80,8 @@ public class PDCPExp1{
 	// init() 
 	// mcmc()
 	ArrayList<Neighborhood> neighborhoods;
+	//20 fixed uncensable identities that were favorably witnessed
+	ArrayList<String> fixedUncensables;
 	public static float random(float max) {
 		float result = rnd.nextFloat() * max;
 		return result;
@@ -132,15 +134,23 @@ public class PDCPExp1{
 		//vector for counting bad quality
 		NCSMapF = new HashMap<String, Integer>();
 		neighborhoods = new ArrayList<Neighborhood>();
-		for(int i=1; i<= numNei;i++){
+		int i=1;
+		for(; i<= 5;i++){
 			Neighborhood n = new Neighborhood(i, neiSize, nAttacker, nHOA, nIA, this.prior[CS], this.prior[RW],
 				attackerType
 			 );
 			neighborhoods.add(n);
 		}
+		for(; i<= numNei;i++){
+			Neighborhood n = new Neighborhood(i, neiSize, 0, nHOA, nIA, this.prior[CS], this.prior[RW],
+				attackerType
+			 );
+			neighborhoods.add(n);
+		}
+		createWitnesses();
 		// System.out.println("populate witness");
-		// populateWitnessStances();
-		// // printWitness();
+		populateWitnessStances();
+		printWitness();
 		// printCPT();
 
 		// System.out.println("mcmc");
@@ -457,841 +467,110 @@ public class PDCPExp1{
 			}
 		}
 	}
-
+	void createWitnesses(){
+		int na = 20;//a number of n attackers in 5 neighborhood (equally distributed)
+		int m = na/5;//number of attackers per neighborhood
+		//For the first 5 neighborhoods, choose 20 fixed uncensable identities, 4 per neighborhood. 
+		ArrayList<String> fixedUncensables = new ArrayList<String>();
+		for(int j=0;j<5;j++){
+			Neighborhood n = neighborhoods.get(j);
+			List<Agent> list = n.uncensables;		
+			Collections.shuffle(list);
+			for(int i=0;i<4;i++){
+				System.out.println(list.get(i).id);
+				fixedUncensables.add(list.get(i).id);
+			}
+		}
+		//each attacker from the first 5 neighborhoods witness favorably for the 20 fixed identities		
+		for(int i=0;i<5;i++){
+			Neighborhood n = neighborhoods.get(i);
+			List<Agent> list = n.attackers;		
+			Collections.shuffle(list);
+			int vote=1;
+			for(Agent a: list){
+				String aid=a.id;
+				for(String fu:fixedUncensables){
+					String bid=fu;
+					if(reviewerToProductAndVote.containsKey(aid)){
+						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+					}
+					else{
+						List<String> l = new ArrayList<String>();
+						l.add(bid+" "+vote);
+						reviewerToProductAndVote.put(aid, l);
+					}
+					if(productToReviewerAndVote.containsKey(bid)){
+						productToReviewerAndVote.get(bid).add(aid+" "+vote);
+					}
+					else{
+						List<String> l = new ArrayList<String>();
+						l.add(aid+" "+vote);
+						productToReviewerAndVote.put(bid, l);
+					}					
+				}				
+			}
+		}		
+	}
+	//Simulate witness stances created by HACs
 	void populateWitnessStances(){
+		double sd=2;//PDCP=2. ODCP=5
+    	double mean=50;//Same for PDCP and ODCP
+    	pl = new PowerLaw(new Random());//one powerlaw distribution for all HACs
 		for(Neighborhood n: neighborhoods){
 			HashMap<String, Agent> m = n.neighbors;
 			List<Agent> list = new ArrayList<Agent>(m.values());
-			// for(Agent a:list){
-			// 	System.out.println(a.id);
-			// }
-			// System.out.println();
-			// System.out.println();
-			// System.out.println();
-			// System.out.println();			
+			List<Agent> hacList = n.hacs;		
 			Collections.shuffle(list);
-			// for(Agent a:list){
-			// 	for(Agent b:list){
-			// 		System.out.println(a.id+" "+ b.id);
-			// 	}
-				
-			// }
-			// List keys = new ArrayList(m.keySet());
-			// for(Object s: keys){
-			// 	System.out.println(m.get(s).id);
-			// }
-
-			// Collections.shuffle(keys);
-			// for(Object s: keys){
-			// 	System.out.println(m.get(s).id);
-			// }
-			// Collection<Agent> agents1 = m.values();
-			// Collection<Agent> agents2 = m.values();
-			// Collection<Agent> agents = m.values();
-			//todo
-		// int count[]=new int[100];
-  //       for (int i = 0; i < 100; i++) {//e.g., 100 agents
-  //           // System.out.println("Zipf: " + p.zipf(100));
-  //           int x=pl.zipf(100);//e.g., number of witnesses  = 0-99
-  //           count[x]++;
-  //       }
-  //       double sum=0;
-  //       for(int i=0;i<100;i++){
-  //           System.out.println(i+" "+count[i]/100.0);
-  //           sum+=count[i]/100.0;
-  //       }	
-  //       System.out.println("sum:"+sum);
-
-        // for (Agent a : agents1) {
-        // 	System.out.println(a.id);
-        // }
-        
-        // for (Agent a : agents1) {
-        // 	System.out.println(a.id);
-        // }
-        if(attackerType==1){
 			// BigDecimal w = //attackerWitnessUp;
-			for(Agent a:list){
-				pl = new PowerLaw(new Random());
-				for(Agent b:list){
-					BigDecimal k = new BigDecimal(pl.zipf(100)/99.0);//99 witness stances
-					System.out.println(a.id+" "+ b.id);
-					if(a.id!=b.id){
-						String aid=a.id;
-						String bid=b.id;
-						Integer vote=-1;
-						// Integer csVote=-1;	
-						// Integer rwVote=-1;
-						// BigDecimal r=new BigDecimal(Math.random());
-						if(a.role.equals("hoa")){
-							BigDecimal r=new BigDecimal(Math.random());
-							if(r.compareTo(k)==-1){//< less than
-								//todo: witness cs rw, mcmc. ob for odcp
-								if(b.role.equals("hoa")){
-									vote=1;
-								}
-								else if(b.role.equals("ia")){
-									vote=1;
-									// a.nVoteUpOthers++;
-									// b.nVotedUpByOthers++;	
-									// this.nonAttackerUpCount++;									
-								}
-								else {
-									vote=0;
-									// a.nVoteDownOthers++;
-									// b.nVotedDownByOthers++;	
-									// this.nonAttackerDownCount++;									
-								}									
-							}
+			for(Agent a:hacList){
+				int nw=pl.zipf(10000);//nw = number of witnessing stances that agent a will generate, 0-9999
+				Randoms r = new Randoms();//generating Gaussian distribution
+    			for(int i=0;i<nw;i++){//find rw agents in rw neighborhoods
+					double g = r.nextGaussian()*sd+mean;//a value sampled from Gaussian distribution
+      				int neiId = (int) Math.round(g);//neighborhood id of the neighborhood containts the agent to be witnessed
+      				//select a random agent (bid) from neighborhood:neiId, not myself, not the agents that were witnessed by me.
+   					String candidate  = Integer.toString((int) Math.random()*100+1);//random() = [0,1), [1,100] 
+      				while((a.id.equals(candidate)) && (a.witnessed.contains(candidate)) ){
+						candidate  = Integer.toString((int) Math.random()*100+1);
+      				}	
+      				String aid=a.id;
+      				String bid = neiId+"_"+candidate;
+      				int censable = idToAgents.get(bid).e_binary;
+      				int reliable = idToAgents.get(bid).r_binary;
+      				int vote=-1;
+      				if(censable == 0 ){
+      					vote=0;
+      				}
+      				else if(censable==1) {
+      					vote=1;
+      				}
+      				else{
+      					System.out.println("Error: censable=-1");
+      				}
+      				if(vote!=-1){
+						if(reviewerToProductAndVote.containsKey(aid)){
+							reviewerToProductAndVote.get(aid).add(bid+" "+vote);
 						}
-						else if(a.role.equals("attacker_1")){//attacker_1
-							if(b.role.equals("attacker_1")){
-								BigDecimal r=new BigDecimal(Math.random());
-								if(r.compareTo(k)==-1){
-									vote=1;
-									// a.nVoteUpOthers++;
-									// b.nVotedUpByOthers++;		
-									// this.attackerUpCount++;									
-								}
-							}
-							// else{
-							// 	vote=0;
-							// 	a.nVoteDownOthers++;
-							// 	b.nVotedDownByOthers++;										
-							// }
+						else{
+							List<String> l = new ArrayList<String>();
+							l.add(bid+" "+vote);
+							reviewerToProductAndVote.put(aid, l);
 						}
-						if(vote!=-1){
-							if(reviewerToProductAndVote.containsKey(aid)){
-								reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-							}
-							else{
-								List<String> l = new ArrayList<String>();
-								l.add(bid+" "+vote);
-								reviewerToProductAndVote.put(aid, l);
-							}
-							if(productToReviewerAndVote.containsKey(bid)){
-								productToReviewerAndVote.get(bid).add(aid+" "+vote);
-							}
-							else{
-								List<String> l = new ArrayList<String>();
-								l.add(aid+" "+vote);
-								productToReviewerAndVote.put(bid, l);
-							}																
-						}							
-					}
-				}					
+						if(productToReviewerAndVote.containsKey(bid)){
+							productToReviewerAndVote.get(bid).add(aid+" "+vote);
+						}
+						else{
+							List<String> l = new ArrayList<String>();
+							l.add(aid+" "+vote);
+							productToReviewerAndVote.put(bid, l);
+						}																
+					}	
+    			}
+				
 				}
 				
-			}			
 			
-
-			// if(attackerType==1 && nonAttackerType==1){
-			// 	BigDecimal k = this.nonAttackerWitness;
-			// 	BigDecimal w = this.attackerWitnessUp;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				// BigDecimal r=new BigDecimal(Math.random());
-			// 				if(a.role.equals("nonAttacker_1")){
-			// 					BigDecimal r=new BigDecimal(Math.random());
-			// 					if(r.compareTo(k)==-1){
-			// 						if(b.role.equals("nonAttacker_1")){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;	
-			// 							this.nonAttackerUpCount++;									
-			// 						}
-			// 						else{
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;	
-			// 							this.nonAttackerDownCount++;									
-			// 						}									
-			// 					}
-			// 				}
-			// 				else{//attacker_1
-			// 					if(b.role.equals("attacker_1")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;		
-			// 							this.attackerUpCount++;									
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}																
-			// 				}							
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}				
-			// }
-			// else if(attackerType==1 && nonAttackerType==2){
-			// 	BigDecimal w = this.attackerWitnessUp;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				// BigDecimal r=new BigDecimal(Math.random());
-			// 				if(a.role.equals("attacker_1")){
-			// 					if(b.role.equals("attacker_1")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;										
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}																	
-			// 				}							
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}					
-			// }	
-			// else if(attackerType==2 && nonAttackerType==1){
-			// 	BigDecimal k = this.nonAttackerWitness;
-			// 	BigDecimal w = this.attackerWitnessDown;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				// BigDecimal r=new BigDecimal(Math.random());
-			// 				if(a.role.equals("nonAttacker_1")){
-			// 					BigDecimal r=new BigDecimal(Math.random());
-			// 					if(r.compareTo(k)==-1){
-			// 						if(b.role.equals("nonAttacker_1")){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;		
-			// 							this.nonAttackerUpCount++;							
-			// 						}
-			// 						else{
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;	
-			// 							this.nonAttackerUpCount++;									
-			// 						}									
-			// 					}
-			// 				}
-			// 				else{//attacker_2
-			// 					if(b.role.equals("nonAttacker_1")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;
-			// 							this.attackerDownCount++;										
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}								
-			// 				}							
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}				
-			// }	
-			// else if(attackerType==2 && nonAttackerType==2){
-			// 	BigDecimal w = this.attackerWitnessDown;
-			// 	for (Agent a : agents1) {
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				// BigDecimal r=new BigDecimal(Math.random());
-			// 				if(a.role.equals("attacker_2")){
-			// 					if(b.role.equals("nonAttacker_2")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						// System.out.println(r+" "+w);
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;
-			// 							this.attackerDownCount++;	
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}																	
-			// 				}							
-			// 			}
-			// 		}
-			// 	}					
-			// }
-			// else if(attackerType==3 && nonAttackerType==1){
-				
-			// }
-			// else if(attackerType==3 && nonAttackerType==2){
-				
-			// }
-			// //a4n1
-			// else if(attackerType==4 && nonAttackerType==1){
-			// 	BigDecimal k = this.nonAttackerWitness;
-			// 	BigDecimal w = this.attackerWitnessDown;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				// BigDecimal r=new BigDecimal(Math.random());
-			// 				if(a.role.equals("nonAttacker_1")){
-			// 					BigDecimal r=new BigDecimal(Math.random());
-			// 					if(r.compareTo(k)==-1){
-			// 						if(b.role.equals("nonAttacker_1")){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;										
-			// 						}
-			// 						else{
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;										
-			// 						}									
-			// 					}
-			// 				}
-			// 				else{//attacker_2
-			// 					if(b.role.equals("nonAttacker_1")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;										
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}								
-			// 				}							
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}					
-			// }
-			// else if(attackerType==4 && nonAttackerType==2){
-				
-			// }
-			// else if(attackerType==5 && nonAttackerType==1){
-			// 	BigDecimal k = this.nonAttackerWitness;
-			// 	BigDecimal w = this.attackerWitnessUp;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				// BigDecimal r=new BigDecimal(Math.random());
-			// 				if(a.role.equals("nonAttacker_1")){
-			// 					BigDecimal r=new BigDecimal(Math.random());
-			// 					if(r.compareTo(k)==-1){
-			// 						if(b.role.equals("nonAttacker_1")){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;	
-			// 							this.nonAttackerUpCount++;									
-			// 						}
-			// 						else{
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;	
-			// 							this.nonAttackerDownCount++;									
-			// 						}									
-			// 					}
-			// 				}
-			// 				else{//attacker_1
-			// 					if(b.role.equals("attacker_5")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;		
-			// 							this.attackerUpCount++;									
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}																
-			// 				}							
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}					
-			// }
-			// else if(attackerType==5 && nonAttackerType==2){
-			// 	BigDecimal w = this.attackerWitnessUp;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				// BigDecimal r=new BigDecimal(Math.random());
-			// 				if(a.role.equals("attacker_5")){
-			// 					if(b.role.equals("attacker_5")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;										
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}																	
-			// 				}							
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}					
-			// }
-			// else if(attackerType==6 && nonAttackerType==1){
-			// 	BigDecimal k = this.nonAttackerWitness;
-			// 	BigDecimal w = this.attackerWitnessDown;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				// BigDecimal r=new BigDecimal(Math.random());
-			// 				if(a.role.equals("nonAttacker_1")){
-			// 					BigDecimal r=new BigDecimal(Math.random());
-			// 					if(r.compareTo(k)==-1){
-			// 						if(b.role.equals("nonAttacker_1")){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;										
-			// 						}
-			// 						else{
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;										
-			// 						}									
-			// 					}
-			// 				}
-			// 				else{//attacker_6
-			// 					if(b.role.equals("attacker_6")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;										
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}									
-			// 				}							
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}				
-			// }
-			// else if(attackerType==6 && nonAttackerType==2){
-			// 	BigDecimal k = this.nonAttackerWitness;
-			// 	BigDecimal w = this.attackerWitnessDown;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				if(a.role.equals("attacker_6")){//attacker_7
-			// 					if(b.role.equals("attacker_6")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;										
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}									
-			// 				}							
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}				
-			// }			
-			// else if(attackerType==7 && nonAttackerType==2){
-			// 	BigDecimal k = this.nonAttackerWitness;
-			// 	BigDecimal w = this.attackerWitnessUp;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				if(a.role.equals("attacker_7")){//attacker_7
-			// 					if(b.role.equals("nonAttacker_2")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;										
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}								
-			// 				}							
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}				
-			// }
-			// else if(attackerType==7 && nonAttackerType==1){
-			// 	BigDecimal k = this.nonAttackerWitness;
-			// 	BigDecimal w = this.attackerWitnessUp;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-			// 				String aid=a.id;
-			// 				String bid=b.id;
-			// 				Integer vote=-1;	
-			// 				// BigDecimal r=new BigDecimal(Math.random());
-			// 				if(a.role.equals("nonAttacker_1")){
-			// 					BigDecimal r=new BigDecimal(Math.random());
-			// 					if(r.compareTo(k)==-1){
-			// 						if(b.role.equals("nonAttacker_1")){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;										
-			// 						}
-			// 						else{
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;										
-			// 						}									
-			// 					}
-			// 				}
-			// 				else{//attacker_7
-			// 					if(b.role.equals("nonAttacker_1")){
-			// 						BigDecimal r=new BigDecimal(Math.random());
-			// 						if(r.compareTo(w)==-1){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;										
-			// 						}
-			// 					}
-			// 					// else{
-			// 					// 	vote=0;
-			// 					// 	a.nVoteDownOthers++;
-			// 					// 	b.nVotedDownByOthers++;										
-			// 					// }
-			// 				}
-			// 				if(vote!=-1){
-			// 					if(reviewerToProductAndVote.containsKey(aid)){
-			// 						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(bid+" "+vote);
-			// 						reviewerToProductAndVote.put(aid, l);
-			// 					}
-			// 					if(productToReviewerAndVote.containsKey(bid)){
-			// 						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-			// 					}
-			// 					else{
-			// 						List<String> l = new ArrayList<String>();
-			// 						l.add(aid+" "+vote);
-			// 						productToReviewerAndVote.put(bid, l);
-			// 					}								
-			// 				}							
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}					
-			// }
-			// // else if(attackerType==7 && nonAttackerType==2){
-				
-			// // }
-			// else if(attackerType==8 && nonAttackerType==1){
-			// 	//inactive attacker
-			// 	//nonattacker witness k% of agents 
-			// 	BigDecimal k = this.nonAttackerWitness;
-			// 	for (Agent a : agents1) {
-			// 		// int c=0;
-			// 		for (Agent b : agents2) {
-			// 			if(a.id!=b.id){
-
-			// 					// c++;
-			// 				if(a.role.equals("nonAttacker_1")){
-			// 					String aid=a.id;
-			// 					String bid=b.id;
-			// 					Integer vote=-1;
-			// 					if(b.role.equals("nonAttacker_1")){
-			// 						BigDecimal r=new BigDecimal(Math.random());									
-			// 						if(r.compareTo(k)==-1){
-			// 							vote=1;
-			// 							a.nVoteUpOthers++;
-			// 							b.nVotedUpByOthers++;	
-			// 						}									
-			// 					}
-			// 					else{
-			// 						BigDecimal r=new BigDecimal(Math.random());										
-			// 						if(r.compareTo(k)==-1){									
-			// 							vote=0;
-			// 							a.nVoteDownOthers++;
-			// 							b.nVotedDownByOthers++;										
-			// 						}
-			// 					}
-			// 					}
-			// 				}
-			// 			}
-			// 		}
-			// 		// System.out.println("c:"+c);
-			// 	}
-
-			
-			// else if(attackerType==8 && nonAttackerType==2){
-			// 	//do nothing for both inactive agents
-			// }
-			// else{
-			// 	System.out.println("#Attacker/nonAttacker type error");
-			// }					
 		}
-		// if(ob!=0){
-		// 	for(String k: witnessMapCS.keySet()){
-		// 		Integer product = Integer.parseInt(k.toString().split(" ")[1]);
-		// 		if (witnessMapCS.containsKey(ob+" "+product)) {
-		// 			fixedMapCS.put(product, true);
-		// 			this.fixedCS++;
-		// 			stateMapCS.put(product, witnessMapCS.get(ob+" "+product));
-		// 		}
-		// 	}
-		// 	if (fixedMapRW.get(ob) == false) {
-		// 		fixedMapRW.put(ob, true);
-		// 		fixedRW++;
-		// 		stateMapRW.put(ob, 1);
-		// 	}
-		// }		
-
 	}
 	// Run GIBBS-ASK(X, e, bn, N) for x rounds
 	// ... infer from rw witnesses
@@ -1632,6 +911,7 @@ public class PDCPExp1{
 		int nVoteUpOthers;
 		int nVotedDownByOthers;//number of votes from others
 		int nVotedUpByOthers;
+		List<String> witnessed;
 		// , double priorCS, double priorRW
 		Agent(String id){//inactive agent by default
 			this.id = id;
@@ -1644,6 +924,7 @@ public class PDCPExp1{
 			this.nVoteUpOthers=0;
 			this.nVotedDownByOthers=0;
 			this.nVotedUpByOthers=0;
+			this.witnessed = new ArrayList <String>();
 		}
 	}
 

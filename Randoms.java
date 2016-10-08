@@ -298,14 +298,15 @@ public class Randoms extends java.util.Random {
     // Prints the nextGamma() and oldNextGamma() distributions to
     // System.out for testing/comparison.
     Randoms r = new Randoms();
-    double sd=16;
+    double sd=5;
     double mean=50;
-    int count[]=new int[100];
-    for(int i=0;i<100;i++){
+    int count[]=new int[10000];
+    for(int i=0;i<1000000000;i++){
       double g = r.nextGaussian()*sd+mean;
       int n = (int)Math.round(g);
-      // System.out.println(n);
-      count[n]++;
+      if(n<=1 || n>100)
+        System.out.println(n);
+      // count[n]++;
     }
 
     // for (int i = 0; i < 100; i++) {//e.g., 100 agents
@@ -313,11 +314,11 @@ public class Randoms extends java.util.Random {
     //     int x=p.zipf(100);//e.g., number of witnesses  = 0-99
     //     count[x]++;
     // }
-    int sum=0;
-    for(int i=0;i<100;i++){
-        System.out.println(i+" "+count[i]/100.0);
-        sum+=count[i];
-    }    
+    // int sum=0;
+    // for(int i=0;i<100;i++){
+    //     System.out.println(i+" "+count[i]/100.0);
+    //     sum+=count[i];
+    // }    
     // final int resolution = 60;
     // int[] histogram1 = new int[resolution];
     // int[] histogram2 = new int[resolution];
