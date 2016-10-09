@@ -7,6 +7,7 @@
  */
 
 import java.util.Random;
+import java.util.*;
 
 /**
  * provides power law selection. Modified by Weishuai Yang this file is based on
@@ -139,5 +140,22 @@ public class PowerLaw {
         //     sum+=count[i];
         // }
         // System.out.println(sum);
+        List<String> list = new ArrayList<String>();
+        for(int i=0;i<10;i++){
+            list.add(i+"");
+        }
+        for(int i=0;i<10;i++){
+            System.out.println(list.get(i));
+        }
+        System.out.println();
+        Collections.shuffle(list);
+        for(int i=0;i<10;i++){
+            System.out.println(list.get(i));
+        }
+        System.out.println();
+        Collections.shuffle(list);
+        for(int i=0;i<10;i++){
+            System.out.println(list.get(i));
+        }
     }
 }
