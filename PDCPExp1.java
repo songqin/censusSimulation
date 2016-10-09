@@ -157,7 +157,7 @@ public class PDCPExp1{
 		// System.out.println("mcmc");
 		mcmc(mcmcRounds);
 		
-		printAllAgents();
+		// printAllAgents();
 		printResult();
 		System.out.println("wow:"+wow);
 		// printTprFpr(1);
@@ -175,9 +175,12 @@ public class PDCPExp1{
 	void printResult(){
 		System.out.println("uncensables detail:");
 		System.out.println("agent_id, role,    eligible (CS), reliable(RW), csUpvoted, csDownvoted, csUpvote, csDownvote");
+		double e=0;
 		for(String fu:fixedUncensables){
+			e+=idToAgents.get(fu).e_prob;
 			printAgent( idToAgents.get(fu));
 		}
+		System.out.println(nAttacker*5+" "+e);
 	}
 	void printCPT(){
 		System.out.println("#CPT_CS[T][T] "+CPT_CS[T][T]);
