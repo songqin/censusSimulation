@@ -4,7 +4,7 @@ set terminal pdf
 set output 'PDCPExp1.pdf'
 set key horizontal bottom right 
 set key horizontal bottom right 
-set ylabel "sum CS(A_i)"
+set ylabel "{/Symbol S}(P(CS^a)), a∈U (20 fixed uncensable identities)"
 set xlabel "Number of Attackers"
 #set title "ROC curve identifies eligible agents for attacker:type1, nonattacker:type1"
 #set label "100 neighborhoods, 100 agents/neighborhood," at 0.70,0.47 center
