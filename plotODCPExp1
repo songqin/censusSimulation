@@ -1,0 +1,13 @@
+#set xrange [0:2]
+set yrange [0:20]
+set terminal pdf
+
+set output 'ODCPExp1.pdf'
+
+set key horizontal bottom right 
+set key horizontal bottom right 
+
+set ylabel "{/Symbol S}(P(CS^a)), a∈U (20 fixed uncensable identities)"
+set xlabel "Number of Attackers"
+
+plot 'ODCPExp1Data' using 1:2 with linespoints title "20 Hacs per neighborhood"

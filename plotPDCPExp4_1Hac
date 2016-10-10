@@ -1,15 +1,15 @@
 #set xrange [0:2]
-set yrange [0:20]
+#set yrange [0:20]
 set terminal pdf
-set output 'PDCPExp1.pdf'
+set output 'PDCPExp4_1Hac.pdf'
 set key horizontal bottom right 
 set key horizontal bottom right 
-set ylabel "{/Symbol S}(P(CS^a)), a∈U (20 fixed uncensable identities)"
+set ylabel "{/Symbol S}(P(CS^a))/|U|, a∈U "
 set xlabel "Number of Attackers"
 
 #set title "ROC curve identifies eligible agents for attacker:type1, nonattacker:type1"
 #set label "awfp, area under the curve (AUC)" at 0.5,0.2 center
 
-plot 'PDCPExp1Data' using 1:2 with linespoints title "95 Hacs per neighborhood"
+plot 'PDCPExp4Data1Hac' using 1:2 with linespoints title "1 Hacs per neighborhood"
 #pause -1
 #quit
