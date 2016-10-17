@@ -140,7 +140,7 @@ public class ODCPExp1{
 		int i=1;
 		badNeighborhood = new ArrayList<Integer>();
 		Neighborhood n;//the neighborhood to be created
-		int w = 5; //number of bad neiborhood
+		int w = 2; //number of bad neiborhood
 		for(int k=0;k<w;k++){
 			int a = (int) (Math.random()*100+1);
 			System.out.println("bad neighborhood:"+a);
@@ -583,7 +583,7 @@ public class ODCPExp1{
 	//Simulate witness stances created by HACs
 	//pw
 	void populateWitnessStances(){
-		double sd=5;//PDCP=2. ODCP=5
+		double sd=2;//PDCP=2. ODCP=5
     	double mean=50;//Same for PDCP and ODCP
     	pl = new PowerLaw(new Random());//one powerlaw distribution for all HACs
 		List<String> list = new ArrayList<String>();;//a permutation of neighborhoods for each hac
@@ -631,7 +631,7 @@ public class ODCPExp1{
       				int censable = idToAgents.get(bid).e_binary;
       				int reliable = idToAgents.get(bid).r_binary;
       				int vote=-1;
-      				if(censable == 0){
+      				if((censable == 0) && (a_NeiId.equals(neiId))){
       					wow++;
       					vote=0;
       				}
@@ -1054,7 +1054,7 @@ public class ODCPExp1{
 			Integer.parseInt(args[0]), //numNei
 			Integer.parseInt(args[1]), // size of Neighborhood
 			// new BigDecimal(args[2]),//hoaPercentage
-			Integer.parseInt(args[2]),//n attacker per neighborhood
+			Integer.parseInt(args[2]),//n attacker
 			Integer.parseInt(args[3]),//n HOA
 			Integer.parseInt(args[4]),//mcmc rounds
 			Integer.parseInt(args[5]),//attacker TYpe

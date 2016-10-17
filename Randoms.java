@@ -298,47 +298,47 @@ public class Randoms extends java.util.Random {
     // Prints the nextGamma() and oldNextGamma() distributions to
     // System.out for testing/comparison.
     Randoms r = new Randoms();
-    double sd=5;
-    double mean=50;
-    int count[]=new int[10000];
-    for(int i=0;i<1000000000;i++){
-      double g = r.nextGaussian()*sd+mean;
-      int n = (int)Math.round(g);
-      if(n<=1 || n>100)
-        System.out.println(n);
-      // count[n]++;
-    }
+    double sd=2;//PDCP=2. ODCP=5
+    double mean=50;//Same for PDCP and ODCP
+    int c50=0;
+    int c51=0;
+    int c52=0;
+    int c49=0;
+    int c48=0;
+    int powerlawScale=Integer.parseInt(args[0]);
+    // for(;powerlawScale<10000;powerlawScale+=100){
+      for(int i=1;i<powerlawScale;i++){//find rw agents in rw neighborhoods
+          double gaussianSampleDoule = r.nextGaussian()*sd+mean;//a value sampled from Gaussian distribution
+          int gaussianSampleInt = (int) Math.round(gaussianSampleDoule);//neighborhood id of the neighborhood containts the agent to be witnessed. 
+          System.out.println(gaussianSampleDoule+" "+gaussianSampleInt);
+          if(gaussianSampleInt==48){
+            c48++;
+          }
+          else if(gaussianSampleInt==49){
+            c49++;
+          }
+          else if(gaussianSampleInt==50){
+            c50++;
+          }
+          else if(gaussianSampleInt==51){
+            c51++;
+          }                        
+          else if(gaussianSampleInt==52){
+            c52++;
+          }
 
-    // for (int i = 0; i < 100; i++) {//e.g., 100 agents
-    //     // System.out.println("Zipf: " + p.zipf(100));
-    //     int x=p.zipf(100);//e.g., number of witnesses  = 0-99
-    //     count[x]++;
-    // }
-    // int sum=0;
-    // for(int i=0;i<100;i++){
-    //     System.out.println(i+" "+count[i]/100.0);
-    //     sum+=count[i];
-    // }    
-    // final int resolution = 60;
-    // int[] histogram1 = new int[resolution];
-    // int[] histogram2 = new int[resolution];
-    // int scale = 10;
-
-    // for (int i = 0; i < 10000; i++) {
-    //   double x = 4;
-    //   int index1 = ((int)(r.nextGamma(x)/scale * resolution)) % resolution;
-    //   int index2 = ((int)(r.oldNextGamma((int)x)/scale * resolution)) % resolution;
-    //   histogram1[index1]++;
-    //   histogram2[index2]++;
-    // }
-
-    // for (int i = 0; i < resolution; i++) {
-    //   for (int y = 0; y < histogram1[i]/scale; y++)
-    //     System.out.print("*");
-    //   System.out.print("\n");
-    //   for (int y = 0; y < histogram2[i]/scale; y++)
-    //     System.out.print("-");
-    //   System.out.print("\n");
+        }        
+        System.out.println("powerlawScale:"+powerlawScale);
+        // System.out.println(c48+" "+c49+" "+c50+" "+c51+" "+c52);
+        System.out.println("c48+c49+c50+c51+c52:"+(c48+c49+c50+c51+c52)*1.0/powerlawScale);
+        // System.out.println("c49+c50+c51:"+(c49+c50+c51)*1.0/powerlawScale);
+        // System.out.println("c50:"+(c50)*1.0/powerlawScale);
+        System.out.println();      
+        c50=0;
+        c51=0;
+        c52=0;
+        c49=0;
+        c48=0;        
     // }
   }
   

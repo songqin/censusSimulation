@@ -77,9 +77,6 @@ public class PDCPExp1{
 	static Random rnd;
 	// int c;//parameter passed from Batch class
 	// static Random rnd = new Random(0);
-	// load()
-	// init() 
-	// mcmc()
 	ArrayList<Neighborhood> neighborhoods;
 	//20 fixed uncensable identities that were favorably witnessed
 	ArrayList<String> fixedUncensables;
@@ -140,7 +137,8 @@ public class PDCPExp1{
 		int i=1;
 		badNeighborhood = new ArrayList<Integer>();
 		Neighborhood n;//the neighborhood to be created
-		int w = 2; //number of bad neiborhood
+		int w = 5; //number of bad neiborhood
+		//w random bad neighborhoods that contain attackers
 		for(int k=0;k<w;k++){
 			int a = (int) (Math.random()*100+1);
 			System.out.println("bad neighborhood:"+a);
@@ -176,8 +174,8 @@ public class PDCPExp1{
 		// printWitness();
 		// printCPT();
 
-		System.out.println("running mcmc...");
-		mcmc(mcmcRounds);
+		// System.out.println("running mcmc...");
+		// mcmc(mcmcRounds);
 		
 		// printAllAgents();
 		printResult();
@@ -417,17 +415,16 @@ public class PDCPExp1{
 		int attakcerUp=0;
 		int nonAttackerDown=0;
 		int nonAttackerUp=0;
-		for(String key:reviewerToProductAndVote.keySet()){
-			System.out.println("#"+key+" "+reviewerToProductAndVote.get(key));
-			// System.out.println(reviewerToProductAndVote.get(key).size());
-			// c+=reviewerToProductAndVote.get(key).size();
-		}
-		// System.out.println("c:"+c);
-		System.out.println("#--------------------------------");
-		// System.out.println("#productToReviewerAndVote:");
-		// for(String key:productToReviewerAndVote.keySet()){
-		// 	System.out.println("#"+key+" "+productToReviewerAndVote.get(key));
+		// for(String key:reviewerToProductAndVote.keySet()){
+		// 	System.out.println("#"+key+" "+reviewerToProductAndVote.get(key));
+		// 	// System.out.println(reviewerToProductAndVote.get(key).size());
+		// 	// c+=reviewerToProductAndVote.get(key).size();
 		// }
+		System.out.println("#--------------------------------");
+		System.out.println("#productToReviewerAndVote:");
+		for(String key:productToReviewerAndVote.keySet()){
+			System.out.println("#"+key+" "+productToReviewerAndVote.get(key));
+		}
 		// System.out.println("#--------------------------------");
 		// System.out.println("#NRWMapT:");
 		// for(String key:NRWMapT.keySet()){
@@ -523,10 +520,11 @@ public class PDCPExp1{
 		//For a random of  5 neighborhoods, choose 20 fixed uncensable identities, 4 per neighborhood. 
 		Neighborhood n;//the neighborhood to be created
 		fixedUncensables = new ArrayList<String>();//global fixed uncensables
-		System.out.println("fixed uncensables:");
+		System.out.println("20 fixed uncensables:");
 		for(int k=0;k<20;k++){//20 neighborhoods * 1 agents = 20 fixed uncensables
 			int a = (int) (Math.random()*100+1);//random neighborhood ID
 			n = neighborhoods.get(a-1);
+			// System.out.println((a-1)+"     "+n.id);
 			List<Agent> list = n.uncensables;		
 			Collections.shuffle(list);
 			for(int i=0;i<1;i++){
@@ -575,8 +573,10 @@ public class PDCPExp1{
 						List<String> l = new ArrayList<String>();
 						l.add(aid+" "+vote);
 						productToReviewerAndVote.put(bid, l);
-					}					
-				}				
+					}	
+
+				}	
+				// System.out.println(reviewerToProductAndVote.get(aid));				
 			}
 		}		
 	}
@@ -586,10 +586,11 @@ public class PDCPExp1{
 		double sd=2;//PDCP=2. ODCP=5
     	double mean=50;//Same for PDCP and ODCP
     	pl = new PowerLaw(new Random());//one powerlaw distribution for all HACs
-		List<String> list = new ArrayList<String>();;//a permutation of neighborhoods for each hac
-		for(int i=1;i<=100;i++){
-			list.add(i+"");//simulating the id of neighborhood
-		}
+		List<String> list;
+		// list = new ArrayList<String>();;//a permutation of neighborhoods for each hac
+		// for(int i=1;i<=100;i++){
+		// 	list.add(i+"");//simulating the id of neighborhood
+		// }
 		for(Neighborhood n: neighborhoods){
 			// HashMap<String, Agent> m = n.neighbors;
 			// List<Agent> list = new ArrayList<Agent>(m.values());
@@ -597,32 +598,68 @@ public class PDCPExp1{
 			// Collections.shuffle(list);
 			// BigDecimal w = //attackerWitnessUp;
 			List<String> witnessed;//record the agents that were witnessed by current hac
+			List<String> myWitnessed;
 			for(Agent a:hacList){
+				// System.out.println();
+				list = new ArrayList<String>();;//a permutation of neighborhoods for each hac
+						for(int i=1;i<=100;i++){
+							list.add(i+"");//simulating the id of neighborhood
+						}
+
 				String a_NeiId = a.id.split("_")[0];//the neighborhood id of a (hac)
+				list.remove(list.indexOf(a_NeiId));//remove my neighborhood from the permutation
 				String aid=a.id;
-				witnessed = new ArrayList<String>();//
-				int nw=pl.zipf(1000);//nw = number of witnessing stances that agent a will generate, 0-9999. 10000 is too big
-				// if(nw>10000) System.out.println(a.id+"-------------------");
+				witnessed = new ArrayList<String>();// witnessing stances outside my neighborhood
+				myWitnessed = new ArrayList<String>();//witnessing stances in my neighborhood
+				int nw=pl.zipf(1000);//nw = number of witnessing stances that agent a will generate, 0-100
+
+				boolean myNei=false;
+
 				Randoms r = new Randoms();//generating Gaussian distribution
-    			// System.out.println("Processing agent:"+a.id +" with ? witnessing stances: "+nw);
+    			// System.out.println("Processing agent: "+a.id+ " at neighborhood "+a_NeiId +" with "+nw +" witnessing stances");
     			Collections.shuffle(list);//for each hac, shuffle the neighborhood list. each hac has a different perferred neighborhood
+    			
     			for(int i=0;i<nw;i++){//find rw agents in rw neighborhoods
+					myNei=false;
 					double gaussianSampleDoule = r.nextGaussian()*sd+mean;//a value sampled from Gaussian distribution
 					//
       				int gaussianSampleInt = (int) Math.round(gaussianSampleDoule);//neighborhood id of the neighborhood containts the agent to be witnessed. 
       				
-      				String neiId = list.get(gaussianSampleInt);
-      				//select a random agent (bid) from neighborhood:neiId, not myself, not the agents that were witnessed by me.
-   					String candidate  = neiId+"_"+Integer.toString((int) (Math.random()*100+1));//random() = [0,1), [1,100] 
-      				
-      				while((a.id.equals(candidate)) || (witnessed.contains(candidate)) ){
-						gaussianSampleDoule = r.nextGaussian()*sd+mean;
-						gaussianSampleInt = (int) Math.round(gaussianSampleDoule);
-						neiId = list.get(gaussianSampleInt);
+      				// System.out.println("gaussianSampleInt: "+gaussianSampleInt);
+      				String neiId ;
+      				String candidate;
+					//Generate witnessing stances for her own neighborhood	(The probability is 0.6827)
+					if((gaussianSampleInt>=48) && (gaussianSampleInt<=52)){
+						neiId = a_NeiId;//my own neighborhood
+						myNei=true;
 						candidate  = neiId+"_"+Integer.toString((int) (Math.random()*100+1));
-						// System.out.println(candidate);
-      				}	
-      				witnessed.add(candidate);
+	      				while((a.id.equals(candidate)) || (myWitnessed.contains(candidate)) ){
+							candidate  = neiId+"_"+Integer.toString((int) (Math.random()*100+1));
+							// System.out.println("size:"+myWitnessed.size());
+							if(myWitnessed.size()>=99) break;
+	      				}
+	      				myWitnessed.add(candidate);
+	      				// System.out.println("candidate" + candidate + " "+myNei);						
+						// System.out.println(gaussianSampleInt+" "+myNei);
+					}
+					else{//outside my neighborhood
+						// System.out.println(gaussianSampleInt+" "+myNei);
+						neiId = list.get(gaussianSampleInt);
+   						candidate  = neiId+"_"+Integer.toString((int) (Math.random()*100+1));//random() = [0,1), [1,100] 
+	      				while((a.id.equals(candidate)) || (witnessed.contains(candidate)) ){
+							gaussianSampleDoule = r.nextGaussian()*sd+mean;
+							gaussianSampleInt = (int) Math.round(gaussianSampleDoule);
+							neiId = list.get(gaussianSampleInt);
+							candidate  = neiId+"_"+Integer.toString((int) (Math.random()*100+1));
+							// System.out.println(candidate);
+	      				}
+	      				witnessed.add(candidate);							
+	      				// System.out.println("candidate" + candidate + " "+myNei);						
+					}
+      				
+      				//select a random agent (bid) from neighborhood:neiId, not myself, not the agents that were witnessed by me.
+
+      				
       				
       				String bid = candidate;
       				// System.out.println("candidate:"+candidate+" hac:"+a.id);
@@ -631,13 +668,25 @@ public class PDCPExp1{
       				int censable = idToAgents.get(bid).e_binary;
       				int reliable = idToAgents.get(bid).r_binary;
       				int vote=-1;
-      				if((censable == 0) && (a_NeiId.equals(neiId))){
-      					wow++;
-      					vote=0;
+      				if(myNei){//i can witness unfavorably people in my own neighborhood
+	      				if((censable == 0)){
+	      					vote=0;
+	      				}
+	      				else if(censable==1) {
+	      					vote=1;
+	      				}
       				}
-      				else if(censable==1) {
-      					vote=1;
+      				else{
+      					if(censable==1){
+      						vote=1;
+      					}
       				}
+      				// if((censable == 0) && (a_NeiId.equals(neiId))){
+      				// 	vote=0;
+      				// }
+      				// else if(censable==1) {
+      				// 	vote=1;
+      				// }
       				// else{
       				// 	System.out.println("Error: censable=-1");
       				// }
@@ -676,8 +725,8 @@ public class PDCPExp1{
 						}																
 					}	
     			}
-				
-				}
+				// System.out.println(aa+" "+bb);
+			}
 				
 			
 		}
@@ -779,7 +828,6 @@ public class PDCPExp1{
 				}
 			}
 		}
-		//todo: self witnessing: MCMC(5).java
 		stateMapRW.put(a, sample(alpha_T / (alpha_T + alpha_F)));
 		if(stateMapRW.get(a)==1){
 			int c=NRWMapT.get(a);
@@ -1053,29 +1101,11 @@ public class PDCPExp1{
 			//int numNei, int neiSize, double nonAttackerPercentage,  Integer ob, int mcmcRounds, String pathOfCpt 
 			Integer.parseInt(args[0]), //numNei
 			Integer.parseInt(args[1]), // size of Neighborhood
-			// new BigDecimal(args[2]),//hoaPercentage
-			Integer.parseInt(args[2]),//n attacker
-			Integer.parseInt(args[3]),//n HOA
-			Integer.parseInt(args[4]),//mcmc rounds
-			Integer.parseInt(args[5]),//attacker TYpe
-			args[6]//filename to write out tpr, fpr
+			Integer.parseInt(args[2]),//number of attackers
+			Integer.parseInt(args[3]),//number of HOAs
+			Integer.parseInt(args[4]),//rounds of MCMC
+			Integer.parseInt(args[5]),//attacker type, e.g., 1 or 2
+			args[6]//output file name
 			);
-        // PowerLaw p = new PowerLaw(new Random(555));
-        // int x=p.zipf(100);//e.g., number of witnesses  = 0-99
-
-        // int count[]=new int[100];
-        // for (int i = 0; i < 100; i++) {//e.g., 100 agents
-        //     // System.out.println("Zipf: " + p.zipf(100));
-        //     int x=p.zipf(100);//e.g., number of witnesses  = 0-99
-        //     count[x]++;
-        // }
-        // int sum=0;
-        // for(int i=0;i<100;i++){
-        //     System.out.println(i+" "+count[i]/100.0);
-        //     sum+=count[i];
-        // }		
-		// long endTime   = System.currentTimeMillis();
-		// long totalTime = endTime - startTime;
-		// System.out.println("#time in minutes: "+ totalTime/1000.0/60);			
 	}
 }

@@ -124,38 +124,43 @@ public class PowerLaw {
          * double[] numbers = {0, 1, 2, 3}; for (int i = 0; i < 5; i++) {
          * System.out.println("Select: " + p.select(numbers, -1)); }
          */
-        int count[]=new int[10000];
-        for (int i = 0; i < 1000; i++) {//e.g., 1000 HACs
-            // System.out.println("Zipf: " + p.zipf(100));
-            int x=p.zipf(10000);//e.g., number of witnesses  = 0-99
-            System.out.println(x);
-            count[x]++;
-        }
-        for(int i=0;i<10000;i++){
-            if(count[i]!=0) System.out.println(i+" "+count[i]);
-        }
-        // int sum=0;
-        // for(int i=0;i<100;i++){
-        //     System.out.println(i+" "+count[i]/100.0);
-        //     sum+=count[i];
+        // int count[]=new int[10000];
+        // for (int i = 0; i < 1000; i++) {//e.g., 1000 HACs
+        //     // System.out.println("Zipf: " + p.zipf(100));
+        //     int x=p.zipf(10000);//e.g., number of witnesses  = 0-99
+        //     System.out.println(x);
+        //     count[x]++;
         // }
-        // System.out.println(sum);
-        List<String> list = new ArrayList<String>();
-        for(int i=0;i<10;i++){
-            list.add(i+"");
+        // for(int i=0;i<10000;i++){
+        //     if(count[i]!=0) System.out.println(i+" "+count[i]);
+        // }
+        // // int sum=0;
+        // // for(int i=0;i<100;i++){
+        // //     System.out.println(i+" "+count[i]/100.0);
+        // //     sum+=count[i];
+        // // }
+        // // System.out.println(sum);
+        // List<String> list = new ArrayList<String>();
+        // for(int i=0;i<10;i++){
+        //     list.add(i+"");
+        // }
+        // for(int i=0;i<10;i++){
+        //     System.out.println(list.get(i));
+        // }
+        // System.out.println();
+        // Collections.shuffle(list);
+        // for(int i=0;i<10;i++){
+        //     System.out.println(list.get(i));
+        // }
+        // System.out.println();
+        // Collections.shuffle(list);
+        // for(int i=0;i<10;i++){
+        //     System.out.println(list.get(i));
+        // }
+        for(int i=0;i<100;i++){//100 agents
+            int nw=p.zipf(100);//number of witnessing stances
+            System.out.println(nw);
         }
-        for(int i=0;i<10;i++){
-            System.out.println(list.get(i));
-        }
-        System.out.println();
-        Collections.shuffle(list);
-        for(int i=0;i<10;i++){
-            System.out.println(list.get(i));
-        }
-        System.out.println();
-        Collections.shuffle(list);
-        for(int i=0;i<10;i++){
-            System.out.println(list.get(i));
-        }
+
     }
 }
