@@ -62,9 +62,6 @@ public class DcpV2{
 	static Random rnd;
 	// int c;//parameter passed from Batch class
 	// static Random rnd = new Random(0);
-	// load()
-	// init() 
-	// mcmc()
 	ArrayList<Neighborhood> neighborhoods;
 	public static float random(float max) {
 		float result = rnd.nextFloat() * max;
@@ -124,14 +121,12 @@ public class DcpV2{
 		mcmc(mcmcRounds);
 		// printNeighborhoodAndAgents();
 		// printAllAgents();
-		System.out.println("compute and write tpr,fpr");
-		printTprFpr(1);
-		System.out.println(	" attackerDownCount:"+attackerDownCount +
-			 " \nattakcerUpCount:"+attackerUpCount +
-			 " \nnonAttackerDownCount:"+nonAttackerDownCount+
-			 " \nnonAttackerUpCount:"+nonAttackerUpCount+
-			 " \nnonAttackerTotalWitCount:"+(nonAttackerUpCount+nonAttackerDownCount)
-			 );
+		// System.out.println(	" attackerDownCount:"+attackerDownCount +
+		// 	 " \nattakcerUpCount:"+attackerUpCount +
+		// 	 " \nnonAttackerDownCount:"+nonAttackerDownCount+
+		// 	 " \nnonAttackerUpCount:"+nonAttackerUpCount+
+		// 	 " \nnonAttackerTotalWitCount:"+(nonAttackerUpCount+nonAttackerDownCount)
+		// 	 );
 		// printOneAgent(1);
 		// test();
 

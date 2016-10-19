@@ -1,0 +1,15 @@
+
+set terminal pdf
+set output 'WWWE4_1'
+set key horizontal center left 
+set xlabel "number of attackers"
+set ylabel "census percentage for all"
+
+
+
+plot 'WWW_E4_10' using 1:4 with linespoints title "HAC/10 (censables)",\
+'WWW_E4_20' using 1:4 with linespoints title "HAC/20 (censables)",\
+'WWW_E4_30' using 1:4 with linespoints title "HAC/30 (censables)",\
+'WWW_E4_10' using 1:7 with linespoints title "HAC/10 (all)",\
+'WWW_E4_20' using 1:7 with linespoints title "HAC/20 (all)",\
+'WWW_E4_30' using 1:7 with linespoints title "HAC/30 (all)",\

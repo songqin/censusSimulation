@@ -1,0 +1,15 @@
+
+set terminal pdf
+set output 'WWWE1_1b'
+set key horizontal top left 
+set xlabel "number of attackers"
+set ylabel "census/10000"
+
+#set title "Expected census as function of the number of coordinated attackers against 20 identities "
+
+#set label "MA 20%, HOA 50%" at 0.8,0.55 center
+#plot 'WWW_E1_0' using 1:4 with linespoints title "HAC/0",\
+
+plot 'WWW_E1_10' using 1:4 with linespoints title "HAC/10",\
+'WWW_E1_20' using 1:4 with linespoints title "HAC/20",\
+'WWW_E1_30' using 1:4 with linespoints title "HAC/30"

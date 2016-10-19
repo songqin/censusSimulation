@@ -25,7 +25,7 @@ public class BatchPDCP{
 		pro.waitFor();
 		// System.out.println(command + " exitValue():  " + pro.exitValue());
 	}
-
+	//java BatchPDCP
 	public static void main(String[] args) {
 		try {
 
@@ -36,47 +36,26 @@ public class BatchPDCP{
 			int n =100;//100000 is good, reduced to 1000
 			long startTime = System.currentTimeMillis();
 			double nonAttackerWitness=0.05/100;
-			double nonattackerPercentage = Double.parseDouble(args[0]);
+			int nAttackersPerNei = 2;
+			// Integer.parseInt(args[0]);//number of attackers per neighborhood
+			int nHacs = 0;//number of hacs change from 0.10,20.30
 			String process="";
-			double attackerWitnessUp=0.1/100;
-			System.out.println(attackerWitnessUp);
-			while(attackerWitnessUp<=1.01/100){
-				String filename=
-				"attackerWitness"+new DecimalFormat("#0.000").format(attackerWitnessUp);
-				process="java DcpV2 "+numNei+" "+neiSize+" "+nonattackerPercentage+" "+nonAttackerWitness
-				+" "+ob+" "+n+" "+pathOfCpt+" 1 1 "+attackerWitnessUp + " 0 "+filename;
-				System.out.println("#process: "+process);
-				runProcess(process);
-				attackerWitnessUp+=0.1/100;//100;//0.05(used)
-				System.out.println(attackerWitnessUp);
+			int nMCMC=100;
+			int type=2;
+			while(nAttackersPerNei<=6){//5*6=30
+				while(nHacs<=30){
+					//PDCPExp1, PDCPWWWExp2,PDCPExp3, PDCPWWWExp4
+					//WWW_E1_, WWW_E2_, WWW_E4_
+					String filename = "WWW_E3_"+nHacs+"_"+nAttackersPerNei;
+					process="java PDCPExp3 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+type+" "
+					+filename;
+					System.out.println("#process: "+process);
+					runProcess(process);
+					nHacs+=10;
+				}
+				nHacs=0;
+				nAttackersPerNei+=2;
 			}
-			// while((hap+map+fap <= 1) && (hawp+mawp+fawp<1)){
-			// 	if(chaningPara.equals("hap")){
-			// 		hap=chaningVar;
-			// 	}
-			// 	else if(chaningPara.equals("map")){
-			// 		map=chaningVar;
-			// 	}
-			// 	else if(chaningPara.equals("fap")){
-			// 		fap=chaningVar;
-			// 	}
-			// 	else if(chaningPara.equals("hawp")){
-			// 		hawp=chaningVar;
-			// 	}
-			// 	else if(chaningPara.equals("mawp")){
-			// 		mawp=chaningVar;
-			// 	}
-			// 	else if(chaningPara.equals("fawp")){
-			// 		fawp=chaningVar;
-			// 	}
-			// 	process="java Dcp "+numNei+" "+neiSize+" "+hap+" "+map+" "+fap+" "+hawp+" "+
-			// 	mawp+" "+fawp+" "+ob+" "+n+" "+pathOfCpt;
-			// 	runProcess(process);
-			// 	chaningVar+=0.05;
-
-			// }
-
-
 			long endTime   = System.currentTimeMillis();
 			long totalTime = endTime - startTime;
 			System.out.println("#time in minutes: "+ totalTime/1000.0/60);
