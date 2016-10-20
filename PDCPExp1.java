@@ -316,7 +316,7 @@ public class PDCPExp1{
 		try {
 
 			file = new File("./plots/"+fileName);
-			fop = new FileOutputStream(file);
+			fop = new FileOutputStream(file, true);
 			// if file doesnt exists, then create it
 			if (!file.exists()) {
 				file.createNewFile();
@@ -338,7 +338,7 @@ public class PDCPExp1{
 			r+=a.e_prob;
 		}		
 		//number of attackers, sum CS of fixed uncensable, number of all, sum CS of all
-		String content = nAttacker*5+" "+sumCS10+" "+ 10000 + " "+r;
+		String content = nAttacker*5+" "+sumCS10+" "+ 10000 + " "+r+"\n";
 		System.out.println(content);
 		try {
 			byte[] contentInBytes = content.getBytes();
@@ -494,41 +494,44 @@ public class PDCPExp1{
 		// 	}
 		// }
 		//each attacker from the random 5 neighborhoods witness favorably for the 20 fixed identities		
-		for(Integer nID: badNeighborhood){//int i=1;i<=5;i++
-			n = neighborhoods.get(nID-1);
-			List<Agent> list = n.attackers;		
-			Collections.shuffle(list);
-			int vote=1;
-			for(Agent a: list){
-				String aid=a.id;
-				for(String fu:fixedUncensables){
-					String bid=fu;
-					// System.out.println(aid+" "+bid+ " "+vote);
-					if(reviewerToProductAndVote.containsKey(aid)){
-						reviewerToProductAndVote.get(aid).add(bid+" "+vote);
-						a.nVoteUpOthers++;
-						idToAgents.get(bid).nVotedUpByOthers++;
-					}
-					else{
-						List<String> l = new ArrayList<String>();
-						l.add(bid+" "+vote);
-						reviewerToProductAndVote.put(aid, l);
-						a.nVoteUpOthers++;
-						idToAgents.get(bid).nVotedUpByOthers++;
-					}
-					if(productToReviewerAndVote.containsKey(bid)){
-						productToReviewerAndVote.get(bid).add(aid+" "+vote);
-					}
-					else{
-						List<String> l = new ArrayList<String>();
-						l.add(aid+" "+vote);
-						productToReviewerAndVote.put(bid, l);
-					}	
+		if(m!=0){
+			for(Integer nID: badNeighborhood){//int i=1;i<=5;i++
+						n = neighborhoods.get(nID-1);
+						List<Agent> list = n.attackers;		
+						Collections.shuffle(list);
+						int vote=1;
+						for(Agent a: list){
+							String aid=a.id;
+							for(String fu:fixedUncensables){
+								String bid=fu;
+								// System.out.println(aid+" "+bid+ " "+vote);
+								if(reviewerToProductAndVote.containsKey(aid)){
+									reviewerToProductAndVote.get(aid).add(bid+" "+vote);
+									a.nVoteUpOthers++;
+									idToAgents.get(bid).nVotedUpByOthers++;
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(bid+" "+vote);
+									reviewerToProductAndVote.put(aid, l);
+									a.nVoteUpOthers++;
+									idToAgents.get(bid).nVotedUpByOthers++;
+								}
+								if(productToReviewerAndVote.containsKey(bid)){
+									productToReviewerAndVote.get(bid).add(aid+" "+vote);
+								}
+								else{
+									List<String> l = new ArrayList<String>();
+									l.add(aid+" "+vote);
+									productToReviewerAndVote.put(bid, l);
+								}	
 
-				}	
-				// System.out.println(reviewerToProductAndVote.get(aid));				
-			}
-		}		
+							}	
+							// System.out.println(reviewerToProductAndVote.get(aid));				
+						}
+					}			
+		}
+				
 	}
 	//Simulate witness stances created by HACs
 	//pw

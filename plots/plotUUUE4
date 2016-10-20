@@ -1,0 +1,16 @@
+
+set terminal pdf
+set output 'UUUE4_1'
+set key horizontal center left 
+set xrange [0:30]
+set xlabel "number of attackers"
+set ylabel "census percentage for all"
+
+
+
+plot 'UUU_E4_10' using 1:4 with linespoints title "HAC/10 (censables)",\
+'UUU_E4_20' using 1:4 with linespoints title "HAC/20 (censables)",\
+'UUU_E4_30' using 1:4 with linespoints title "HAC/30 (censables)",\
+'UUU_E4_10' using 1:7 with linespoints title "HAC/10 (all)",\
+'UUU_E4_20' using 1:7 with linespoints title "HAC/20 (all)",\
+'UUU_E4_30' using 1:7 with linespoints title "HAC/30 (all)",\

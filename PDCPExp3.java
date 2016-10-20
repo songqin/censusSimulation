@@ -316,7 +316,7 @@ public class PDCPExp3{
 		try {
 
 			file = new File("./plots/"+fileName);
-			fop = new FileOutputStream(file);
+			fop = new FileOutputStream(file, true);
 			// if file doesnt exists, then create it
 			if (!file.exists()) {
 				file.createNewFile();
@@ -338,7 +338,7 @@ public class PDCPExp3{
 			r+=a.e_prob;
 		}		
 		//number of attackers, sum CS of fixed uncensable, number of all, sum CS of all
-		String content = nAttacker*5+" "+sumCS10+" "+ 10000 + " "+r;
+		String content = nAttacker*5+" "+sumCS10+" "+ 10000 + " "+r+"\n";
 		System.out.println(content);
 		try {
 			byte[] contentInBytes = content.getBytes();
@@ -475,7 +475,7 @@ public class PDCPExp3{
 			int a = (int) (Math.random()*100+1);//random neighborhood ID
 			n = neighborhoods.get(a-1);
 			// System.out.println((a-1)+"     "+n.id);
-			List<Agent> list = n.uncensables;		
+			List<Agent> list = n.censables;		//FUA
 			Collections.shuffle(list);
 			for(int i=0;i<1;i++){
 				// System.out.println(list.get(i).id);

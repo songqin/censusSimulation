@@ -317,7 +317,7 @@ public class PDCPWWWExp4{
 		try {
 
 			file = new File("./plots/"+fileName);
-			fop = new FileOutputStream(file);
+			fop = new FileOutputStream(file,true);
 			// if file doesnt exists, then create it
 			if (!file.exists()) {
 				file.createNewFile();
@@ -339,7 +339,7 @@ public class PDCPWWWExp4{
 			r+=a.e_prob;
 		}		
 		//number of attackers, sum CS of fixed uncensable, number of all, sum CS of all
-		String content = nAttacker*5+" "+sumCS10+" "+ " "+randomCensables.size()+" " + sumCS10*1.0/randomCensables.size()+" "+ 10000 + " "+r+" "+r*1.0/10000;
+		String content = nAttacker*5+" "+sumCS10+" "+ " "+randomCensables.size()+" " + sumCS10*1.0/randomCensables.size()+" "+ 10000 + " "+r+" "+r*1.0/10000+"\n";
 		System.out.println(content);
 		try {
 			byte[] contentInBytes = content.getBytes();

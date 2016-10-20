@@ -1,0 +1,12 @@
+
+set terminal pdf
+set output 'UUUE3_1b'
+set key horizontal top left 
+set xlabel "number of attackers"
+set ylabel "census/10000"
+
+
+
+plot 'UUU_E3_10' using 1:4 with linespoints title "HAC/10",\
+'UUU_E3_20' using 1:4 with linespoints title "HAC/20",\
+'UUU_E3_30' using 1:4 with linespoints title "HAC/30"
