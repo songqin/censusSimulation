@@ -1,10 +1,10 @@
 
 set terminal pdf
-set output 'ODCPE2_1'
+set output 'UUUE2_1'
 set key horizontal center left 
 set xlabel "number of attackers"
 set ylabel "census percentage for all"
-
+set yrange [-0.1:1]
 #set title "Expected census as function of the number of coordinated attackers against 20 identities "
 
 #set label "MA 20%, HOA 50%" at 0.8,0.55 center

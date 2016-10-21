@@ -1,9 +1,10 @@
 
 set terminal pdf
 set xrange [0:30]
-set yrange [0:20]
+set yrange [0:21]
 set output 'WWWE3_1'
-set key horizontal top left 
+set ytics 2
+set key horizontal center left 
 set xlabel "number of attackers"
 set ylabel "census/20"
 

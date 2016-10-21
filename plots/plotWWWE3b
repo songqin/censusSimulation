@@ -1,6 +1,8 @@
 
 set terminal pdf
 set output 'WWWE3_1b'
+set yrange [8990:9095]
+set ytics 10
 set key horizontal top left 
 set xlabel "number of attackers"
 set ylabel "census/10000"

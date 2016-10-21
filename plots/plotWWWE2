@@ -2,6 +2,8 @@
 set terminal pdf
 set output 'WWWE2_1'
 set key horizontal center left 
+set yrange [-0.1:1.1]
+set ytics 0.1
 set xlabel "number of attackers"
 set ylabel "census percentage for all"
 

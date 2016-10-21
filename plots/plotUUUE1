@@ -1,10 +1,10 @@
 
 set terminal pdf
-set output 'ODCPE1_1'
+set output 'UUUE1_1'
 set key horizontal top left 
 set xlabel "number of attackers"
 set ylabel "census/20"
-
+set yrange [0:21]
 
 
 plot 'UUU_E1_10' using 1:2 with linespoints title "HAC/10",\

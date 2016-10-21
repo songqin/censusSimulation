@@ -6,7 +6,7 @@ set output 'UUUE3_1'
 set key horizontal top left 
 set xlabel "number of attackers"
 set ylabel "census/20"
-
+set yrange [0:22]
 
 plot 'UUU_E3_10' using 1:2 with linespoints title "HAC/10",\
 'UUU_E3_20' using 1:2 with linespoints title "HAC/20",\
