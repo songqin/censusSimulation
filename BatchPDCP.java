@@ -29,29 +29,54 @@ public class BatchPDCP{
 	public static void main(String[] args) {
 		try {
 
-			int numNei=1; //numNei 200000
-			int neiSize=10000;
-			int ob=0;
-			String pathOfCpt="./cpt.txt";
-			int n =100;//100000 is good, reduced to 1000
+			// int numNei=1; //numNei 200000
+			// int neiSize=10000;
+			// int ob=0;
+			// String pathOfCpt="./cpt.txt";
+			// int n =100;//100000 is good, reduced to 1000
 			long startTime = System.currentTimeMillis();
-			double nonAttackerWitness=0.05/100;
-			int nAttackersPerNei = 0;//used to be 2
+			// double nonAttackerWitness=0.05/100;
+			int nAttackersPerNei = 0;//0 2 4 6 
 			// Integer.parseInt(args[0]);//number of attackers per neighborhood
 			int nHacs = 10;//number of hacs change from 0.10,20.30
 			String process="";
 			int nMCMC=100;//100
 			int type=1;// 1 for FFA, 2 for FUA
-			while(nHacs<=10){//10,20,30
+			while(nHacs<=30){//10,20,30
 				while(nAttackersPerNei<=6){//0,2,4,6 *(5) 
 					//PDCPExp1, PDCPWWWExp2,PDCPExp3, PDCPWWWExp4
 					//WWW_E1_, WWW_E2_, WWW_E3_ WWW_E4_
 					
 					//ODCPExp1, ODCPWWWExp2, ODCPExp3, ODCPWWWExp4
 					//UUU_E1_, UUU_E2_, UUU_E3_ UUU_E4_
-					String filename = "WWW_E1_"+nHacs;//+"_"+nAttackersPerNei;
-					process="java PDCPExp1 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+type+" "
-					+filename;
+					
+					//PDCP
+					// String filename = "WWW_E1_"+nHacs;//+"_"+nAttackersPerNei;
+					// process="java PDCPExp1 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+type+" "+filename;
+					
+					// String filename = "WWW_E2_"+nHacs;//+"_"+nAttackersPerNei;
+					// process="java PDCPWWWExp2 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+1+" "+filename;					
+					
+
+					// String filename = "WWW_E3_"+nHacs;//+"_"+nAttackersPerNei;
+					// process="java PDCPExp3 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+2+" "+filename;					
+					
+					// String filename = "WWW_E4_"+nHacs;//+"_"+nAttackersPerNei;
+					// process="java PDCPWWWExp4 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+2+" "+filename;					
+					
+					//ODCP
+					// String filename = "UUU_E1_"+nHacs;//+"_"+nAttackersPerNei;
+					// process="java ODCPExp1 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+1+" "+filename;					
+
+					// String filename = "UUU_E2_"+nHacs;//+"_"+nAttackersPerNei;
+					// process="java ODCPWWWExp2 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+1+" "+filename;					
+
+					// String filename = "UUU_E3_"+nHacs;//+"_"+nAttackersPerNei;
+					// process="java ODCPExp3 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+2+" "+filename;					
+
+					String filename = "UUU_E4_"+nHacs;//+"_"+nAttackersPerNei;
+					process="java ODCPWWWExp4 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+2+" "+filename;					
+
 					System.out.println("#process: "+process);
 					runProcess(process);
 					nAttackersPerNei+=2;

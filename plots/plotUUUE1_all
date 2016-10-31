@@ -1,0 +1,33 @@
+
+
+
+set xrange [-0.02:1]
+set yrange [0:1.1]
+set terminal pdf
+
+set output 'UUUE1_1_all.pdf'
+
+set key horizontal bottom right 
+set xlabel "false positive rate"
+set ylabel "true positive rate"
+
+#set label "y=x" t 0.5, 0.4 center
+#set label "awap, area under the curve (AUC)" at 0.5,0.2 center
+
+plot 'UUU_E1_10_0_all' using 2:1 with linespoints title "HAC/10 Attacker/0",\
+'UUU_E1_10_2_all' using 2:1 with linespoints title "HAC/10 Attacker/2",\
+'UUU_E1_10_4_all' using 2:1 with linespoints title "HAC/10 Attacker/4",\
+'UUU_E1_10_6_all' using 2:1 with linespoints title "HAC/10 Attacker/6",\
+'UUU_E1_20_0_all' using 2:1 with linespoints title "HAC/20 Attacker/0",\
+'UUU_E1_20_2_all' using 2:1 with linespoints title "HAC/20 Attacker/2",\
+'UUU_E1_20_4_all' using 2:1 with linespoints title "HAC/20 Attacker/4",\
+'UUU_E1_20_6_all' using 2:1 with linespoints title "HAC/20 Attacker/6",\
+'UUU_E1_30_0_all' using 2:1 with linespoints title "HAC/30 Attacker/0",\
+'UUU_E1_30_2_all' using 2:1 with linespoints title "HAC/30 Attacker/2",\
+'UUU_E1_30_4_all' using 2:1 with linespoints title "HAC/30 Attacker/4",\
+'UUU_E1_30_6_all' using 2:1 with linespoints title "HAC/30 Attacker/6"
+#x title "y=x"
+#pause -1
+#quit
+
+

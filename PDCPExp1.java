@@ -339,7 +339,7 @@ public class PDCPExp1{
 		}		
 		//number of attackers, sum CS of fixed uncensable, number of all, sum CS of all
 		String content = nAttacker*5+" "+sumCS10+" "+ 10000 + " "+r+"\n";
-		System.out.println(content);
+		System.out.println("content_"+fileName+":"+content);
 		try {
 			byte[] contentInBytes = content.getBytes();
 			fop.write(contentInBytes);
@@ -350,7 +350,149 @@ public class PDCPExp1{
 		}						
 		
 
-		}		
+
+
+		//this.nAttacker = nAttacker;
+		// this.nHOA = nHOA;
+		String file20 = fileName+"_"+nAttacker+"_" +"20";
+		String fileAll = fileName+"_"+nAttacker+"_" +"all";
+		try {
+
+			file = new File("./plots/"+fileAll);
+			fop = new FileOutputStream(file, false);//true:append to file
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+					
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+
+		for(double cutoff=0;cutoff<=1;cutoff+=0.01){
+
+			double tCS=0;//expectation of CS being true
+			double fCS=0;
+			double tRW=0;
+			double fRW=0;
+			// int tp1=0;
+			// int fp1=0;
+			// int tp2=0;
+			// int fp2=0;
+			for(Agent a: idToAgents.values()){
+				if((a.e_binary==1) && (a.e_prob>=cutoff)){
+					tCS++;
+				}
+				if((a.e_binary==0) && (a.e_prob>=cutoff)){
+					fCS++;
+				}
+				if((a.e_binary==1) && (a.e_prob>=cutoff)){
+					tRW++;
+				}
+				if((a.e_binary==0) && (a.e_prob>=cutoff)){
+					fRW++;
+				}
+			}
+			//tpr, fpr, tpr , fpr
+			// String 
+			content = tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra+" "+cutoff+"\n";
+			System.out.println("content_"+fileAll+":"+content);
+			try {
+				byte[] contentInBytes = content.getBytes();
+				fop.write(contentInBytes);
+
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}					
+	
+
+		}
+		try {
+			String zerozero="0.0 0.0 0.0 0.0"+"\n";
+			byte[] cc = zerozero.getBytes();
+			fop.write(cc);	
+			fop.flush();
+			fop.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+
+		try {
+
+			file = new File("./plots/"+file20);
+			fop = new FileOutputStream(file, false);//true:append to file
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+					
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+
+
+
+
+
+		for(double cutoff=0;cutoff<=1;cutoff+=0.01){
+
+			double tCS=0;//expectation of CS being true
+			double fCS=0;
+			double tRW=0;
+			double fRW=0;
+			// int tp1=0;
+			// int fp1=0;
+			// int tp2=0;
+			// int fp2=0;
+
+			for(String fu:fixedUncensables){
+				Agent a=idToAgents.get(fu);
+				// .e_prob;//sum CS for fixed uncensables
+				// printAgent( idToAgents.get(fu));
+				if((a.e_binary==1) && (a.e_prob>=cutoff)){
+					tCS++;
+				}
+				if((a.e_binary==0) && (a.e_prob>=cutoff)){
+					fCS++;
+				}
+				if((a.e_binary==1) && (a.e_prob>=cutoff)){
+					tRW++;
+				}
+				if((a.e_binary==0) && (a.e_prob>=cutoff)){
+					fRW++;
+				}				
+			}		
+
+
+			//tpr, fpr, tpr , fpr
+			// String 
+			content = tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra+" "+cutoff+"\n";
+			System.out.println("content_"+file20+": "+content);
+			try {
+				byte[] contentInBytes = content.getBytes();
+				fop.write(contentInBytes);
+
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}					
+		
+		}
+		try {
+			String zerozero="0.0 0.0 0.0 0.0"+"\n";
+			byte[] cc = zerozero.getBytes();
+			fop.write(cc);	
+			fop.flush();
+			fop.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+
+
+	}
 	
 
 	void printWitness(){
