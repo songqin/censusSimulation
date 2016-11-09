@@ -179,7 +179,7 @@ public class PDCPExp1{
 		mcmc(mcmcRounds);
 		
 		// printAllAgents();
-		printResult();
+		// printResult();
 		writeFilePDCPExp1();
 		// System.out.println("wow:"+wow);
 		// printTprFpr(1);
@@ -613,13 +613,15 @@ public class PDCPExp1{
 		fixedUncensables = new ArrayList<String>();//global fixed uncensables
 		// System.out.println("20 fixed uncensables:");
 		//k is the number of neighborhoods and also the number of fixed uncensables
-		for(int k=0;k<20;k++){//20 neighborhoods * 1 agents = 20 fixed uncensables
+		int numOfBeingAttacked=1;
+		int numberOfAttackedNei = 20;
+		for(int k=0;k<numberOfAttackedNei;k++){//20 neighborhoods * 1 agents = 20 fixed uncensables
 			int a = (int) (Math.random()*100+1);//random neighborhood ID
 			n = neighborhoods.get(a-1);
 			// System.out.println((a-1)+"     "+n.id);
 			List<Agent> list = n.uncensables;		
 			Collections.shuffle(list);
-			for(int i=0;i<1;i++){
+			for(int i=0;i<numOfBeingAttacked;i++){
 				// System.out.println(list.get(i).id);
 				fixedUncensables.add(list.get(i).id);
 			}			
