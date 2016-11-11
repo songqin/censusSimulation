@@ -14,10 +14,10 @@ set ylabel "true positive rate"
 #set label "y=x" t 0.5, 0.4 center
 #set label "awap, area under the curve (AUC)" at 0.5,0.2 center
 
-plot 'WWW_E1_0_0_all' using 2:1 with linespoints title "HAC/0 AUC/[0.4, 0.5]",\
-'WWW_E1_1_0_all' using 2:1 with linespoints title "HAC/1 AUC/[0.8, 0.9]",\
-'WWW_E1_2_0_all' using 2:1 with linespoints title "HAC/2 AUC/[0.9, 1]",\
-'WWW_E1_3_0_all' using 2:1 with linespoints title "HAC/3 AUC/[0.9, 1]"
+plot 'WWW_E1_0_10_all' using 2:1 with linespoints title "HAC/0 AUC/0.5",\
+'WWW_E1_1_10_all' using 2:1 with linespoints title "HAC/1 AUC/0.80",\
+'WWW_E1_2_10_all' using 2:1 with linespoints title "HAC/2 AUC/0.95",\
+'WWW_E1_3_10_all' using 2:1 with linespoints title "HAC/3 AUC/0.98"
 #x title "y=x"
 #pause -1
 #quit

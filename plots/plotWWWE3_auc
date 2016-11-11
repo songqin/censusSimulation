@@ -1,0 +1,28 @@
+
+#number of attackers  = 10/nei, number of HAC from 0 , 1, 2 3, ... 10
+
+set xrange [-0.01:1]
+set yrange [0:1.1]
+set terminal pdf
+
+set output 'WWWE3_roc.pdf'
+
+set key horizontal bottom right 
+set xlabel "false positive rate"
+set ylabel "true positive rate"
+
+#set label "y=x" t 0.5, 0.4 center
+#set label "awap, area under the curve (AUC)" at 0.5,0.2 center
+#'WWW_E3_0_10_all' using 2:1 with linespoints title "HAC/0 AUC/0.2",\
+#an empty line should be here, otherwise it will be buggy
+
+plot 'WWW_E3_0_10_all' using 2:1 with linespoints title "HAC/0 AUC/0.50",\
+'WWW_E3_1_10_all' using 2:1 with linespoints title "HAC/1 AUC/0.91",\
+'WWW_E3_2_10_all' using 2:1 with linespoints title "HAC/2, AUC/0.96",\
+'WWW_E3_3_10_all' using 2:1 with linespoints title "HAC/3, AUC/0.98"
+#x title "y=x"
+#pause -1
+#quit
+
+
+

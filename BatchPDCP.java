@@ -52,8 +52,8 @@ public class BatchPDCP{
 					//UUU_E1_, UUU_E2_, UUU_E3_ UUU_E4_
 					
 					//PDCP
-					String filename = "WWW_E1_"+nHacs;//+"_"+nAttackersPerNei;
-					process="java PDCPExp1 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+type+" "+filename;
+					// String filename = "WWW_E1_"+nHacs;//+"_"+nAttackersPerNei;
+					// process="java PDCPExp1 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+1+" "+filename;
 					
 					// String filename = "WWW_E2_"+nHacs;//+"_"+nAttackersPerNei;
 					// process="java PDCPWWWExp2 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+1+" "+filename;					
@@ -75,8 +75,8 @@ public class BatchPDCP{
 					// String filename = "UUU_E3_"+nHacs;//+"_"+nAttackersPerNei;
 					// process="java ODCPExp3 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+2+" "+filename;					
 
-					// String filename = "UUU_E4_"+nHacs;//+"_"+nAttackersPerNei;
-					// process="java ODCPWWWExp4 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+2+" "+filename;					
+					String filename = "UUU_E4_"+nHacs;//+"_"+nAttackersPerNei;
+					process="java ODCPWWWExp4 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+2+" "+filename;					
 
 					System.out.println("#process: "+process);
 					runProcess(process);
