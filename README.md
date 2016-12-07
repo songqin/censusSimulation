@@ -1,10 +1,5 @@
 # censusSimulation
 population = 10 million
-25 roc
-Ex1: java Dcp 2 1000 0.05 0.05 0 0.1 0.1 0 ./cpt.txt
-
-bookmark: draw convergence of roc when N is changed
-todo: vary hap or hawp (both could be dominatin para), plot roc for dif map (mawp)
 
 
 

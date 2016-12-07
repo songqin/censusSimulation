@@ -179,7 +179,7 @@ public class PDCPExp1{
 		mcmc(mcmcRounds);
 		
 		// printAllAgents();
-		// printResult();
+		printResult();
 		writeFilePDCPExp1();
 		// System.out.println("wow:"+wow);
 		// printTprFpr(1);
@@ -339,7 +339,7 @@ public class PDCPExp1{
 		}		
 		//number of attackers, sum CS of fixed uncensable, number of all, sum CS of all
 		String content = nAttacker*5+" "+sumCS10+" "+ 10000 + " "+r+"\n";
-		System.out.println("content_"+fileName+":"+content);
+		// System.out.println("content_"+fileName+":"+content);
 		try {
 			byte[] contentInBytes = content.getBytes();
 			fop.write(contentInBytes);
@@ -396,7 +396,7 @@ public class PDCPExp1{
 			//tpr, fpr, tpr , fpr
 			// String 
 			content = tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra+" "+cutoff+"\n";
-			System.out.println("content_"+fileAll+":"+content);
+			// System.out.println("content_"+fileAll+":"+content);
 			try {
 				byte[] contentInBytes = content.getBytes();
 				fop.write(contentInBytes);
@@ -469,7 +469,7 @@ public class PDCPExp1{
 			//tpr, fpr, tpr , fpr
 			// String 
 			content = tCS*1.0/nea+" "+fCS*1.0/nnea+" "+tRW*1.0/nra+" "+fRW*1.0/nnra+" "+cutoff+"\n";
-			System.out.println("content_"+file20+": "+content);
+			// System.out.println("content_"+file20+": "+content);
 			try {
 				byte[] contentInBytes = content.getBytes();
 				fop.write(contentInBytes);
@@ -606,18 +606,25 @@ public class PDCPExp1{
 	}
 	void createWitnesses(){//cw
 		int m = nAttacker;//number of attackers per neighborhood, e.g., 2, 
-		int na = m*5;//a number of n attackers in 5 neighborhood (equally distributed), 
+		int numOfBeingAttacked=1;//1-10(max)
+		int numberOfAttackedNei = 20;
+		// int na = m*5;//a number of n attackers in 5 neighborhood (equally distributed), 
 		
 		//For a random of  5 neighborhoods, choose 20 fixed uncensable identities, 4 per neighborhood. 
 		Neighborhood n;//the neighborhood to be created
 		fixedUncensables = new ArrayList<String>();//global fixed uncensables
 		// System.out.println("20 fixed uncensables:");
 		//k is the number of neighborhoods and also the number of fixed uncensables
-		int numOfBeingAttacked=1;
-		int numberOfAttackedNei = 20;
+
+		List<String> attackedNei = new ArrayList<String>();
+	    int nid ;//random Nei Id
 		for(int k=0;k<numberOfAttackedNei;k++){//20 neighborhoods * 1 agents = 20 fixed uncensables
-			int a = (int) (Math.random()*100+1);//random neighborhood ID
-			n = neighborhoods.get(a-1);
+			nid = (int) (Math.random()*100+1);//random neighborhood ID
+			while(attackedNei.contains(Integer.toString(nid))){//keep finding random new neighorhoods to attack
+				nid =(int) (Math.random()*100+1);
+			}
+			attackedNei.add(Integer.toString(nid));
+			n = neighborhoods.get(nid-1);
 			// System.out.println((a-1)+"     "+n.id);
 			List<Agent> list = n.uncensables;		
 			Collections.shuffle(list);

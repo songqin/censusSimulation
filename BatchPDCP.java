@@ -36,15 +36,14 @@ public class BatchPDCP{
 			// int n =100;//100000 is good, reduced to 1000
 			long startTime = System.currentTimeMillis();
 			// double nonAttackerWitness=0.05/100;
-			int nAttackersPerNei = 0;//used to be 0
+			int nAttackersPerNei = 0;//0 2 4 6 
 			// Integer.parseInt(args[0]);//number of attackers per neighborhood
 			int nHacs = 0;//number of hacs change from 0.10,20.30
 			String process="";
 			int nMCMC=100;//100
 			int type=1;// 1 for FFA, 2 for FUA
-			while(nHacs<=10){//10,20,30
-				while(nAttackersPerNei<=10){//0,2,4,6, 8, 10 *(5) used to be 6
-					//notes: n=0 2 4 6 was too small, we increase it until we find AUC in [0.6, 0.7]
+			while(nHacs<=5){//10,20,30
+				while(nAttackersPerNei<=10){//0,2,4,6 *(5) 
 					//PDCPExp1, PDCPWWWExp2,PDCPExp3, PDCPWWWExp4
 					//WWW_E1_, WWW_E2_, WWW_E3_ WWW_E4_
 					
@@ -52,8 +51,8 @@ public class BatchPDCP{
 					//UUU_E1_, UUU_E2_, UUU_E3_ UUU_E4_
 					
 					//PDCP
-					// String filename = "WWW_E1_"+nHacs;//+"_"+nAttackersPerNei;
-					// process="java PDCPExp1 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+1+" "+filename;
+					String filename = "WWW_E1_"+nHacs;//+"_"+nAttackersPerNei;
+					process="java PDCPExp1 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+type+" "+filename;
 					
 					// String filename = "WWW_E2_"+nHacs;//+"_"+nAttackersPerNei;
 					// process="java PDCPWWWExp2 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+1+" "+filename;					
@@ -75,16 +74,16 @@ public class BatchPDCP{
 					// String filename = "UUU_E3_"+nHacs;//+"_"+nAttackersPerNei;
 					// process="java ODCPExp3 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+2+" "+filename;					
 
-					String filename = "UUU_E4_"+nHacs;//+"_"+nAttackersPerNei;
-					process="java ODCPWWWExp4 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+2+" "+filename;					
+					// String filename = "UUU_E4_"+nHacs;//+"_"+nAttackersPerNei;
+					// process="java ODCPWWWExp4 100 100 "+nAttackersPerNei+" "+nHacs+" "+nMCMC+" "+2+" "+filename;					
 
 					System.out.println("#process: "+process);
 					runProcess(process);
-					nAttackersPerNei+=1;//used to be 2
+					nAttackersPerNei+=1;
 					
 				}
 				nAttackersPerNei=0;
-				nHacs+=1;//used to be 10
+				nHacs+=1;
 			}
 			long endTime   = System.currentTimeMillis();
 			long totalTime = endTime - startTime;
