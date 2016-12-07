@@ -1,5 +1,6 @@
 # censusSimulation
-population = 10 million
+To compile: javac *java
+To run: java PDCPExp1 100 100 10 5 100 1 WWW_E1_5
 
 
 
